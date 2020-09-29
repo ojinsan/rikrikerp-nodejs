@@ -34,4 +34,4 @@ const HelperHStoExcel = sequelize.define(
     }
 );
 
-module.exports = Wilayah;
+module.exports = HelperHStoExcel;

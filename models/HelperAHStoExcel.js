@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
 
-const HelperHStoExcel = sequelize.define(
+const HelperAHStoExcel = sequelize.define(
     "HS_EXCEL",
     {
         ID_AHS_TO_EXCEL: {
@@ -41,4 +41,4 @@ const HelperHStoExcel = sequelize.define(
     }
 );
 
-module.exports = Wilayah;
+module.exports = HelperAHStoExcel;

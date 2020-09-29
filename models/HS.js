@@ -33,7 +33,7 @@ while (tahun <= 2012) {
                 allowNull: false,
             },
             TAHUN: {
-                type: Sequelize.NUMBER,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: tahun,
             },

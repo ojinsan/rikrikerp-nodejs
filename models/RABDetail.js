@@ -7,7 +7,7 @@ const RABDetail = {};
 var tahun = 2010;
 while (tahun <= 2012) {
     RABDetail[tahun] = sequelize.define(
-        "T_RAB_JUDUL_" + tahun,
+        "T_RAB_DETAIL_" + tahun,
         {
             ID_RAB_DETAIL: {
                 type: Sequelize.INTEGER,
@@ -65,4 +65,4 @@ while (tahun <= 2012) {
     tahun++;
 }
 
-module.exports = RABJudul;
+module.exports = RABDetail;

@@ -72,4 +72,4 @@ while (tahun <= 2012) {
     tahun++;
 }
 
-module.exports = AHSProjectUtama;
+module.exports = AHSProjectDetail;

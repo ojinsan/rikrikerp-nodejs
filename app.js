@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const sequelize = require("./util/database");
+const databaseRelation = require("./util/database-relation");
 
 // MARK: Import routes and models
 const datasourceRoute = require("./routes/datasource-route");
@@ -11,7 +12,7 @@ const app = express();
 
 app.use(bodyParser.json()); // application/json
 
-// MARK: validate
+// MARK: validate the request
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -43,8 +44,9 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || "An unknown error occurred!" });
 });
 
-// MARK: Run it!
+databaseRelation();
 
+// MARK: Run it
 sequelize
     .sync()
     .then((result) => {

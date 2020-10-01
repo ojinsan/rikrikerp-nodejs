@@ -6,6 +6,9 @@ const databaseRelation = require("./util/database-relation");
 
 // MARK: Import routes and models
 const datasourceRoute = require("./routes/datasource-route");
+const baseRoute = require("./routes/base-route");
+const projectRoute = require("./routes/project-route");
+
 const HttpError = require("./models/http-error");
 
 const app = express();
@@ -27,7 +30,9 @@ app.use((req, res, next) => {
 });
 
 // MARK: Routes usage, check out the /blablabla
+app.use("/project", projectRoute);
 app.use("/data-source", datasourceRoute);
+app.use("/base", baseRoute);
 
 // MARK: Routes usage, default condition
 // MARK: No Routes Found or App Error
@@ -44,13 +49,14 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || "An unknown error occurred!" });
 });
 
+// MARK: Crate each Relation
 databaseRelation();
 
-// MARK: Run it
+// MARK: Run it when database is ready
 sequelize
     .sync()
     .then((result) => {
-        //console.log(result);
+        console.log("hehe");
         app.listen(3000);
     })
     .catch((error) => {

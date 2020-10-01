@@ -1,45 +1,33 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("../util/database");
+const sequelize = require("../../util/database");
 
-//const AHSUtama = {};
-
-const AHSSumberUtama = sequelize.define(
-    "AHS_UTAMA",
+const HelperAHStoExcel = sequelize.define(
+    "HS_EXCEL",
     {
-        ID_AHS_UTAMA: {
+        ID_AHS_TO_EXCEL: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
         },
-        NAMA_AHS: {
+        POSISI_NO_URUT: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        NOMOR_AHS: {
+        POSISI_P_TOTAL_UPAH: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        SUMBER_AHS: {
+        POSISI_P_TOTAL_BAHAN: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        SATUAN_AHS: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
-        SCREENSHOT_AHS: {
-            type: Sequelize.STRING,
-            allowNull: true,
-        },
-        KHUSUS: {
-            type: Sequelize.BOOLEAN,
-            allowNull: false,
-            defaultValue: false,
-        },
-
         // This is foreign key
+        // ID_AHS_PROJET_UTAMA: {
+        //     type: Sequelize.INTEGER,
+        //     allowNull: false,
+        // },
     },
     {
         // look up the table faster, but write the table slower
@@ -53,4 +41,4 @@ const AHSSumberUtama = sequelize.define(
     }
 );
 
-module.exports = AHSSumberUtama;
+module.exports = HelperAHStoExcel;

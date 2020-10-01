@@ -1,30 +1,23 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("../util/database");
+const sequelize = require("../../util/database");
 
-const HelperAHStoExcel = sequelize.define(
+const HelperHStoExcel = sequelize.define(
     "HS_EXCEL",
     {
-        ID_AHS_TO_EXCEL: {
+        ID_HS_TO_EXCEL: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
         },
-        POSISI_NO_URUT: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
-        POSISI_P_TOTAL_UPAH: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
-        POSISI_P_TOTAL_BAHAN: {
+
+        POSITION: {
             type: Sequelize.STRING,
             allowNull: false,
         },
         // This is foreign key
-        // ID_AHS_PROJET_UTAMA: {
+        // ID_HS: {
         //     type: Sequelize.INTEGER,
         //     allowNull: false,
         // },
@@ -41,4 +34,4 @@ const HelperAHStoExcel = sequelize.define(
     }
 );
 
-module.exports = HelperAHStoExcel;
+module.exports = HelperHStoExcel;

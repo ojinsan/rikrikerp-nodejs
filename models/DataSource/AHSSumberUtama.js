@@ -1,11 +1,13 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("../util/database");
+const sequelize = require("../../util/database");
 
-const AHSSumberDetail = sequelize.define(
-    "AHS_DETAIL",
+//const AHSUtama = {};
+
+const AHSSumberUtama = sequelize.define(
+    "AHS_SUMBER_UTAMA",
     {
-        ID_AHS_DETAIL: {
+        ID_AHS_SUMBER_UTAMA: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             allowNull: false,
@@ -15,35 +17,29 @@ const AHSSumberDetail = sequelize.define(
             type: Sequelize.STRING,
             allowNull: false,
         },
-        URAIAN: {
+        NOMOR_AHS: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        KODE_URAIAN: {
+        SUMBER_AHS: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        KELOMPOK_URAIAN: {
+        SATUAN_AHS: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        SATUAN_URAIAN: {
+        SCREENSHOT_AHS: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
         },
-        KOEFISIEN_URAIAN: {
-            type: Sequelize.DOUBLE,
+        KHUSUS: {
+            type: Sequelize.BOOLEAN,
             allowNull: false,
+            defaultValue: false,
         },
-        KETERANGAN_URAIAN: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
+
         // This is foreign key
-        // ID_AHS_UTAMA: {
-        //     type: Sequelize.INTEGER,
-        //     allowNull: false,
-        // }
     },
     {
         // look up the table faster, but write the table slower
@@ -57,4 +53,4 @@ const AHSSumberDetail = sequelize.define(
     }
 );
 
-module.exports = AHSSumberDetail;
+module.exports = AHSSumberUtama;

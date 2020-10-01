@@ -1,54 +1,60 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("../util/database");
+const sequelize = require("../../util/database");
 
-const RABJudul = {};
+const HS = {};
 
 var tahun = 2010;
 while (tahun <= 2012) {
-    RABJudul[tahun] = sequelize.define(
-        "T_RAB_JUDUL_" + tahun,
+    HS[tahun] = sequelize.define(
+        "HS_" + tahun,
         {
-            ID_RAB_JUDUL: {
+            ID_HS: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey: true,
             },
-            ITEM_PEKERJAAN: {
+
+            URAIAN: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            NO_URUT_1: {
+            SATUAN: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            NO_URUT_2: {
-                type: Sequelize.STRING,
-                allowNull: true,
+            HARGA: {
+                type: Sequelize.DOUBLE,
+                allowNull: false,
             },
-            NO_URUT_3: {
+            TYPE: {
                 type: Sequelize.STRING,
-                allowNull: true,
+                allowNull: false,
             },
-            NO_URUT_4: {
+            TAHUN: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: tahun,
+            },
+            SUMBER_HARGA: {
                 type: Sequelize.STRING,
-                allowNull: true,
+                allowNull: false,
             },
-            NO_URUT_5: {
+            KETERANGAN: {
                 type: Sequelize.STRING,
-                allowNull: true,
+                allowNull: false,
             },
-            DETAIL: {
-                type: Sequelize.BOOLEAN,
+            SCREENSHOT_HS: {
+                type: Sequelize.STRING,
                 allowNull: false,
             },
 
             // This is foreign key
-            // ID_RAB_PROJECT_BAGIAN: {
-            //     type: Sequelize.INTEGER,
+            // WILAYAH_PROJECT: {
+            //     type: Sequelize.STRING,
             //     allowNull: false,
-            // }
+            // },
         },
         {
             // look up the table faster, but write the table slower
@@ -64,4 +70,4 @@ while (tahun <= 2012) {
     tahun++;
 }
 
-module.exports = RABJudul;
+module.exports = HS;

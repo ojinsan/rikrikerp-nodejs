@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("../util/database");
+const sequelize = require("../../util/database");
 
 const AHSProjectDetail = {};
 
@@ -37,7 +37,11 @@ while (tahun <= 2012) {
             },
             P_HS_AHS_P: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                allowNull: true,
+            },
+            P_HS_ANAK_AHS: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
             },
 
             // This is foreign key

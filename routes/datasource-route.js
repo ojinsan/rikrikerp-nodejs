@@ -2,35 +2,37 @@ const express = require("express");
 //const { body } = require("express-validator/check");
 
 // MARK: import controller
-const datasourceController = require("../controllers/datasource");
+const ahsSumberController = require("../controllers/ahssumber-controller");
+const hsController = require("../controllers/hs-controller");
 
 // MARK: initiation
 const router = express.Router();
 
-router.get("/get-books-list", datasourceController.getBooksList);
-
-router.get("/get-surveys-list", datasourceController.getSurveysList);
+// ========================================= MARK: AHS Sumber Controller =========================================
+router.get("/get-hs-full-data", hsController.getHSFullData);
 
 router.get(
-    "/get-materials-from-survey",
-    datasourceController.getMaterialsFromSurvey
+    "/get-hs-full-data-group-by-wilayah",
+    hsController.getHSFullDataGroupByWilayah
 );
 
+router.post("/post-new-hs", hsController.postNewHS);
+
+// ========================================= MARK: HS Controller =========================================
 router.get(
-    "/get-materials-from-book",
-    datasourceController.getMaterialsFromBook
+    "/get-ahs-sumber-full-data",
+    ahsSumberController.getAHSSumberFullData
 );
 
 router.post(
-    "/post-new-material-to-survey",
-    datasourceController.postNewMaterialToSurvey
+    "/post-new-ahs-sumber-utama",
+    ahsSumberController.postNewAHSSumberUtama
 );
 
 router.post(
-    "/post-new-material-to-book",
-    datasourceController.postNewMaterialToBook
+    "/post-new-ahs-sumber-detail",
+    ahsSumberController.postNewAHSSumberDetail
 );
 
-//update material mah pas post aja, kalo edit == true AND nama id material exist
-
+// ========================================= MARK: Export =========================================
 module.exports = router;

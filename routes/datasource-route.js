@@ -8,7 +8,7 @@ const hsController = require("../controllers/hs-controller");
 // MARK: initiation
 const router = express.Router();
 
-// ========================================= MARK: AHS Sumber Controller =========================================
+// ========================================= MARK: HS Sumber Controller =========================================
 router.get("/get-hs-full-data", hsController.getHSFullData);
 
 router.get(
@@ -16,9 +16,14 @@ router.get(
     hsController.getHSFullDataGroupByWilayah
 );
 
+router.get(
+    "/get-hs-specific-group-by-wilayah",
+    hsController.getHSSpecificGroupByWilayah
+);
+
 router.post("/post-new-hs", hsController.postNewHS);
 
-// ========================================= MARK: HS Controller =========================================
+// ========================================= MARK: AHS Sumber Controller =========================================
 router.get(
     "/get-ahs-sumber-full-data",
     ahsSumberController.getAHSSumberFullData
@@ -32,6 +37,11 @@ router.post(
 router.post(
     "/post-new-ahs-sumber-detail",
     ahsSumberController.postNewAHSSumberDetail
+);
+
+router.post(
+    "/post-new-ahs-sumber-utama-detail",
+    ahsSumberController.postNewAHSSumberUtamaDetail
 );
 
 // ========================================= MARK: Export =========================================

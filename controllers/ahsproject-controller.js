@@ -1,5 +1,7 @@
 const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
 const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
+const AHSSumberUtama = require("../models/DataSource/AHSSumberUtama");
+const HS = require("../models/DataSource/HS");
 
 exports.getAHSProjectSumberName = (req, res, next) => {
     // only retrieve AHS's Project unique value
@@ -18,23 +20,52 @@ exports.getAHSProjectFullData = (req, res, next) => {
             {
                 model: AHSProjectDetail[TAHUN],
                 required: false,
+                include: [
+                    {
+                        model: HS[TAHUN],
+                        required: false,
+                    },
+                ],
+            },
+            {
+                model: AHSSumberUtama,
+                required: false,
             },
         ],
     })
         .then((AHSUtama) => {
             var newAHSUtama = [];
             AHSUtama.map((satuAHSUtama) => {
-                const satuAHSUtamaTemp = JSON.parse(
-                    JSON.stringify(satuAHSUtama)
-                );
-                const satuAHSUtamaDetailTemp =
+                var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
+                var satuAHSUtamaDetailTemp =
                     satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+
+                if (satuAHSUtamaDetailTemp.length > 0) {
+                    var satuAHSUtamaDetailTempTemp = [];
+                    satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
+                        const satuAHSDetailTemp = JSON.parse(
+                            JSON.stringify(satuAHSDetail)
+                        );
+                        const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+                        delete satuAHSDetailTemp["HS_" + TAHUN];
+                        satuAHSDetailTemp["HS"] = satuHSTemp;
+
+                        satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
+                    });
+                    satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
+                }
+
                 delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
                 satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
                 newAHSUtama.push(satuAHSUtamaTemp);
             });
+
+            return newAHSUtama;
+        })
+        .then((newAHSUtama) => {
+            console.log("HEEEEY");
             res.status(201).json({
-                message: "Success Get AHS Sumber",
+                message: "Success Get AHS Project",
                 AHS_PROJECT_UTAMA: newAHSUtama,
             });
         })

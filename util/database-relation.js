@@ -26,7 +26,7 @@ const databaseRelation = () => {
             foreignKey: "ID_RAB_PROJECT_BAGIAN",
         });
         RABJudul[tahun].hasMany(RABDetail[tahun], {
-            foreignKey: "ID_RAB_JUDULS",
+            foreignKey: "ID_RAB_JUDUL",
         });
         RABDetail[tahun].belongsTo(AHSProjectUtama[tahun], {
             foreignKey: "ID_AHS_PROJECT_UTAMA",

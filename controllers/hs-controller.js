@@ -52,6 +52,45 @@ exports.getHSFullDataGroupByWilayah = (req, res, next) => {
         });
 };
 
+exports.getHSSpecificGroupByWilayah = (req, res, next) => {
+    const TAHUN = req.query.TAHUN;
+    const ID_WILAYAH = req.query.ID_WILAYAH;
+    console.log(TAHUN);
+
+    Wilayah.findAll({
+        where: {
+            ID_WILAYAH: ID_WILAYAH,
+        },
+        include: [
+            {
+                model: HS[TAHUN],
+                required: false,
+            },
+        ],
+    })
+        .then((Wilayah) => {
+            var newWilayah = [];
+            Wilayah.map((satuWilayah) => {
+                const satuWilayahTemp = JSON.parse(JSON.stringify(satuWilayah));
+                const satuHS = satuWilayahTemp["HS_" + TAHUN + "s"];
+                delete satuWilayahTemp["HS_" + TAHUN + "s"];
+                satuWilayahTemp["HS"] = satuHS;
+                newWilayah.push(satuWilayahTemp);
+            });
+
+            res.status(201).json({
+                message: "Success Get HS",
+                Wilayah: newWilayah,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                error: err,
+            });
+            console.log(err);
+        });
+};
+
 exports.postNewHS = (req, res, next) => {
     const URAIAN = req.body.URAIAN;
     const SATUAN = req.body.SATUAN;
@@ -73,15 +112,15 @@ exports.postNewHS = (req, res, next) => {
         SUMBER_HARGA: SUMBER_HARGA,
         KETERANGAN: KETERANGAN,
         SCREENSHOT_HS: SCREENSHOT_HS,
-    }).then((HS) => {
-        res.status(201)
-            .json({
+    })
+        .then((HS) => {
+            res.status(201).json({
                 message: "Success Post New HS to Database",
                 HS: HS,
-            })
-            .catch((err) => {
-                res.status(500).json({ error: err });
-                console.log(err);
             });
-    });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
 };

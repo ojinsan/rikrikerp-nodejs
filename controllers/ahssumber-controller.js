@@ -19,17 +19,17 @@ exports.getAHSSumberFullData = (req, res, next) => {
                 required: false,
             },
         ],
-    }).then((AHS) => {
-        res.status(201)
-            .json({
+    })
+        .then((AHS) => {
+            res.status(201).json({
                 message: "Success Get AHS Sumber",
                 AHS: AHS,
-            })
-            .catch((err) => {
-                res.status(500);
-                console.log(err);
             });
-    });
+        })
+        .catch((err) => {
+            res.status(500);
+            console.log(err);
+        });
 };
 
 exports.postNewAHSSumberUtama = (req, res, next) => {
@@ -90,6 +90,63 @@ exports.postNewAHSSumberDetail = (req, res, next) => {
             });
         })
         .catch((err) => {
+            console.log(err);
+        });
+};
+
+exports.postNewAHSSumberUtamaDetail = (req, res, next) => {
+    const NAMA_AHS = req.body.NAMA_AHS;
+    const NOMOR_AHS = req.body.NOMOR_AHS;
+    const SUMBER_AHS = req.body.SUMBER_AHS;
+    const SATUAN_AHS = req.body.SATUAN_AHS;
+    const SCREENSHOT_AHS = req.body.SCREENSHOT_AHS;
+    const KHUSUS = req.body.KHUSUS;
+    const AHSDetails = req.body.AHSDetails;
+
+    AHSSumberUtama.create({
+        //idBukuRef: 123,
+        NAMA_AHS: NAMA_AHS,
+        NOMOR_AHS: NOMOR_AHS,
+        SUMBER_AHS: SUMBER_AHS,
+        SATUAN_AHS: SATUAN_AHS,
+        SCREENSHOT_AHS: SCREENSHOT_AHS,
+        KHUSUS: KHUSUS,
+    })
+        .then((AHSSumberUtama) => {
+            if (
+                AHSDetails == [] ||
+                AHSDetails == null ||
+                AHSDetails == undefined
+            ) {
+                return;
+            } else {
+                const AHSDetailsTemp = AHSDetails.map((ahs) => {
+                    console.log({
+                        ...ahs,
+                        ID_AHS_SUMBER_UTAMA: AHSSumberUtama.ID_AHS_SUMBER_UTAMA,
+                    });
+                    return {
+                        ...ahs,
+                        ID_AHS_SUMBER_UTAMA: AHSSumberUtama.ID_AHS_SUMBER_UTAMA,
+                    };
+                });
+
+                return [
+                    AHSSumberUtama,
+                    AHSSumberDetail.bulkCreate(AHSDetailsTemp),
+                ];
+            }
+        })
+        .then((AHSSumber) => {
+            res.status(201).json({
+                message:
+                    "Success Post New AHS Sumber and Detail Utama to Database",
+                AHSSumberUtama: AHSSumber[0],
+                AHSSumberDetail: AHSSumberDetail[1],
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
             console.log(err);
         });
 };

@@ -4,6 +4,8 @@ const express = require("express");
 // MARK: import controller
 const ahsProjectController = require("../controllers/ahsproject-controller");
 const hsController = require("../controllers/hs-controller");
+const projectController = require("../controllers/project-controller");
+const rabController = require("../controllers/rab-controller");
 
 // MARK: initiation
 const router = express.Router();
@@ -25,8 +27,29 @@ router.post(
 );
 
 // ========================================= MARK: RAB Controller =========================================
+router.get("/get-rab-judul-full-data", rabController.getRABJudulFullData);
 
-// ========================================= MARK: Recap Controller =========================================
+router.post("/post-new-rab-judul", rabController.postNewRABJudul);
+
+router.post("/post-new-rab-detail", rabController.postNewRABDetail);
+
+router.post("/post-new-rab-judul-detail", rabController.postNewRABJudulDetail);
+
+// ========================================= MARK: RABP Controller =========================================
+router.get(
+    "/get-rab-project-bagian-full-data",
+    projectController.getRABProjectBagianFullData
+);
+
+router.post(
+    "/post-new-rab-project-bagian",
+    projectController.postNewRABProjectBagian
+);
+
+// ========================================= MARK: Project Controller =========================================
+router.get("/get-project-full-data", projectController.getProjectFullData);
+
+router.post("/post-new-project", projectController.postNewProject);
 
 // ========================================= MARK: Export =========================================
 module.exports = router;

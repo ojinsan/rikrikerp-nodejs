@@ -124,3 +124,69 @@ exports.postNewHS = (req, res, next) => {
             console.log(err);
         });
 };
+
+exports.updateHS = (req, res, next) => {
+    const ID_HS = req.body.ID_HS;
+    const URAIAN = req.body.URAIAN;
+    const SATUAN = req.body.SATUAN;
+    const HARGA = req.body.HARGA;
+    const TYPE = req.body.TYPE;
+    const TAHUN = req.body.TAHUN;
+    const SUMBER_HARGA = req.body.SUMBER_HARGA;
+    const KETERANGAN = req.body.KETERANGAN;
+    const SCREENSHOT_HS = req.body.SCREENSHOT_HS;
+    const ID_WILAYAH = req.body.ID_WILAYAH;
+
+    console.log(SCREENSHOT_HS);
+
+    HS[TAHUN].update(
+        {
+            URAIAN: URAIAN,
+            SATUAN: SATUAN,
+            HARGA: HARGA,
+            TYPE: TYPE,
+            ID_WILAYAH: ID_WILAYAH,
+            TAHUN: TAHUN,
+            SUMBER_HARGA: SUMBER_HARGA,
+            KETERANGAN: KETERANGAN,
+            SCREENSHOT_HS: SCREENSHOT_HS,
+        },
+        {
+            where: {
+                ID_HS: ID_HS,
+            },
+        }
+    )
+        .then((HS) => {
+            res.status(201).json({
+                message: "Success Edit New HS to Database",
+                HS: HS,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.deleteHS = (req, res, next) => {
+    const TAHUN = req.body.TAHUN;
+    const ID_HS = req.body.ID_HS;
+    console.log(TAHUN);
+    HS[TAHUN].destroy({
+        where: {
+            ID_HS: ID_HS,
+        },
+    })
+        .then((HS) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete New HS to Database",
+                HS: HS,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};

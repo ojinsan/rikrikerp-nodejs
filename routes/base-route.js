@@ -11,4 +11,8 @@ const router = express.Router();
 // MARK: Wilayah Controller
 router.post("/post-new-wilayah", baseController.postNewWilayah);
 
+router.get("/get-wilayah-full-data", baseController.getWilayahFullData);
+
+router.get("/get-year", baseController.getYear);
+
 module.exports = router;

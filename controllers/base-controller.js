@@ -1,4 +1,29 @@
 const Wilayah = require("../models/Wilayah");
+const TAHUN = require("../util/tahun-list");
+
+exports.getWilayahFullData = (req, res, next) => {
+    Wilayah.findAll()
+        .then((data) => {
+            res.status(201).json({
+                message: "Success get wilayah full data",
+                wilayah: data,
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err.message,
+            });
+        });
+};
+
+exports.getYear = (req, res, next) => {
+    const TAHUNS = [];
+    for (let i = TAHUN.fromYear; i <= TAHUN.toYear; i++) {
+        TAHUNS.push(i);
+    }
+    res.status(201).json({ TAHUNS: TAHUNS });
+};
 
 exports.postNewWilayah = (req, res, next) => {
     const WILAYAH = req.body.WILAYAH;

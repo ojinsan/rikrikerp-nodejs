@@ -17,7 +17,6 @@ app.use(bodyParser.json()); // application/json
 
 // MARK: validate the request
 app.use((req, res, next) => {
-    console.log("lewat");
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",

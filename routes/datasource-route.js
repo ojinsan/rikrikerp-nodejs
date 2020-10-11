@@ -23,6 +23,10 @@ router.get(
 
 router.post("/post-new-hs", hsController.postNewHS);
 
+router.post("/delete-hs", hsController.deleteHS);
+
+router.post("/update-hs", hsController.updateHS);
+
 // ========================================= MARK: AHS Sumber Controller =========================================
 router.get(
     "/get-ahs-sumber-full-data",

@@ -59,6 +59,7 @@ exports.updateWilayah = (req, res, next) => {
     const KECAMATAN = req.body.KECAMATAN;
     const KABUPATEN_KOTAMADYA = req.body.KABUPATEN_KOTAMADYA;
     const PROVINSI = req.body.PROVINSI;
+    const ID_WILAYAH = req.body.ID_WILAYAH;
 
     Wilayah.update(
         {
@@ -78,6 +79,24 @@ exports.updateWilayah = (req, res, next) => {
             res.status(201).json({
                 message: "Success Edit Wilayah to Database",
                 wilayah: wilayah,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.deleteWilayah = (req, res, next) => {
+    const ID_WILAYAH = req.body.ID_WILAYAH;
+    Wilayah.destroy({
+        where: { ID_WILAYAH: ID_WILAYAH },
+    })
+        .then((satuwilayah) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete New HS to Database",
+                satuwilayah: satuwilayah,
             });
         })
         .catch((err) => {

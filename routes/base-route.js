@@ -15,4 +15,8 @@ router.get("/get-wilayah-full-data", baseController.getWilayahFullData);
 
 router.get("/get-year", baseController.getYear);
 
+router.post("/update-wilayah", baseController.updateWilayah);
+
+router.post("/delete-wilayah", baseController.deleteWilayah);
+
 module.exports = router;

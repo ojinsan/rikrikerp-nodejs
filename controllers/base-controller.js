@@ -52,3 +52,36 @@ exports.postNewWilayah = (req, res, next) => {
             });
     });
 };
+
+exports.updateWilayah = (req, res, next) => {
+    const WILAYAH = req.body.WILAYAH;
+    const DIVRE_DAOP = req.body.DIVRE_DAOP;
+    const KECAMATAN = req.body.KECAMATAN;
+    const KABUPATEN_KOTAMADYA = req.body.KABUPATEN_KOTAMADYA;
+    const PROVINSI = req.body.PROVINSI;
+
+    Wilayah.update(
+        {
+            WILAYAH: WILAYAH,
+            DIVRE_DAOP: DIVRE_DAOP,
+            KECAMATAN: KECAMATAN,
+            KABUPATEN_KOTAMADYA: KABUPATEN_KOTAMADYA,
+            PROVINSI: PROVINSI,
+        },
+        {
+            where: {
+                ID_WILAYAH: ID_WILAYAH,
+            },
+        }
+    )
+        .then((wilayah) => {
+            res.status(201).json({
+                message: "Success Edit Wilayah to Database",
+                wilayah: wilayah,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};

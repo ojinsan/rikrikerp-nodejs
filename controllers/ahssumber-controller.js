@@ -150,3 +150,117 @@ exports.postNewAHSSumberUtamaDetail = (req, res, next) => {
             console.log(err);
         });
 };
+
+exports.deleteAHSSumberUtama = (req, res, next) => {
+    const ID_AHS_SUMBER_UTAMA = req.body.ID_AHS_SUMBER_UTAMA;
+    AHSSumberUtama.destroy({
+        where: {
+            ID_AHS_SUMBER_UTAMA: ID_AHS_SUMBER_UTAMA,
+        },
+    })
+        .then((AHSSumberUtama) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete New HS to Database",
+                AHSSumberUtama: AHSSumberUtama,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.updateAHSSumberUtama = (req, res, next) => {
+    const NAMA_AHS = req.body.NAMA_AHS;
+    const NOMOR_AHS = req.body.NOMOR_AHS;
+    const SUMBER_AHS = req.body.SUMBER_AHS;
+    const SATUAN_AHS = req.body.SATUAN_AHS;
+    const SCREENSHOT_AHS = req.body.SCREENSHOT_AHS;
+    const KHUSUS = req.body.KHUSUS;
+    const ID_AHS_SUMBER_UTAMA = req.body.ID_AHS_SUMBER_UTAMA;
+
+    AHSSumberUtama.update(
+        {
+            NAMA_AHS: NAMA_AHS,
+            NOMOR_AHS: NOMOR_AHS,
+            SUMBER_AHS: SUMBER_AHS,
+            SATUAN_AHS: SATUAN_AHS,
+            SCREENSHOT_AHS: SCREENSHOT_AHS,
+            KHUSUS: KHUSUS,
+        },
+        {
+            where: {
+                ID_AHS_SUMBER_UTAMA: ID_AHS_SUMBER_UTAMA,
+            },
+        }
+    )
+        .then((AHSSumberUtama) => {
+            res.status(201).json({
+                message: "Success Edit New HS to Database",
+                AHSSumberUtama: AHSSumberUtama,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.deleteAHSSumberDetail = (req, res, next) => {
+    const ID_AHS_SUMBER_DETAIL = req.body.ID_AHS_SUMBER_DETAIL;
+    AHSSumberDetail.destroy({
+        where: {
+            ID_AHS_SUMBER_DETAIL: ID_AHS_SUMBER_DETAIL,
+        },
+    })
+        .then((AHSSumberDetail) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete New HS to Database",
+                AHSSumberDetail: AHSSumberDetail,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.updateAHSSumberDetail = (req, res, next) => {
+    const ID_AHS_SUMBER_UTAMA = req.body.ID_AHS_SUMBER_UTAMA;
+    const URAIAN = req.body.URAIAN;
+    const KODE_URAIAN = req.body.KODE_URAIAN;
+    const KELOMPOK_URAIAN = req.body.KELOMPOK_URAIAN;
+    const SATUAN_URAIAN = req.body.SATUAN_URAIAN;
+    const KOEFISIEN_URAIAN = req.body.KOEFISIEN_URAIAN;
+    const KETERANGAN_URAIAN = req.body.KETERANGAN_URAIAN;
+    const ID_AHS_SUMBER_DETAIL = req.body.ID_AHS_SUMBER_DETAIL;
+
+    AHSSumberDetail.update(
+        {
+            //ID_AHS_SUMBER_UTAMA: ID_AHS_SUMBER_UTAMA,
+            URAIAN: URAIAN,
+            KODE_URAIAN: KODE_URAIAN,
+            KELOMPOK_URAIAN: KELOMPOK_URAIAN,
+            SATUAN_URAIAN: SATUAN_URAIAN,
+            KOEFISIEN_URAIAN: KOEFISIEN_URAIAN,
+            KETERANGAN_URAIAN: KETERANGAN_URAIAN,
+        },
+        {
+            where: {
+                ID_AHS_SUMBER_DETAIL: ID_AHS_SUMBER_DETAIL,
+            },
+        }
+    )
+        .then((AHSSumberDetail) => {
+            res.status(201).json({
+                message: "Success Edit New HS to Database",
+                AHSSumberDetail: AHSSumberDetail,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};

@@ -48,5 +48,25 @@ router.post(
     ahsSumberController.postNewAHSSumberUtamaDetail
 );
 
+router.post(
+    "/delete-ahs-sumber-utama",
+    ahsSumberController.deleteAHSSumberUtama
+);
+
+router.post(
+    "/update-ahs-sumber-utama",
+    ahsSumberController.updateAHSSumberUtama
+);
+
+router.post(
+    "/delete-ahs-sumber-detail",
+    ahsSumberController.deleteAHSSumberDetail
+);
+
+router.post(
+    "/update-ahs-sumber-detail",
+    ahsSumberController.updateAHSSumberDetail
+);
+
 // ========================================= MARK: Export =========================================
 module.exports = router;

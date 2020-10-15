@@ -19,6 +19,7 @@ exports.getAHSSumberFullData = (req, res, next) => {
                 required: false,
             },
         ],
+        order: [["AHS_SUMBER_DETAILs", "KELOMPOK_URAIAN", "DESC"]],
     })
         .then((AHS) => {
             res.status(201).json({
@@ -74,16 +75,45 @@ exports.postNewAHSSumberDetail = (req, res, next) => {
     const KOEFISIEN_URAIAN = req.body.KOEFISIEN_URAIAN;
     const KETERANGAN_URAIAN = req.body.KETERANGAN_URAIAN;
 
-    AHSSumberDetail.create({
-        ID_AHS_SUMBER_UTAMA: ID_AHS_SUMBER_UTAMA,
-        URAIAN: URAIAN,
-        KODE_URAIAN: KODE_URAIAN,
-        KELOMPOK_URAIAN: KELOMPOK_URAIAN,
-        SATUAN_URAIAN: SATUAN_URAIAN,
-        KOEFISIEN_URAIAN: KOEFISIEN_URAIAN,
-        KETERANGAN_URAIAN: KETERANGAN_URAIAN,
-    })
+    // AHSSumberDetail.create({
+    //     ID_AHS_SUMBER_UTAMA: ID_AHS_SUMBER_UTAMA,
+    //     URAIAN: URAIAN,
+    //     KODE_URAIAN: KODE_URAIAN,
+    //     KELOMPOK_URAIAN: KELOMPOK_URAIAN,
+    //     SATUAN_URAIAN: SATUAN_URAIAN,
+    //     KOEFISIEN_URAIAN: KOEFISIEN_URAIAN,
+    //     KETERANGAN_URAIAN: KETERANGAN_URAIAN,
+    // })
+    //     .then((AHSSumberDetail) => {
+    //         res.status(201).json({
+    //             message: "Success Post New AHS Sumber Detail to Database",
+    //             AHSSumberDetail: AHSSumberDetail,
+    //         });
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
+
+    console.log(req.body.AHS_SUMBER_DETAILs);
+    const AHS_SUMBER_DETAILs = req.body.AHS_SUMBER_DETAILs.map(
+        (AHS_SUMBER_DETAIL) => {
+            return {
+                ID_AHS_SUMBER_UTAMA: req.body.ID_AHS_SUMBER_UTAMA,
+                URAIAN: AHS_SUMBER_DETAIL.URAIAN,
+                KODE_URAIAN: AHS_SUMBER_DETAIL.KODE_URAIAN,
+                KELOMPOK_URAIAN: AHS_SUMBER_DETAIL.KELOMPOK_URAIAN,
+                SATUAN_URAIAN: AHS_SUMBER_DETAIL.SATUAN_URAIAN,
+                KOEFISIEN_URAIAN: AHS_SUMBER_DETAIL.KOEFISIEN_URAIAN,
+                KETERANGAN_URAIAN: AHS_SUMBER_DETAIL.KETERANGAN_URAIAN,
+            };
+        }
+    );
+
+    console.log(AHS_SUMBER_DETAILs);
+
+    AHSSumberDetail.bulkCreate(AHS_SUMBER_DETAILs)
         .then((AHSSumberDetail) => {
+            console.log("mantep");
             res.status(201).json({
                 message: "Success Post New AHS Sumber Detail to Database",
                 AHSSumberDetail: AHSSumberDetail,

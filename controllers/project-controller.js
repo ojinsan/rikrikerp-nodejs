@@ -2,13 +2,20 @@ const Project = require("../models/Project/Project");
 const RABProjectBagian = require("../models/Project/RABProjectBagian");
 const RABJudul = require("../models/Project/RABJudul");
 const RABDetail = require("../models/Project/RABDetail");
+const Wilayah = require("../models/Wilayah");
 
 exports.getProjectFullData = (req, res, next) => {
+    console.log("get project full data");
     const TAHUN = req.query.TAHUN;
+    console.log(TAHUN);
     Project[TAHUN].findAll({
         include: [
             {
                 model: RABProjectBagian[TAHUN],
+                request: false,
+            },
+            {
+                model: Wilayah,
                 request: false,
             },
         ],
@@ -47,6 +54,62 @@ exports.postNewProject = (req, res, next) => {
         .then((project) => {
             res.status(201).json({
                 message: "Success Post New Project to Database",
+                project: project,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.deleteProject = (req, res, next) => {
+    const TAHUN = req.body.TAHUN;
+    const ID_PROJECT = req.body.ID_PROJECT;
+    console.log(TAHUN);
+    Project[TAHUN].destroy({
+        where: {
+            ID_PROJECT: ID_PROJECT,
+        },
+    })
+        .then((project) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete New Project to Database",
+                project: project,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.updateProject = (req, res, next) => {
+    console.log("update project");
+    const ID_PROJECT = req.body.ID_PROJECT;
+    const NAMA_PROJECT = req.body.NAMA_PROJECT;
+    const TAHUN = req.body.TAHUN;
+    // const ID_WILAYAH = req.body.ID_WILAYAH;
+
+    //console.log(SCREENSHOT_HS);
+    console.log(NAMA_PROJECT);
+
+    Project[TAHUN].update(
+        {
+            NAMA_PROJECT: NAMA_PROJECT,
+            //ID_WILAYAH: ID_WILAYAH,
+        },
+        {
+            where: {
+                ID_PROJECT: ID_PROJECT,
+            },
+        }
+    )
+        .then((project) => {
+            console.log("updated project");
+            res.status(201).json({
+                message: "Success Edit New Project to Database",
                 project: project,
             });
         })

@@ -51,5 +51,9 @@ router.get("/get-project-full-data", projectController.getProjectFullData);
 
 router.post("/post-new-project", projectController.postNewProject);
 
+router.post("/delete-project", projectController.deleteProject);
+
+router.post("/update-project", projectController.updateProject);
+
 // ========================================= MARK: Export =========================================
 module.exports = router;

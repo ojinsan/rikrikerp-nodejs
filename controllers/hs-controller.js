@@ -179,6 +179,7 @@ exports.deleteHS = (req, res, next) => {
         },
     })
         .then((HS) => {
+            console.log(HS);
             console.log("mantap");
             res.status(201).json({
                 message: "Success Delete New HS to Database",

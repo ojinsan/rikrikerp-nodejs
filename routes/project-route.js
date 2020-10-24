@@ -27,6 +27,7 @@ router.post(
 );
 
 // ========================================= MARK: RAB Controller =========================================
+
 router.get("/get-rab-judul-full-data", rabController.getRABJudulFullData);
 
 router.post("/post-new-rab-judul", rabController.postNewRABJudul);
@@ -34,6 +35,10 @@ router.post("/post-new-rab-judul", rabController.postNewRABJudul);
 router.post("/post-new-rab-detail", rabController.postNewRABDetail);
 
 router.post("/post-new-rab-judul-detail", rabController.postNewRABJudulDetail);
+
+router.post("/delete-rab-judul-detail", rabController.deleteRABJudulDetail);
+
+router.post("/update-rab-judul-detail", rabController.updateRABJudulDetail);
 
 // ========================================= MARK: RABP Controller =========================================
 router.get(
@@ -44,6 +49,16 @@ router.get(
 router.post(
     "/post-new-rab-project-bagian",
     projectController.postNewRABProjectBagian
+);
+
+router.post(
+    "/delete-rab-project-bagian",
+    projectController.deleteRABProjectBagian
+);
+
+router.post(
+    "/update-rab-project-bagian",
+    projectController.updateRABProjectBagian
 );
 
 // ========================================= MARK: Project Controller =========================================

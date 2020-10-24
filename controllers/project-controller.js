@@ -199,3 +199,101 @@ exports.postNewRABProjectBagian = (req, res, next) => {
             console.log(err);
         });
 };
+
+exports.deleteRABProjectBagian = (req, res, next) => {
+    const TAHUN = req.body.TAHUN;
+    const ID_RABPB = req.body.ID_RABPB;
+    RABProjectBagian[TAHUN].destroy({
+        where: { ID_RAB_PROJECT_BAGIAN: ID_RABPB },
+    })
+        .then((RABPB) => {
+            console.log("mantap");
+            res.status(201).json({
+                message: "Success Delete RABPB to Database",
+                RABPB: RABPB,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: err });
+            console.log(err);
+        });
+};
+
+exports.updateRABProjectBagian = (req, res, next) => {
+    console.log("update RABProjectBagian");
+    console.log(req.body);
+    const ID_RAB_PROJECT_BAGIAN = req.body.ID_RAB_PROJECT_BAGIAN;
+    const JENIS = req.body.JENIS;
+    const BAGIAN = req.body.BAGIAN;
+    const SUB_BAGIAN = req.body.SUB_BAGIAN;
+
+    const KETERANGAN_JUDUL_REKAP = req.body.KETERANGAN_JUDUL_REKAP;
+    const KETERANGAN_BAG_BAWAH_RAB = req.body.KETERANGAN_BAG_BAWAH_RAB;
+
+    // const ID_TTD = req.body.ID_TTD;
+    // const TOTAL_UPAH_TDP = req.body.TOTAL_UPAH_TDP;
+    // const TOTAL_BAHAN_TDP = req.body.TOTAL_BAHAN_TDP;
+    // const TOTAL_UPAH_NON_TDP = req.body.TOTAL_UPAH_NON_TDP;
+    // const TOTAL_BAHAN_NON_TDP = req.body.TOTAL_BAHAN_NON_TDP;
+    // const JUMLAH_RAB = req.body.JUMLAH_RAB;
+
+    const ID_TTD = req.body.ID_TTD;
+    const TOTAL_UPAH_TDP = 0;
+    const TOTAL_BAHAN_TDP = 0;
+    const TOTAL_UPAH_NON_TDP = 0;
+    const TOTAL_BAHAN_NON_TDP = 0;
+    const JUMLAH_RAB = 1;
+
+    const TAHUN = req.query.TAHUN;
+
+    console.log({
+        JENIS: JENIS,
+        BAGIAN: BAGIAN,
+        SUB_BAGIAN: SUB_BAGIAN,
+
+        KETERANGAN_JUDUL_REKAP: KETERANGAN_JUDUL_REKAP,
+        KETERANGAN_BAG_BAWAH_RAB: KETERANGAN_BAG_BAWAH_RAB,
+
+        ID_TTD: ID_TTD,
+        TOTAL_UPAH_TDP: TOTAL_UPAH_TDP,
+        TOTAL_BAHAN_TDP: TOTAL_BAHAN_TDP,
+        TOTAL_UPAH_NON_TDP: TOTAL_UPAH_NON_TDP,
+        TOTAL_BAHAN_NON_TDP: TOTAL_BAHAN_NON_TDP,
+        JUMLAH_RAB: JUMLAH_RAB,
+    });
+
+    RABProjectBagian[TAHUN].update(
+        {
+            JENIS: JENIS,
+            BAGIAN: BAGIAN,
+            SUB_BAGIAN: SUB_BAGIAN,
+
+            // KETERANGAN_JUDUL_REKAP: KETERANGAN_JUDUL_REKAP,
+            // KETERANGAN_BAG_BAWAH_RAB: KETERANGAN_BAG_BAWAH_RAB,
+
+            // ID_TTD: ID_TTD,
+            // TOTAL_UPAH_TDP: TOTAL_UPAH_TDP,
+            // TOTAL_BAHAN_TDP: TOTAL_BAHAN_TDP,
+            // TOTAL_UPAH_NON_TDP: TOTAL_UPAH_NON_TDP,
+            // TOTAL_BAHAN_NON_TDP: TOTAL_BAHAN_NON_TDP,
+            // JUMLAH_RAB: JUMLAH_RAB,
+        },
+        {
+            where: {
+                ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,
+            },
+        }
+    )
+        .then((RABPB) => {
+            console.log("aman");
+            res.status(201).json({
+                message: "Success Edit New RABPB to Database",
+                RABPB: RABPB,
+            });
+        })
+        .catch((err) => {
+            console.log("something went wrong");
+            console.log(err);
+            //res.status(500).json({ error: err });
+        });
+};

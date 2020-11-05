@@ -59,7 +59,7 @@ sequelize
   .sync()
   .then((result) => {
     console.log("hehe");
-    app.listen(3000);
+    app.listen(8080);
   })
   .catch((error) => {
     console.log(error);

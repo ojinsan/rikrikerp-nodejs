@@ -15,47 +15,49 @@ const HelperAHStoExcel = require("../models/Helper/HelperAHStoExcel");
 
 const Wilayah = require("../models/Wilayah");
 
+const TAHUN = require("./tahun-list");
+
 const databaseRelation = () => {
-    var tahun = 2010;
-    while (tahun <= 2012) {
-        Project[tahun].belongsTo(Wilayah, { foreignKey: "ID_WILAYAH" });
-        Project[tahun].hasMany(RABProjectBagian[tahun], {
-            foreignKey: "ID_PROJECT",
-        });
-        RABProjectBagian[tahun].hasMany(RABJudul[tahun], {
-            foreignKey: "ID_RAB_PROJECT_BAGIAN",
-        });
-        RABJudul[tahun].hasMany(RABDetail[tahun], {
-            foreignKey: "ID_RAB_JUDUL",
-        });
-        RABDetail[tahun].belongsTo(AHSProjectUtama[tahun], {
-            foreignKey: "ID_AHS_PROJECT_UTAMA",
-        });
-
-        AHSProjectUtama[tahun].belongsTo(Project[tahun], {
-            foreignKey: "ID_PROJECT",
-        });
-        AHSProjectUtama[tahun].hasMany(AHSProjectDetail[tahun], {
-            foreignKey: "ID_AHS_PROJECT_UTAMA",
-        });
-        AHSProjectUtama[tahun].belongsTo(AHSSumberUtama, {
-            foreignKey: "ID_AHS_SUMBER_UTAMA",
-        });
-        AHSProjectDetail[tahun].belongsTo(HS[tahun], { foreignKey: "ID_HS" }); // Ini untuk cari detail harga P_HS_URAIAN
-        // AHSProjectDetail.belongsTo(AHSProjectUtama) //ini untuk P_HS_ANAK_AHS
-
-        HS[tahun].belongsTo(Wilayah, {
-            foreignKey: "ID_WILAYAH",
-            //as: "HS",
-        });
-        Wilayah.hasMany(HS[tahun], {
-            foreignKey: "ID_WILAYAH",
-        });
-        tahun++;
-    }
-    AHSSumberUtama.hasMany(AHSSumberDetail, {
-        foreignKey: "ID_AHS_SUMBER_UTAMA",
+  var tahun = TAHUN.fromYear;
+  while (tahun <= TAHUN.toYear) {
+    Project[tahun].belongsTo(Wilayah, { foreignKey: "ID_WILAYAH" });
+    Project[tahun].hasMany(RABProjectBagian[tahun], {
+      foreignKey: "ID_PROJECT",
     });
+    RABProjectBagian[tahun].hasMany(RABJudul[tahun], {
+      foreignKey: "ID_RAB_PROJECT_BAGIAN",
+    });
+    RABJudul[tahun].hasMany(RABDetail[tahun], {
+      foreignKey: "ID_RAB_JUDUL",
+    });
+    RABDetail[tahun].belongsTo(AHSProjectUtama[tahun], {
+      foreignKey: "ID_AHS_PROJECT_UTAMA",
+    });
+
+    AHSProjectUtama[tahun].belongsTo(Project[tahun], {
+      foreignKey: "ID_PROJECT",
+    });
+    AHSProjectUtama[tahun].hasMany(AHSProjectDetail[tahun], {
+      foreignKey: "ID_AHS_PROJECT_UTAMA",
+    });
+    AHSProjectUtama[tahun].belongsTo(AHSSumberUtama, {
+      foreignKey: "ID_AHS_SUMBER_UTAMA",
+    });
+    AHSProjectDetail[tahun].belongsTo(HS[tahun], { foreignKey: "ID_HS" }); // Ini untuk cari detail harga P_HS_URAIAN
+    // AHSProjectDetail.belongsTo(AHSProjectUtama) //ini untuk P_HS_ANAK_AHS
+
+    HS[tahun].belongsTo(Wilayah, {
+      foreignKey: "ID_WILAYAH",
+      //as: "HS",
+    });
+    Wilayah.hasMany(HS[tahun], {
+      foreignKey: "ID_WILAYAH",
+    });
+    tahun++;
+  }
+  AHSSumberUtama.hasMany(AHSSumberDetail, {
+    foreignKey: "ID_AHS_SUMBER_UTAMA",
+  });
 };
 
 module.exports = databaseRelation;

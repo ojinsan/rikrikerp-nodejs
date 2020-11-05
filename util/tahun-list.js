@@ -1,6 +1,6 @@
-const toYear = 2000;
+const toYear = 2100;
 
-const fromYear = 2100;
+const fromYear = 2000;
 
 const TAHUN = {
   toYear: toYear,

@@ -12,18 +12,33 @@ const router = express.Router();
 
 // ========================================= MARK: AHS Project Controller =========================================
 router.get(
-    "/get-ahs-project-full-data",
-    ahsProjectController.getAHSProjectFullData
+  "/get-ahs-project-full-data",
+  ahsProjectController.getAHSProjectFullData
 );
 
 router.post(
-    "/post-new-ahs-project-utama",
-    ahsProjectController.postNewAHSProjectUtama
+  "/post-new-ahs-project-utama",
+  ahsProjectController.postNewAHSProjectUtama
 );
 
 router.post(
-    "/post-new-ahs-project-detail",
-    ahsProjectController.postNewAHSProjectDetail
+  "/post-new-ahs-project-detail",
+  ahsProjectController.postNewAHSProjectDetail
+);
+
+router.post(
+  "/post-new-ahs-project-utama-detail",
+  ahsProjectController.postNewAHSProjectUtamaDetail
+);
+
+router.post(
+  "/delete-ahs-project-utama",
+  ahsProjectController.deleteAHSProjectUtama
+);
+
+router.post(
+  "/delete-ahs-project-detail",
+  ahsProjectController.deleteAHSProjectDetail
 );
 
 // ========================================= MARK: RAB Controller =========================================
@@ -42,23 +57,23 @@ router.post("/update-rab-judul-detail", rabController.updateRABJudulDetail);
 
 // ========================================= MARK: RABP Controller =========================================
 router.get(
-    "/get-rab-project-bagian-full-data",
-    projectController.getRABProjectBagianFullData
+  "/get-rab-project-bagian-full-data",
+  projectController.getRABProjectBagianFullData
 );
 
 router.post(
-    "/post-new-rab-project-bagian",
-    projectController.postNewRABProjectBagian
+  "/post-new-rab-project-bagian",
+  projectController.postNewRABProjectBagian
 );
 
 router.post(
-    "/delete-rab-project-bagian",
-    projectController.deleteRABProjectBagian
+  "/delete-rab-project-bagian",
+  projectController.deleteRABProjectBagian
 );
 
 router.post(
-    "/update-rab-project-bagian",
-    projectController.updateRABProjectBagian
+  "/update-rab-project-bagian",
+  projectController.updateRABProjectBagian
 );
 
 // ========================================= MARK: Project Controller =========================================

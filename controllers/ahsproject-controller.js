@@ -2,6 +2,7 @@ const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
 const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
 const AHSSumberUtama = require("../models/DataSource/AHSSumberUtama");
 const HS = require("../models/DataSource/HS");
+const Project = require("../models/Project/Project");
 
 exports.getAHSProjectSumberName = (req, res, next) => {
   // only retrieve AHS's Project unique value
@@ -144,52 +145,103 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
   const AHSProjects = req.body.AHSProjects;
   const TAHUN = req.body.tahun;
   const idproject = req.body.idproject;
+  var ID_WILAYAH;
 
-  AHSProjects.forEach((AHSProject) => {
-    console.log(AHSProject.noAHS);
-    var AHS_PROJECT_UTAMA = {
-      NAMA_AHS_PROJECT: AHSProject.name != null ? AHSProject.name : " ", // karena editable
-      NO_URUT: parseInt(AHSProject.noAHS),
-      KOEFISIEN_AHS: 1,
-      // PENJELASAN_KOEFISIEN_AHS
+  Project[TAHUN].findOne({
+    where: {
       ID_PROJECT: idproject,
-      ID_AHS_SUMBER_UTAMA: AHSProject.id,
-    };
+    },
+  })
+    .then((project) => {
+      ID_WILAYAH = project.ID_WILAYAH;
+      console.log("id Project", idproject);
+      console.log("id WILAYAH", ID_WILAYAH);
+      AHSProjects.forEach((AHSProject) => {
+        var AHS_PROJECT_UTAMA = {
+          NAMA_AHS_PROJECT: AHSProject.name != null ? AHSProject.name : " ", // karena editable
+          NO_URUT: parseInt(AHSProject.noAHS),
+          KOEFISIEN_AHS: 1,
+          // PENJELASAN_KOEFISIEN_AHS
+          ID_PROJECT: idproject,
+          ID_AHS_SUMBER_UTAMA: AHSProject.id,
+        };
 
-    // masukin utama ke DB, kalo berhasil, masukin bulk
-    AHSProjectUtama[TAHUN].create(AHS_PROJECT_UTAMA)
-      .then((result) => {
-        var AHS_PROJECT_DETAILs = AHSProject.children.map(
-          (AHSProjectDetail) => {
-            return {
-              ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
-              P_URAIAN: AHSProjectDetail.name,
-              // KODE_URAIAN: AHSProjectDetail.kodeUraian, // belum ada di DB
-              ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
-              P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
-              P_SATUAN_URAIAN: AHSProjectDetail.satuan,
-              P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
-              P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
-            };
-          }
-        );
+        // masukin utama ke DB, kalo berhasil, masukin bulk
+        AHSProjectUtama[TAHUN].create(AHS_PROJECT_UTAMA)
+          .then(async (result) => {
+            // try {
 
-        AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
-          .then((result2) => {
-            console.log("mantep");
-            res.status(201).json({
-              message: "Success Post New AHS Detail Detail to Database",
-              AHSProjectDetail: result2,
-            });
+            var AHSProjectDetails = [];
+            var AHS_PROJECT_DETAILs = AHSProject.children.map(
+              async (AHSProjectDetail) => {
+                // search harga satuan
+                console.log("uraian", AHSProjectDetail.name);
+
+                result2 = await HS[TAHUN].findOne({
+                  where: {
+                    ID_WILAYAH: ID_WILAYAH,
+                    URAIAN: AHSProjectDetail.name,
+                  },
+                });
+
+                hasil = {
+                  ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
+                  P_URAIAN: AHSProjectDetail.name,
+                  ID_HS: result2.ID_HS,
+                  ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
+                  P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
+                  P_SATUAN_URAIAN: AHSProjectDetail.satuan,
+                  P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
+                  P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
+                };
+
+                console.log(hasil);
+                //return hasil;
+                return hasil;
+              }
+            );
+
+            for await (const item of AHS_PROJECT_DETAILs) {
+              console.log(item);
+              AHSProjectDetails.push(item);
+            }
+
+            console.log("All done");
+            console.log("map beres");
+            console.log(AHSProjectDetails);
+            return AHSProjectDetails;
+
+            // } catch (err) {
+            //   res.status(201).json({
+            //     message: "Success Without New AHS Detail Detail to Database",
+            //     AHSProjectDetail: err,
+            //   });
+            // }
+            //return Promises.all(AHS_PROJECT_DETAILs);
+          })
+          .then((AHS_PROJECT_DETAILs) => {
+            console.log(AHS_PROJECT_DETAILs);
+            console.log("here");
+            AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
+              .then((result2) => {
+                console.log("mantep");
+                res.status(201).json({
+                  message: "Success Post New AHS Detail Detail to Database",
+                  AHSProjectDetail: result2,
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .catch((err) => {
             console.log(err);
           });
-      })
-      .catch((err) => {
-        console.log(err);
       });
-  });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   // AHSSumberDetail.bulkCreate(AHS_SUMBER_DETAILs)
   // .then((AHSSumberDetail) => {
@@ -239,6 +291,42 @@ exports.deleteAHSProjectDetail = (req, res, next) => {
       console.log("mantap");
       res.status(201).json({
         message: "Success Delete AHSP to Database",
+        AHSProjectDetail: AHSProjectDetail,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+      console.log(err);
+    });
+};
+
+// update untuk menambah HS saja ini mah
+exports.updateAHSProject = (req, res, next) => {
+  const TAHUN = req.body.TAHUN;
+  const ID_AHS_PROJECT_DETAIL = req.body.ID_AHS_PROJECT_DETAIL;
+  const ID_HS = req.body.ID_HS;
+
+  console.log(
+    "menambahkan hs",
+    ID_HS,
+    "ke ahsproject",
+    ID_AHS_PROJECT_DETAIL,
+    TAHUN
+  );
+
+  AHSProjectDetail[TAHUN].update(
+    {
+      ID_HS: ID_HS,
+    },
+    {
+      where: {
+        ID_AHS_PROJECT_DETAIL: ID_AHS_PROJECT_DETAIL,
+      },
+    }
+  )
+    .then((AHSProjectDetail) => {
+      res.status(201).json({
+        message: "Success Edit RAB to Database",
         AHSProjectDetail: AHSProjectDetail,
       });
     })

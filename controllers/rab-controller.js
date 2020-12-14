@@ -1,6 +1,8 @@
 const RABProjectBagian = require("../models/Project/RABProjectBagian");
 const RABJudul = require("../models/Project/RABJudul");
 const RABDetail = require("../models/Project/RABDetail");
+const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
+const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
 
 // ========================================= MARK: RAB Judul and Detail =========================================
 exports.getRABJudulFullData = (req, res, next) => {
@@ -14,10 +16,23 @@ exports.getRABJudulFullData = (req, res, next) => {
       {
         model: RABDetail[TAHUN],
         request: false,
+        include: [
+          {
+            model: AHSProjectUtama[TAHUN],
+            request: false,
+            include: [
+              {
+                model: AHSProjectDetail[TAHUN],
+                request: false,
+              },
+            ],
+          },
+        ],
       },
     ],
   })
     .then((rab) => {
+      console.log(rab);
       var newRab = [];
       rab.map((satuRab) => {
         const satuRabTemp = JSON.parse(JSON.stringify(satuRab));
@@ -55,12 +70,14 @@ exports.postNewRABJudulDetail = (req, res, next) => {
   const DETAIL = req.body.DETAIL;
 
   //const ID_RAB_JUDUL = req.body.
-  const AHS_UTAMA_PROJECT_ID = req.body.AHS_UTAMA_PROJECT_ID;
+  const ID_AHS_PROJECT_UTAMA = req.body.ID_AHS_PROJECT_UTAMA;
   const SATUAN = req.body.SATUAN;
   const VOLUME = req.body.VOLUME;
   const UPAH_NON_TDP = req.body.UPAH_NON_TDP;
   const BAHAN_NON_TDP = req.body.BAHAN_NON_TDP;
   const PM = req.body.PM;
+
+  console.log(ID_AHS_PROJECT_UTAMA);
 
   RABJudul[TAHUN].create({
     ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,
@@ -77,7 +94,7 @@ exports.postNewRABJudulDetail = (req, res, next) => {
         console.log(RABJudul.ID_RAB_JUDUL);
         RABDetail[TAHUN].create({
           ID_RAB_JUDUL: RABJudul.ID_RAB_JUDUL,
-          AHS_UTAMA_PROJECT_ID: AHS_UTAMA_PROJECT_ID,
+          ID_AHS_PROJECT_UTAMA: ID_AHS_PROJECT_UTAMA,
           SATUAN: SATUAN,
           VOLUME: VOLUME,
           UPAH_NON_TDP: UPAH_NON_TDP,

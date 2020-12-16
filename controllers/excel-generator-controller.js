@@ -15,7 +15,35 @@ exports.generateExcel = async (req, res, next) => {
   console.log(TAHUN);
   console.log(ID_RAB_PROJECT_BAGIAN);
 
-  // INIT EXCEL
+  // GET RABPB
+  var RABPB = await RABProjectBagian[TAHUN].findOne({
+    where: {
+      ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,
+    },
+    include: [
+      {
+        model: RABJudul[TAHUN],
+        request: false,
+        include: [
+          {
+            model: RABDetail[TAHUN],
+            request: false,
+          },
+        ],
+      },
+    ],
+  });
+
+  // GET PROJECT ID, WILAYAH_PROJECT
+  var ID_PROJECT = RABPB.ID_PROJECT;
+
+  var ID_WILAYAH = await Project[TAHUN].findOne({
+    where: {
+      ID_PROJECT: ID_PROJECT,
+    },
+  }).then((project) => project.ID_WILAYAH);
+
+  // INIT EXCEL ==============================================
   var Excel = require("exceljs");
   var workbook = new Excel.Workbook();
   workbook.creator = "Resa";
@@ -36,50 +64,250 @@ exports.generateExcel = async (req, res, next) => {
     },
   ];
 
-  // INIT SHEET
+  // INIT SHEET ==============================================
   var rabsheet = workbook.addWorksheet("RAB");
   var ahssheet = workbook.addWorksheet("AHS");
   var hssheet = workbook.addWorksheet("Acuan Harga Survey");
   //   var worksheet = workbook.getWorksheet("My Sheet");
 
+  // Create Sheet ==============================================
+  //rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB);
+  ahssheet = await createAHSPSheet(ahssheet, res, TAHUN, ID_PROJECT);
+  hssheet = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH);
+
+  // Download the file ==============================================
+  // res is a Stream object
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + "RAB" + TAHUN + ".xlsx"
+  );
+
+  console.log("sending back");
+  return workbook.xlsx.write(res).then(function () {
+    res.status(200).end();
+  });
+};
+
+// Create HS Sheet
+async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
+  console.log("Create HS Sheet");
+
+  var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
+  var wilayah = await Wilayah.findOne({ where: { ID_WILAYAH: ID_WILAYAH } });
+
+  worksheet.columns = [
+    { header: "No", key: "no", width: 8, outlineLevel: 1 },
+    {
+      header: "Nama Material",
+      key: "namamaterial",
+      width: 60,
+      outlineLevel: 1,
+    },
+    { header: "Jenis", key: "type", width: 15, outlineLevel: 1 },
+    { header: "Satuan", key: "satuan", width: 15, outlineLevel: 1 },
+    { header: "Harga", key: "harga", width: 20, outlineLevel: 1 },
+    { header: "Sumber", key: "sumber", width: 80, outlineLevel: 1 },
+    { header: "Keterangan", key: "keterangan", width: 80, outlineLevel: 1 },
+  ];
+
+  worksheet.mergeCells("A1:G2");
+  worksheet.getCell("A1").value = "DAFTAR HARGA BAHAN " + wilayah.WILAYAH;
+
+  var no = worksheet.getColumn("no");
+  var namamaterial = worksheet.getColumn("namamaterial");
+  var type = worksheet.getColumn("type");
+  var satuan = worksheet.getColumn("satuan");
+  var harga = worksheet.getColumn("harga");
+  var sumber = worksheet.getColumn("sumber");
+  var keterangan = worksheet.getColumn("keterangan");
+
+  worksheet.getCell("A4").value = "No";
+  worksheet.getCell("B4").value = "Nama Material";
+  worksheet.getCell("C4").value = "Jenis";
+  worksheet.getCell("D4").value = "Satuan";
+  worksheet.getCell("E4").value = "Harga";
+  worksheet.getCell("F4").value = "Sumber";
+  worksheet.getCell("G4").value = "Keterangan";
+
+  var i = 0;
+  var rows = hs.map((onehs) => {
+    i = i + 1;
+    return {
+      rownum: i + 4,
+      no: i,
+      namamaterial: onehs.URAIAN,
+      type: onehs.TYPE,
+      satuan: onehs.SATUAN,
+      harga: onehs.HARGA,
+      sumber: onehs.SUMBER,
+    };
+  });
+
+  worksheet.addRows(rows);
+
+  return worksheet;
+}
+
+async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT) {
+  console.log("Create AHSP Sheet");
+  console.log(ID_PROJECT);
+  var AHSPs = await AHSProjectUtama[TAHUN].findAll({
+    where: { ID_PROJECT: ID_PROJECT },
+    include: [
+      {
+        model: AHSProjectDetail[TAHUN],
+        required: false,
+        include: [
+          {
+            model: HS[TAHUN],
+            required: false,
+          },
+        ],
+      },
+      {
+        model: AHSSumberUtama,
+        required: false,
+      },
+    ],
+  }).then((AHSUtama) => {
+    var newAHSUtama = [];
+    AHSUtama.map((satuAHSUtama) => {
+      var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
+      var satuAHSUtamaDetailTemp =
+        satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+
+      if (satuAHSUtamaDetailTemp.length > 0) {
+        var satuAHSUtamaDetailTempTemp = [];
+        satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
+          const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
+          const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+          delete satuAHSDetailTemp["HS_" + TAHUN];
+          satuAHSDetailTemp["HS"] = satuHSTemp;
+
+          satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
+        });
+        satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
+      }
+
+      delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+      satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
+      newAHSUtama.push(satuAHSUtamaTemp);
+    });
+
+    return newAHSUtama;
+  });
+
+  console.log(AHSPs);
+
+  worksheet.columns = [
+    { header: "No", key: "no", width: 5, outlineLevel: 1 },
+    { header: "No", key: "no2", width: 5, outlineLevel: 1 },
+    { header: "No", key: "no3", width: 5, outlineLevel: 1 },
+    { header: "No", key: "no4", width: 5, outlineLevel: 1 },
+    {
+      header: "Uraian",
+      key: "ahsputamajudul",
+      width: 5,
+      outlineLevel: 1,
+    },
+    { header: "Koef", key: "koefisien", width: 10, outlineLevel: 1 },
+    { header: "Satuan", key: "satuan", width: 10, outlineLevel: 1 },
+    { header: "Uraian", key: "ahspdetailjudul", width: 60, outlineLevel: 1 },
+    { header: "At", key: "at", width: 8, outlineLevel: 1 },
+    { header: "Harga Satuan", key: "harga", width: 25, outlineLevel: 1 },
+    { header: "Equal", key: "equal", width: 8, outlineLevel: 1 },
+    { header: "Total Upah", key: "totalupah", width: 15, outlineLevel: 1 },
+    { header: "Total Bahan", key: "totalbahan", width: 15, outlineLevel: 1 },
+  ];
+
+  worksheet.mergeCells("A1:M2");
+  worksheet.getCell("A1").value = "ANALISA HARGA SATUAN";
+
+  worksheet.mergeCells("A3:E3");
+  worksheet.getCell("A3").value = "No";
+  worksheet.mergeCells("F3:H3");
+  worksheet.getCell("F3").value = "Uraian";
+  worksheet.mergeCells("I3:K3");
+  worksheet.getCell("I3").value = "Harga Satuan";
+
+  worksheet.getCell("L3").value = "Total Upah";
+  worksheet.getCell("M3").value = "Total Bahan";
+
+  // Fill data each AHS Utama
+  var i = 0;
+  AHSPs.forEach((AHSP) => {
+    i++;
+
+    // Every AHS Utama
+    worksheet.addRow({
+      no: i,
+      ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
+    });
+    worksheet.addRow({
+      koefisien: "Satuan:",
+      satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+    });
+
+    console.log("===========");
+    // Now AHS Detail
+    AHSP.AHS_PROJECT_DETAIL &&
+      AHSP.AHS_PROJECT_DETAIL.forEach((AHSPD) => {
+        console.log(AHSPD);
+        worksheet.addRow({
+          koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+          satuan: AHSPD.P_SATUAN_URAIAN,
+          ahspdetailjudul: AHSPD.P_URAIAN,
+          at: "@",
+          harga: AHSPD.HS ? AHSPD.HS.HARGA : 0,
+          equal: "=",
+          totalupah: AHSPD.P_KELOMPOK_URAIAN == "Upah" ? "he" : 0,
+          totalbahan: AHSPD.P_KELOMPOK_URAIAN == "Bahan" ? "ha" : 0,
+        });
+      });
+  });
+
+  // var rows = hs.map((onehs) => {
+  //   i = i + 1;
+  //   return {
+  //     rownum: i + 4,
+  //     no: i,
+  //     namamaterial: onehs.URAIAN,
+  //     type: onehs.TYPE,
+  //     satuan: onehs.SATUAN,
+  //     harga: onehs.HARGA,
+  //     sumber: onehs.SUMBER,
+  //   };
+  // });
+
+  //worksheet.addRows(rows);
+
+  return worksheet;
+}
+
+async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
+  console.log("Create RAB Sheet");
+
   // MARK: RAB SHEET =============================================================================================
   // Get RAB Project Bagian Information
-  var rabpbInfo = null;
-  try {
-    rabpbInfo = await RABProjectBagian[TAHUN].findOne({
-      where: { ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN },
-    });
-  } catch (err) {
-    console.log(err);
-  }
-  console.log(rabpbInfo);
+  var rabpbInfo = RABPB;
 
   // Get RAB Judul
-  var rabjudul = [];
-  try {
-    var rab = await RABJudul[TAHUN].findAll({
-      where: {
-        ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,
-      },
-      include: [
-        {
-          model: RABDetail[TAHUN],
-          request: false,
-        },
-      ],
-    });
-    var newRab = [];
-    rab.map((satuRab) => {
-      const satuRabTemp = JSON.parse(JSON.stringify(satuRab));
-      const satuRabDetail = satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
-      delete satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
-      satuRabTemp["RAB_DETAILS"] = satuRabDetail;
-      newRab.push(satuRabTemp);
-    });
-    rabjudul = newRab;
-  } catch (err) {
-    console.log(err);
-  }
+  var rabjudul = RABPB["T_RAB_JUDUL_" + TAHUN + "s"];
+
+  var newRab = [];
+  rabjudul.map((satuRab) => {
+    const satuRabTemp = JSON.parse(JSON.stringify(satuRab));
+    const satuRabDetail = satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
+    delete satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
+    satuRabTemp["RAB_DETAILS"] = satuRabDetail;
+    newRab.push(satuRabTemp);
+  });
+  rabjudul = newRab;
+
   console.log(rabjudul);
 
   if (rabjudul.length === 0) {
@@ -177,18 +405,5 @@ exports.generateExcel = async (req, res, next) => {
   rabsheet.getCell("J7").value = "PPN TDP";
   rabsheet.getCell("K7").value = "PPN Non TDP";
 
-  // Download the file
-  // res is a Stream object
-  res.setHeader(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + "RAB" + TAHUN + ".xlsx"
-  );
-
-  return workbook.xlsx.write(res).then(function () {
-    res.status(200).end();
-  });
-};
+  return rabsheet;
+}

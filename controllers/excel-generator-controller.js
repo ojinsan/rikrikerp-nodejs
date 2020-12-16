@@ -72,8 +72,10 @@ exports.generateExcel = async (req, res, next) => {
 
   // Create Sheet ==============================================
   //rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB);
-  ahssheet = await createAHSPSheet(ahssheet, res, TAHUN, ID_PROJECT);
-  hssheet = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH);
+  [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH);
+  console.log(rows);
+
+  ahssheet = await createAHSPSheet(ahssheet, res, TAHUN, ID_PROJECT, rows);
 
   // Download the file ==============================================
   // res is a Stream object
@@ -149,10 +151,10 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
 
   worksheet.addRows(rows);
 
-  return worksheet;
+  return [worksheet, rows];
 }
 
-async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT) {
+async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
   console.log("Create AHSP Sheet");
   console.log(ID_PROJECT);
   var AHSPs = await AHSProjectUtama[TAHUN].findAll({
@@ -238,36 +240,93 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT) {
   worksheet.getCell("M3").value = "Total Bahan";
 
   // Fill data each AHS Utama
-  var i = 0;
+  var i = 3;
+  var j = 0;
   AHSPs.forEach((AHSP) => {
     i++;
+    j++;
+    totalupahsum = 0;
+    totalbahansum = 0;
 
     // Every AHS Utama
     worksheet.addRow({
-      no: i,
+      no: j,
       ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
     });
+    i++;
     worksheet.addRow({
       koefisien: "Satuan:",
       satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
     });
 
     console.log("===========");
+    iinit = i;
     // Now AHS Detail
     AHSP.AHS_PROJECT_DETAIL &&
       AHSP.AHS_PROJECT_DETAIL.forEach((AHSPD) => {
         console.log(AHSPD);
+        i++;
+
+        var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
+        console.log(hargarownum);
+
+        // totalupahsum = totalupahsum + AHSPD.HS.HARGA;
+        // totalbahansum =
+        //   totalbahansum +
+
         worksheet.addRow({
           koefisien: AHSPD.P_KOEFISIEN_URAIAN,
           satuan: AHSPD.P_SATUAN_URAIAN,
           ahspdetailjudul: AHSPD.P_URAIAN,
           at: "@",
-          harga: AHSPD.HS ? AHSPD.HS.HARGA : 0,
+          harga:
+            AHSPD.HS != null
+              ? {
+                  formula: "='Acuan Harga Survey'!E" + hargarownum,
+                  //value: AHSPD.HS.HARGA,
+                  value: "='Acuan Harga Survey'!E" + hargarownum,
+                }
+              : 0,
           equal: "=",
-          totalupah: AHSPD.P_KELOMPOK_URAIAN == "Upah" ? "he" : 0,
-          totalbahan: AHSPD.P_KELOMPOK_URAIAN == "Bahan" ? "ha" : 0,
+          totalupah:
+            AHSPD.P_KELOMPOK_URAIAN == "Upah"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                  result:
+                    AHSPD.P_KOEFISIEN_URAIAN *
+                    (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                }
+              : 0,
+          totalbahan:
+            AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                  result:
+                    AHSPD.P_KOEFISIEN_URAIAN *
+                    (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                }
+              : 0,
         });
       });
+    i++;
+    worksheet.addRow({
+      harga: "Jumlah",
+      totalupah: {
+        formula: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+        value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+      },
+      totalbahan: {
+        formula: "=sum(M" + iinit + ":M" + (i - 1) + ")",
+        value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+      },
+    });
+
+    i++;
+    worksheet.addRow({
+      ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
+    });
+    i++;
+    worksheet.addRow({});
   });
 
   // var rows = hs.map((onehs) => {
@@ -406,4 +465,17 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
   rabsheet.getCell("K7").value = "PPN Non TDP";
 
   return rabsheet;
+}
+
+/// UTIL
+function findFromHS(hs, key, value) {
+  var foundval;
+  hs.forEach((eachhs) => {
+    if (eachhs.namamaterial == value) {
+      console.log("FOUND", eachhs[key]);
+      foundval = eachhs[key];
+      return eachhs[key];
+    }
+  });
+  return foundval;
 }

@@ -71,7 +71,9 @@ exports.generateExcel = async (req, res, next) => {
   //   var worksheet = workbook.getWorksheet("My Sheet");
 
   // Create Sheet ==============================================
-  //rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB);
+  console.log(RABPB);
+  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB);
+
   [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH);
   console.log(rows);
 
@@ -156,7 +158,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
 
 async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
   console.log("Create AHSP Sheet");
-  console.log(ID_PROJECT);
+  //console.log(ID_PROJECT);
   var AHSPs = await AHSProjectUtama[TAHUN].findAll({
     where: { ID_PROJECT: ID_PROJECT },
     include: [
@@ -203,7 +205,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
     return newAHSUtama;
   });
 
-  console.log(AHSPs);
+  //console.log(AHSPs);
 
   worksheet.columns = [
     { header: "No", key: "no", width: 5, outlineLevel: 1 },
@@ -264,11 +266,11 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
     // Now AHS Detail
     AHSP.AHS_PROJECT_DETAIL &&
       AHSP.AHS_PROJECT_DETAIL.forEach((AHSPD) => {
-        console.log(AHSPD);
+        //console.log(AHSPD);
         i++;
 
         var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
-        console.log(hargarownum);
+        //console.log(hargarownum);
 
         // totalupahsum = totalupahsum + AHSPD.HS.HARGA;
         // totalbahansum =
@@ -355,10 +357,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
   var rabpbInfo = RABPB;
 
   // Get RAB Judul
-  var rabjudul = RABPB["T_RAB_JUDUL_" + TAHUN + "s"];
+  var rabjudul = sortRAB(RABPB["T_RAB_JUDUL_" + TAHUN + "s"]);
 
   var newRab = [];
-  rabjudul.map((satuRab) => {
+  rabjudul.forEach((satuRab) => {
     const satuRabTemp = JSON.parse(JSON.stringify(satuRab));
     const satuRabDetail = satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
     delete satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
@@ -433,7 +435,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
   var rab_hargabahan = rabsheet.getColumn("hargabahan");
   var rab_nilaijasatdp = rabsheet.getColumn("nilaijasatdp");
   var rab_nilaijasanontdp = rabsheet.getColumn("nilaijasanontdp");
-  var rab_nilaibahantdp = rabsheet.getColumn("name");
+  var rab_nilaibahantdp = rabsheet.getColumn("nilaibahantdp");
   var rab_nilaibahannontdp = rabsheet.getColumn("nilaibahannontdp");
 
   // WRITE HEADER
@@ -464,6 +466,35 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
   rabsheet.getCell("J7").value = "PPN TDP";
   rabsheet.getCell("K7").value = "PPN Non TDP";
 
+  //Masukan RAB disini
+  i = 7;
+  rabjudul.forEach((satuRab) => {
+    // case new judul
+    i++;
+    console.log("satu rab");
+    console.log(satuRab.RAB_DETAILS);
+    rabsheet.addRow({
+      no:
+        satuRab.NO_URUT_4 > 0
+          ? satuRab.NO_URUT_4
+          : satuRab.NO_URUT_3 > 0
+          ? satuRab.NO_URUT_3
+          : satuRab.NO_URUT_2 > 0
+          ? satuRab.NO_URUT_2
+          : satuRab.NO_URUT_1,
+      name: satuRab.ITEM_PEKERJAAN,
+      satuan: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].SATUAN : "",
+      volume: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
+      // code: ,
+      //hargajasa: ,
+      // hargabahan: ,
+      // nilaijasatdp: ,
+      // nilaibahannontdp: ,
+      // nilaibahantdp: ,
+      // nilaibahannontdp: ,
+    });
+  });
+
   return rabsheet;
 }
 
@@ -478,4 +509,29 @@ function findFromHS(hs, key, value) {
     }
   });
   return foundval;
+}
+
+function sortRAB(rabjudul) {
+  for (var i = 0; i < rabjudul.length; i++) {
+    num1 =
+      rabjudul[i].NO_URUT_1 * 1000 +
+      rabjudul[i].NO_URUT_2 * 100 +
+      rabjudul[i].NO_URUT_3 * 10 +
+      rabjudul[i].NO_URUT_4;
+
+    for (var j = i + 1; j < rabjudul.length; j++) {
+      num2 =
+        rabjudul[j].NO_URUT_1 * 1000 +
+        rabjudul[j].NO_URUT_2 * 100 +
+        rabjudul[j].NO_URUT_3 * 10 +
+        rabjudul[j].NO_URUT_4;
+
+      if (num2 < num1) {
+        temp = rabjudul[i];
+        rabjudul[i] = rabjudul[j];
+        rabjudul[j] = temp;
+      }
+    }
+  }
+  return rabjudul;
 }

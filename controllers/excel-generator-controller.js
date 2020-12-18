@@ -139,15 +139,18 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
     console.log("====");
     console.log(rabjudul);
-    rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
-      "AHS_PROJECT_DETAIL_" + TAHUN + "s"
-    ].forEach((ahsd) => {
-      console.log("hs");
-      console.log(ahsd["HS_" + TAHUN]);
-      if (ahsd["HS_" + TAHUN] != null) {
-        hs.push(ahsd["HS_" + TAHUN]);
-      }
-    });
+
+    if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
+      rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
+        "AHS_PROJECT_DETAIL_" + TAHUN + "s"
+      ].forEach((ahsd) => {
+        console.log("hs");
+        console.log(ahsd["HS_" + TAHUN]);
+        if (ahsd["HS_" + TAHUN] != null) {
+          hs.push(ahsd["HS_" + TAHUN]);
+        }
+      });
+    }
   });
 
   console.log(hs);

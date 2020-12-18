@@ -135,7 +135,10 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
   // get all hs
   //var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
   var hs = [];
+
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+    console.log("====");
+    console.log(rabjudul);
     rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
       "AHS_PROJECT_DETAIL_" + TAHUN + "s"
     ].forEach((ahsd) => {

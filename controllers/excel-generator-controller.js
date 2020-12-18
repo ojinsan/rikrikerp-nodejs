@@ -253,9 +253,11 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
 
   AHSPs = [];
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
-    AHSPs.push(
-      rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN]
-    );
+    if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
+      AHSPs.push(
+        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN]
+      );
+    }
   });
 
   var newAHSUtama = [];

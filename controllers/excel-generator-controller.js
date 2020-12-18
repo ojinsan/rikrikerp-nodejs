@@ -552,11 +552,15 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   //Masukan RAB disini
   i = 7;
   rabjudul.forEach((satuRab) => {
-    relatedahsp = findFromAHSP(
-      AHSPs,
-      "ID_AHS_PROJECT_UTAMA",
-      satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
-    );
+    relatedahsp = {};
+    if (satuRab.RAB_DETAILS.length > 0) {
+      relatedahsp = findFromAHSP(
+        AHSPs,
+        "ID_AHS_PROJECT_UTAMA",
+        satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
+      );
+    }
+
     console.log("satu realted");
     console.log(relatedahsp);
     // case new judul

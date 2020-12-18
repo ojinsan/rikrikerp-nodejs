@@ -587,18 +587,30 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       },
       hargajasa: { formula: "AHS!$L$" + relatedahsp.totalnum }, //better add result
       hargabahan: { formula: "AHS!$M$" + relatedahsp.totalnum }, //better add result
-      nilaijasatdp: satuRab.RAB_DETAILS[0].UPAH_NON_TDP
-        ? null
-        : { formula: "F" + i + "*D" + i }, //better add result
-      nilaibahannontdp: satuRab.RAB_DETAILS[0].UPAH_NON_TDP
-        ? { formula: "F" + i + "*D" + i }
-        : null, //better add result
-      nilaibahantdp: satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
-        ? null
-        : { formula: "G" + i + "*D" + i }, //better add result
-      nilaibahannontdp: satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
-        ? { formula: "G" + i + "*D" + i }
-        : null, //better add result
+      nilaijasatdp:
+        satuRab.RAB_DETAILS[0] != null
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+            ? null
+            : { formula: "F" + i + "*D" + i }
+          : null, //better add result
+      nilaibahannontdp:
+        satuRab.RAB_DETAILS[0] != null
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+            ? { formula: "F" + i + "*D" + i }
+            : null
+          : null, //better add result
+      nilaibahantdp:
+        satuRab.RAB_DETAILS[0] != null
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+            ? null
+            : { formula: "G" + i + "*D" + i }
+          : null, //better add result
+      nilaibahannontdp:
+        satuRab.RAB_DETAILS[0] != null
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+            ? { formula: "G" + i + "*D" + i }
+            : null
+          : null, //better add result
     });
   });
 

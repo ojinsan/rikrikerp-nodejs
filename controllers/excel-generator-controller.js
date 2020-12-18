@@ -28,6 +28,28 @@ exports.generateExcel = async (req, res, next) => {
           {
             model: RABDetail[TAHUN],
             request: false,
+            include: [
+              {
+                model: AHSProjectUtama[TAHUN],
+                request: false,
+                include: [
+                  {
+                    model: AHSProjectDetail[TAHUN],
+                    request: false,
+                    include: [
+                      {
+                        model: HS[TAHUN],
+                        request: false,
+                      },
+                    ],
+                  },
+                  {
+                    model: AHSSumberUtama,
+                    request: false,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -71,13 +93,21 @@ exports.generateExcel = async (req, res, next) => {
   //   var worksheet = workbook.getWorksheet("My Sheet");
 
   // Create Sheet ==============================================
-  console.log(RABPB);
-  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB);
+  // console.log(RABPB);
 
-  [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH);
+  [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH, RABPB);
   console.log(rows);
 
-  ahssheet = await createAHSPSheet(ahssheet, res, TAHUN, ID_PROJECT, rows);
+  [ahssheet, AHSPs] = await createAHSPSheet(
+    ahssheet,
+    res,
+    TAHUN,
+    ID_PROJECT,
+    rows,
+    RABPB
+  );
+
+  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
 
   // Download the file ==============================================
   // res is a Stream object
@@ -97,11 +127,27 @@ exports.generateExcel = async (req, res, next) => {
 };
 
 // Create HS Sheet
-async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
+async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
   console.log("Create HS Sheet");
 
-  var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
   var wilayah = await Wilayah.findOne({ where: { ID_WILAYAH: ID_WILAYAH } });
+
+  // get all hs
+  //var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
+  var hs = [];
+  RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+    rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
+      "AHS_PROJECT_DETAIL_" + TAHUN + "s"
+    ].forEach((ahsd) => {
+      console.log("hs");
+      console.log(ahsd["HS_" + TAHUN]);
+      if (ahsd["HS_" + TAHUN] != null) {
+        hs.push(ahsd["HS_" + TAHUN]);
+      }
+    });
+  });
+
+  console.log(hs);
 
   worksheet.columns = [
     { header: "No", key: "no", width: 8, outlineLevel: 1 },
@@ -121,14 +167,6 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
   worksheet.mergeCells("A1:G2");
   worksheet.getCell("A1").value = "DAFTAR HARGA BAHAN " + wilayah.WILAYAH;
 
-  var no = worksheet.getColumn("no");
-  var namamaterial = worksheet.getColumn("namamaterial");
-  var type = worksheet.getColumn("type");
-  var satuan = worksheet.getColumn("satuan");
-  var harga = worksheet.getColumn("harga");
-  var sumber = worksheet.getColumn("sumber");
-  var keterangan = worksheet.getColumn("keterangan");
-
   worksheet.getCell("A4").value = "No";
   worksheet.getCell("B4").value = "Nama Material";
   worksheet.getCell("C4").value = "Jenis";
@@ -141,6 +179,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
   var rows = hs.map((onehs) => {
     i = i + 1;
     return {
+      id: onehs.ID_HS,
       rownum: i + 4,
       no: i,
       namamaterial: onehs.URAIAN,
@@ -148,6 +187,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
       satuan: onehs.SATUAN,
       harga: onehs.HARGA,
       sumber: onehs.SUMBER,
+      keterangan: onehs.KETERANGAN,
     };
   });
 
@@ -156,56 +196,86 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH) {
   return [worksheet, rows];
 }
 
-async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
+async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   console.log("Create AHSP Sheet");
   //console.log(ID_PROJECT);
-  var AHSPs = await AHSProjectUtama[TAHUN].findAll({
-    where: { ID_PROJECT: ID_PROJECT },
-    include: [
-      {
-        model: AHSProjectDetail[TAHUN],
-        required: false,
-        include: [
-          {
-            model: HS[TAHUN],
-            required: false,
-          },
-        ],
-      },
-      {
-        model: AHSSumberUtama,
-        required: false,
-      },
-    ],
-  }).then((AHSUtama) => {
-    var newAHSUtama = [];
-    AHSUtama.map((satuAHSUtama) => {
-      var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
-      var satuAHSUtamaDetailTemp =
-        satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
 
-      if (satuAHSUtamaDetailTemp.length > 0) {
-        var satuAHSUtamaDetailTempTemp = [];
-        satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
-          const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
-          const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
-          delete satuAHSDetailTemp["HS_" + TAHUN];
-          satuAHSDetailTemp["HS"] = satuHSTemp;
+  // var AHSPs = await AHSProjectUtama[TAHUN].findAll({
+  //   where: { ID_PROJECT: ID_PROJECT },
+  //   include: [
+  //     {
+  //       model: AHSProjectDetail[TAHUN],
+  //       required: false,
+  //       include: [
+  //         {
+  //           model: HS[TAHUN],
+  //           required: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       model: AHSSumberUtama,
+  //       required: false,
+  //     },
+  //   ],
+  // }).then((AHSUtama) => {
+  //   var newAHSUtama = [];
+  //   AHSUtama.map((satuAHSUtama) => {
+  //     var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
+  //     var satuAHSUtamaDetailTemp =
+  //       satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
 
-          satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
-        });
-        satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
-      }
+  //     if (satuAHSUtamaDetailTemp.length > 0) {
+  //       var satuAHSUtamaDetailTempTemp = [];
+  //       satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
+  //         const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
+  //         const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+  //         delete satuAHSDetailTemp["HS_" + TAHUN];
+  //         satuAHSDetailTemp["HS"] = satuHSTemp;
 
-      delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
-      satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
-      newAHSUtama.push(satuAHSUtamaTemp);
-    });
+  //         satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
+  //       });
+  //       satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
+  //     }
 
-    return newAHSUtama;
+  //     delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+  //     satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
+  //     newAHSUtama.push(satuAHSUtamaTemp);
+  //   });
+  //   return newAHSUtama;
+  // });
+
+  AHSPs = [];
+  RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+    AHSPs.push(
+      rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN]
+    );
   });
 
-  //console.log(AHSPs);
+  var newAHSUtama = [];
+  AHSPs.forEach((satuAHSUtama) => {
+    var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
+    var satuAHSUtamaDetailTemp =
+      satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+
+    if (satuAHSUtamaDetailTemp.length > 0) {
+      var satuAHSUtamaDetailTempTemp = [];
+      satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
+        const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
+        const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+        delete satuAHSDetailTemp["HS_" + TAHUN];
+        satuAHSDetailTemp["HS"] = satuHSTemp;
+
+        satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
+      });
+      satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
+    }
+
+    delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+    satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
+    newAHSUtama.push(satuAHSUtamaTemp);
+  });
+  AHSPs = newAHSUtama;
 
   worksheet.columns = [
     { header: "No", key: "no", width: 5, outlineLevel: 1 },
@@ -244,12 +314,16 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
   // Fill data each AHS Utama
   var i = 3;
   var j = 0;
-  AHSPs.forEach((AHSP) => {
-    i++;
-    j++;
+  AHSPs.forEach((AHSP, index) => {
+    // console.log("===========");
+    // console.log(AHSP);
     totalupahsum = 0;
     totalbahansum = 0;
+    i++;
+    j++;
 
+    AHSPs[index].objnum = j;
+    AHSPs[index].rownum = i;
     // Every AHS Utama
     worksheet.addRow({
       no: j,
@@ -261,7 +335,6 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
       satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
     });
 
-    console.log("===========");
     iinit = i;
     // Now AHS Detail
     AHSP.AHS_PROJECT_DETAIL &&
@@ -323,6 +396,8 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
       },
     });
 
+    AHSPs[index].totalnum = i;
+
     i++;
     worksheet.addRow({
       ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
@@ -346,10 +421,10 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows) {
 
   //worksheet.addRows(rows);
 
-  return worksheet;
+  return [worksheet, AHSPs];
 }
 
-async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
+async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   console.log("Create RAB Sheet");
 
   // MARK: RAB SHEET =============================================================================================
@@ -469,6 +544,13 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
   //Masukan RAB disini
   i = 7;
   rabjudul.forEach((satuRab) => {
+    relatedahsp = findFromAHSP(
+      AHSPs,
+      "ID_AHS_PROJECT_UTAMA",
+      satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
+    );
+    console.log("satu realted");
+    console.log(relatedahsp);
     // case new judul
     i++;
     console.log("satu rab");
@@ -485,13 +567,24 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
       name: satuRab.ITEM_PEKERJAAN,
       satuan: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].SATUAN : "",
       volume: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
-      // code: ,
-      //hargajasa: ,
-      // hargabahan: ,
-      // nilaijasatdp: ,
-      // nilaibahannontdp: ,
-      // nilaibahantdp: ,
-      // nilaibahannontdp: ,
+      code: {
+        formula: "AHS!$A$" + relatedahsp.rownum,
+        result: relatedahsp.objnum,
+      },
+      hargajasa: { formula: "AHS!$L$" + relatedahsp.totalnum }, //better add result
+      hargabahan: { formula: "AHS!$M$" + relatedahsp.totalnum }, //better add result
+      nilaijasatdp: satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+        ? null
+        : { formula: "F" + i + "*D" + i }, //better add result
+      nilaibahannontdp: satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+        ? { formula: "F" + i + "*D" + i }
+        : null, //better add result
+      nilaibahantdp: satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+        ? null
+        : { formula: "G" + i + "*D" + i }, //better add result
+      nilaibahannontdp: satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+        ? { formula: "G" + i + "*D" + i }
+        : null, //better add result
     });
   });
 
@@ -499,6 +592,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB) {
 }
 
 /// UTIL
+// hs = array of hs
+// key = what we need
+// value = the name of material
 function findFromHS(hs, key, value) {
   var foundval;
   hs.forEach((eachhs) => {
@@ -534,4 +630,20 @@ function sortRAB(rabjudul) {
     }
   }
   return rabjudul;
+}
+
+// thequery = parameter to search
+function findFromAHSP(ahsp, thequery, value) {
+  var foundval;
+  //console.log("fungsi", value);
+
+  console.log(ahsp);
+  ahsp.forEach((eachahsp) => {
+    if (eachahsp[thequery] == value) {
+      //console.log("FOUND COMPLETE OBJ", eachahsp[thequery]);
+      foundval = eachahsp;
+      return eachahsp;
+    }
+  });
+  return foundval;
 }

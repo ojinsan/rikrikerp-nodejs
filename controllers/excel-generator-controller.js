@@ -577,8 +577,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           ? satuRab.NO_URUT_2
           : satuRab.NO_URUT_1,
       name: satuRab.ITEM_PEKERJAAN,
-      satuan: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].SATUAN : "",
-      volume: satuRab.RAB_DETAILS != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
+      satuan:
+        satuRab.RAB_DETAILS[0] != null ? satuRab.RAB_DETAILS[0].SATUAN : "",
+      volume:
+        satuRab.RAB_DETAILS[0] != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
       code: {
         formula: "AHS!$A$" + relatedahsp.rownum,
         result: relatedahsp.objnum,

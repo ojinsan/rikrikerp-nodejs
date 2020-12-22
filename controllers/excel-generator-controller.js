@@ -727,6 +727,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
             formula:
               "=" + titiksum[m + 1].map((titik) => "H" + titik + "+") + "0",
           }; //better add result
+          titiksum[m].push(i);
           titiksum[m + 1] = [];
         }
       }

@@ -724,9 +724,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
-            formula: "=" + titiksum[m].map((titik) => "H" + titik + "+") + "0",
+            formula:
+              "=" + titiksum[m + 1].map((titik) => "H" + titik + "+") + "0",
           }; //better add result
-          titiksum[m] = [];
+          titiksum[m + 1] = [];
         }
       }
     }

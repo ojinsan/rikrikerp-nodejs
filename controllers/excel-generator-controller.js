@@ -698,7 +698,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         if (!isalreadysum) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
-          rabsheet.getCell("B" + i).value = "sum untuk judul " + m;
+          rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
           rabsheet.getCell("H" + i).value = {
             formula: "=SUM(H" + secstart + ":H" + secend + ")",
           }; //better add result
@@ -715,6 +715,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           isalreadysum = true;
           //newsecnum = 3;
         } else {
+          i++;
+          rabsheet.mergeCells("B" + i + ":G" + i);
+          rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
           // cari titik-titik sum selanjutnya
         }
       }

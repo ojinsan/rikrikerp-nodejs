@@ -723,6 +723,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
+
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
             formula:
@@ -730,6 +731,25 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
               titiksum[m + 1].map((titik) => "H" + titik + " +").join(" ") +
               "0",
           }; //better add result
+          rabsheet.getCell("I" + i).value = {
+            formula:
+              "=" +
+              titiksum[m + 1].map((titik) => "I" + titik + " +").join(" ") +
+              "0",
+          }; //better add result
+          rabsheet.getCell("J" + i).value = {
+            formula:
+              "=" +
+              titiksum[m + 1].map((titik) => "J" + titik + " +").join(" ") +
+              "0",
+          }; //better add result
+          rabsheet.getCell("K" + i).value = {
+            formula:
+              "=" +
+              titiksum[m + 1].map((titik) => "K" + titik + " +").join(" ") +
+              "0",
+          }; //better add result
+
           titiksum[m + 1] = [];
           console.log(titiksum);
         }

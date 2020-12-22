@@ -726,7 +726,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
             formula:
-              "=" + titiksum[m + 1].map((titik) => "H" + titik + "+") + "0",
+              "=" +
+              titiksum[m + 1].map((titik) => "H" + titik + " +").join(" ") +
+              "0",
           }; //better add result
           titiksum[m + 1] = [];
           console.log(titiksum);

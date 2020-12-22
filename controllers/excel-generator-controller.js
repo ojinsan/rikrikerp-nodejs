@@ -720,6 +720,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           //newsecnum = 3;
         } else {
           i++;
+          titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
           // cari titik-titik sum selanjutnya
@@ -728,6 +729,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
               "=" + titiksum[m + 1].map((titik) => "H" + titik + "+") + "0",
           }; //better add result
           titiksum[m + 1] = [];
+          console.log(titiksum);
         }
       }
     }

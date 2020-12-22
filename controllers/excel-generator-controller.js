@@ -716,7 +716,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           }; //better add result
 
           isalreadysum = true;
-          titiksum[m].push(i);
+
           //newsecnum = 3;
         } else {
           i++;
@@ -727,9 +727,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
             formula:
               "=" + titiksum[m + 1].map((titik) => "H" + titik + "+") + "0",
           }; //better add result
-          titiksum[m].push(i);
           titiksum[m + 1] = [];
         }
+        titiksum[m].push(i);
       }
     }
 

@@ -93,10 +93,10 @@ exports.generateExcel = async (req, res, next) => {
   //   var worksheet = workbook.getWorksheet("My Sheet");
 
   // Create Sheet ==============================================
-  // console.log(RABPB);
+  console.log(RABPB);
 
   [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH, RABPB);
-  console.log(rows);
+  //console.log(rows);
 
   [ahssheet, AHSPs] = await createAHSPSheet(
     ahssheet,
@@ -136,24 +136,56 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
   //var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
   var hs = [];
 
+  // Input data to HS
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
     console.log("====");
-    console.log(rabjudul);
+    //console.log(rabjudul);
 
     if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
       rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
         "AHS_PROJECT_DETAIL_" + TAHUN + "s"
       ].forEach((ahsd) => {
-        console.log("hs");
-        console.log(ahsd["HS_" + TAHUN]);
+        //console.log("hs");
+        //console.log(ahsd["HS_" + TAHUN]);
+
         if (ahsd["HS_" + TAHUN] != null) {
-          hs.push(ahsd["HS_" + TAHUN]);
+          var found = false;
+          for (var k = 0; k < hs.length; k++) {
+            if (hs[k].ID_HS == ahsd["HS_" + TAHUN].ID_HS) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            hs.push(ahsd["HS_" + TAHUN]);
+          }
         }
       });
     }
   });
 
-  console.log(hs);
+  // HS Sort
+  hs.sort(function (a, b) {
+    if (a.URAIAN > b.URAIAN) {
+      return 1;
+    } else if (a.URAIAN < b.URAIAN) {
+      return -1;
+    }
+    return 0;
+  });
+
+  hsupah = [];
+  hsbahan = [];
+
+  for (var i = 0; i < hs.length; i++) {
+    if (hs[i].TYPE == "Upah") {
+      hsupah.push(hs[i]);
+    } else if (hs[i].TYPE == "Bahan") {
+      hsbahan.push(hs[i]);
+    }
+  }
+  hs = hsupah.concat(hsbahan);
+  //console.log(hs);
 
   worksheet.columns = [
     { header: "No", key: "no", width: 8, outlineLevel: 1 },
@@ -192,7 +224,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
       type: onehs.TYPE,
       satuan: onehs.SATUAN,
       harga: onehs.HARGA,
-      sumber: onehs.SUMBER,
+      sumber: onehs.SUMBER_HARGA,
       keterangan: onehs.KETERANGAN,
     };
   });
@@ -452,6 +484,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   });
   rabjudul = newRab;
 
+  console.log("rabjudul");
   console.log(rabjudul);
 
   if (rabjudul.length === 0) {
@@ -551,7 +584,19 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //Masukan RAB disini
   i = 7;
-  rabjudul.forEach((satuRab) => {
+  rabjudul.push({
+    ID_RAB_JUDUL: -1,
+    NO_URUT_1: 0,
+    NO_URUT_2: 0,
+    NO_URUT_3: 0,
+    NO_URUT_4: 0,
+    RAB_DETAILS: [],
+  });
+
+  newsec = true;
+  newsecnum = 1;
+  secstart = 0;
+  rabjudul.slice(0, rabjudul.length - 1).forEach((satuRab, k) => {
     relatedahsp = {};
     if (satuRab.RAB_DETAILS.length > 0) {
       relatedahsp = findFromAHSP(
@@ -561,12 +606,33 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       );
     }
 
-    console.log("satu realted");
-    console.log(relatedahsp);
+    // console.log("satu related");
+    // console.log(relatedahsp);
     // case new judul
-    i++;
+
     console.log("satu rab");
-    console.log(satuRab.RAB_DETAILS);
+    console.log(satuRab);
+
+    // if (newsec) {
+    //   for (m = newsecnum; m < 4; m++) {
+    //     if (satuRab["NO_URUT_" + m] > 0) {
+    //       i++;
+    //       rabsheet.addRow({
+    //         no: satuRab["NO_URUT_" + m],
+    //         name: "NEW SEC " + m,
+    //       });
+    //     }
+    //   }
+    //   secstart = i + 1;
+    //   newsec = false;
+    // }
+    sectionlevel = sectionLevel(satuRab);
+    if (newsec) {
+      secstart = i + 1;
+      newsec = false;
+    }
+
+    i++;
     rabsheet.addRow({
       no:
         satuRab.NO_URUT_4 > 0
@@ -612,6 +678,130 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
             : null
           : null, //better add result
     });
+
+    sectionlevel2 = sectionlevel;
+    console.log(sectionlevel);
+    for (m = sectionlevel; m > 0; m--) {
+      if (satuRab["NO_URUT_" + m] != rabjudul[k + 1]["NO_URUT_" + m]) {
+        console.log("ABIS INI NEW SEC " + m);
+        newsec = true;
+        sectionlevel2 = m;
+      }
+    }
+
+    if (newsec) {
+      i++;
+      rabsheet.addRow({});
+      secend = i;
+      isalreadysum = false;
+      for (m = sectionlevel; m >= sectionlevel2; m--) {
+        if (!isalreadysum) {
+          i++;
+          rabsheet.mergeCells("B" + i + ":G" + i);
+          rabsheet.getCell("B" + i).value = "sum untuk judul " + m;
+          rabsheet.getCell("H" + i).value = {
+            formula: "=SUM(H" + secstart + ":H" + secend + ")",
+          }; //better add result
+          rabsheet.getCell("I" + i).value = {
+            formula: "=SUM(I" + secstart + ":I" + secend + ")",
+          }; //better add result
+          rabsheet.getCell("J" + i).value = {
+            formula: "=SUM(J" + secstart + ":J" + secend + ")",
+          }; //better add result
+          rabsheet.getCell("K" + i).value = {
+            formula: "=SUM(K" + secstart + ":K" + secend + ")",
+          }; //better add result
+
+          isalreadysum = true;
+          //newsecnum = 3;
+        } else {
+          // cari titik-titik sum selanjutnya
+        }
+      }
+    }
+
+    // // kondisi abis ini new section
+    // if (
+    //   satuRab.NO_URUT_1 != rabjudul[k + 1].NO_URUT_1 ||
+    //   satuRab.NO_URUT_2 != rabjudul[k + 1].NO_URUT_2 ||
+    //   satuRab.NO_URUT_3 != rabjudul[k + 1].NO_URUT_3
+    // ) {
+    //   i++;
+    //   rabsheet.addRow({});
+    //   secend = i;
+
+    //   isalreadysum = false;
+
+    //   if (satuRab.NO_URUT_3 != rabjudul[k + 1].NO_URUT_3) {
+    //     i++;
+    //     rabsheet.mergeCells("B" + i + ":G" + i);
+    //     rabsheet.getCell("B" + i).value = "sum untuk judul 3";
+    //     rabsheet.getCell("H" + i).value = {
+    //       formula: "=SUM(H" + secstart + ":H" + secend + ")",
+    //     }; //better add result
+    //     rabsheet.getCell("I" + i).value = {
+    //       formula: "=SUM(I" + secstart + ":I" + secend + ")",
+    //     }; //better add result
+    //     rabsheet.getCell("J" + i).value = {
+    //       formula: "=SUM(J" + secstart + ":J" + secend + ")",
+    //     }; //better add result
+    //     rabsheet.getCell("K" + i).value = {
+    //       formula: "=SUM(K" + secstart + ":K" + secend + ")",
+    //     }; //better add result
+
+    //     isalreadysum = true;
+    //     newsecnum = 3;
+    //   }
+    //   if (satuRab.NO_URUT_2 != rabjudul[k + 1].NO_URUT_2) {
+    //     i++;
+    //     rabsheet.mergeCells("B" + i + ":G" + i);
+    //     rabsheet.getCell("B" + i).value = "sum untuk judul 2";
+    //     if (!isalreadysum) {
+    //       rabsheet.getCell("B" + i).value = "sum untuk judul 3";
+    //       rabsheet.getCell("H" + i).value = {
+    //         formula: "=SUM(H" + secstart + ":H" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("I" + i).value = {
+    //         formula: "=SUM(I" + secstart + ":I" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("J" + i).value = {
+    //         formula: "=SUM(J" + secstart + ":J" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("K" + i).value = {
+    //         formula: "=SUM(K" + secstart + ":K" + secend + ")",
+    //       }; //better add result
+    //     }
+
+    //     isalreadysum = true;
+    //     newsecnum = 2;
+    //   }
+    //   if (satuRab.NO_URUT_1 != rabjudul[k + 1].NO_URUT_1) {
+    //     i++;
+    //     rabsheet.mergeCells("B" + i + ":G" + i);
+    //     rabsheet.getCell("B" + i).value = "sum untuk judul 1";
+
+    //     if (!isalreadysum) {
+    //       rabsheet.getCell("B" + i).value = "sum untuk judul 3";
+    //       rabsheet.getCell("H" + i).value = {
+    //         formula: "=SUM(H" + secstart + ":H" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("I" + i).value = {
+    //         formula: "=SUM(I" + secstart + ":I" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("J" + i).value = {
+    //         formula: "=SUM(J" + secstart + ":J" + secend + ")",
+    //       }; //better add result
+    //       rabsheet.getCell("K" + i).value = {
+    //         formula: "=SUM(K" + secstart + ":K" + secend + ")",
+    //       }; //better add result
+    //     }
+
+    //     newsecnum = 1;
+    //   }
+
+    //   // next is new section
+    //   newsec = true;
+    // }
   });
 
   return rabsheet;
@@ -663,7 +853,7 @@ function findFromAHSP(ahsp, thequery, value) {
   var foundval;
   //console.log("fungsi", value);
 
-  console.log(ahsp);
+  //console.log(ahsp);
   ahsp.forEach((eachahsp) => {
     if (eachahsp[thequery] == value) {
       //console.log("FOUND COMPLETE OBJ", eachahsp[thequery]);
@@ -672,4 +862,16 @@ function findFromAHSP(ahsp, thequery, value) {
     }
   });
   return foundval;
+}
+
+function sectionLevel(satuRab) {
+  if (satuRab.NO_URUT_2 == 0) {
+    return 0;
+  } else if (satuRab.NO_URUT_3 == 0) {
+    return 1;
+  } else if (satuRab.NO_URUT_4 == 0) {
+    return 2;
+  } else {
+    return 3;
+  }
 }

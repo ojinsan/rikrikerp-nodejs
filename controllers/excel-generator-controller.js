@@ -570,7 +570,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   rabjudul.slice(0, rabjudul.length - 1).forEach((satuRab, k) => {
     sectionlevel = sectionLevel(satuRab);
-    if (sectionlevel < sectionlevel(rabjudul[k + 1])) {
+    if (sectionlevel < sectionLevel(rabjudul[k + 1])) {
       judulandnum.push({
         judul: satuRab.ITEM_PEKERJAAN,
         num:

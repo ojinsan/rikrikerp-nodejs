@@ -146,6 +146,9 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
   const TAHUN = req.body.tahun;
   const idproject = req.body.idproject;
   var ID_WILAYAH;
+  var somethingwentwrong = false;
+  var hskosong = [];
+  var ahsgagalid = null;
 
   Project[TAHUN].findOne({
     where: {
@@ -184,55 +187,76 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
                   },
                 });
 
-                hasil = {
-                  ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
-                  P_URAIAN: AHSProjectDetail.name,
-                  ID_HS: result2.ID_HS,
-                  ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
-                  P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
-                  P_SATUAN_URAIAN: AHSProjectDetail.satuan,
-                  P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
-                  P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
-                };
+                if (result2 == null || result2 == undefined) {
+                  hskosong.push(AHSProjectDetail.name);
+                  ahsgagalid = result.ID_AHS_PROJECT_UTAMA;
+                  somethingwentwrong = true;
+                  return null;
+                }
 
-                console.log(hasil);
-                //return hasil;
-                return hasil;
+                if (!somethingwentwrong) {
+                  hasil = {
+                    ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
+                    P_URAIAN: AHSProjectDetail.name,
+                    ID_HS: result2.ID_HS,
+                    ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
+                    P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
+                    P_SATUAN_URAIAN: AHSProjectDetail.satuan,
+                    P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
+                    P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
+                  };
+
+                  console.log(hasil);
+                  //return hasil;
+                  return hasil;
+                } else {
+                  return null;
+                }
               }
             );
 
-            for await (const item of AHS_PROJECT_DETAILs) {
-              console.log(item);
-              AHSProjectDetails.push(item);
+            if (!somethingwentwrong) {
+              for await (const item of AHS_PROJECT_DETAILs) {
+                console.log(item);
+                AHSProjectDetails.push(item);
+              }
+
+              console.log("All done");
+              console.log("map beres");
+              console.log(AHSProjectDetails);
+              return AHSProjectDetails;
             }
 
-            console.log("All done");
-            console.log("map beres");
-            console.log(AHSProjectDetails);
-            return AHSProjectDetails;
-
-            // } catch (err) {
-            //   res.status(201).json({
-            //     message: "Success Without New AHS Detail Detail to Database",
-            //     AHSProjectDetail: err,
-            //   });
-            // }
-            //return Promises.all(AHS_PROJECT_DETAILs);
+            return null;
           })
           .then((AHS_PROJECT_DETAILs) => {
-            console.log(AHS_PROJECT_DETAILs);
-            console.log("here");
-            AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
-              .then((result2) => {
-                console.log("mantep");
-                res.status(201).json({
-                  message: "Success Post New AHS Detail Detail to Database",
-                  AHSProjectDetail: result2,
+            if (!somethingwentwrong) {
+              console.log(AHS_PROJECT_DETAILs);
+              console.log("here");
+              AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
+                .then((result2) => {
+                  console.log("mantep");
+                  res.status(201).json({
+                    message: "Success Post New AHS Detail Detail to Database",
+                    AHSProjectDetail: result2,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
                 });
-              })
-              .catch((err) => {
-                console.log(err);
+            } else {
+              AHSProjectUtama[TAHUN].destroy({
+                where: {
+                  ID_AHS_PROJECT_UTAMA: ahsgagalid,
+                },
+              }).then(() => {
+                console.log("back");
+                res.status(400).json({
+                  message: "HS Belum Lengkap",
+                  HS: hskosong,
+                });
               });
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -242,18 +266,6 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-
-  // AHSSumberDetail.bulkCreate(AHS_SUMBER_DETAILs)
-  // .then((AHSSumberDetail) => {
-  //     console.log("mantep");
-  //     res.status(201).json({
-  //         message: "Success Post New AHS Sumber Detail to Database",
-  //         AHSSumberDetail: AHSSumberDetail,
-  //     });
-  // })
-  // .catch((err) => {
-  //     console.log(err);
-  // });
 };
 
 exports.deleteAHSProjectUtama = (req, res, next) => {

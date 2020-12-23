@@ -701,6 +701,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
           satujudulandnum = judulandnum.pop();
+          console.log(satujudulandnum);
+          console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
             satujudulandnum.judul + ". " + satujudulandnum.num;
           rabsheet.getCell("H" + i).value = {
@@ -724,6 +726,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
           satujudulandnum = judulandnum.pop();
+          console.log(satujudulandnum);
+          console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
             satujudulandnum.judul + ". " + satujudulandnum.num;
 

@@ -42,6 +42,8 @@ exports.getRABJudulFullData = (req, res, next) => {
         newRab.push(satuRabTemp);
       });
 
+      newRab = sortRAB(newRab);
+
       res.status(201).json({
         message: "Success pull data RAB ",
         rab: newRab,
@@ -243,3 +245,43 @@ exports.updateRABJudulDetail = (req, res, next) => {
 };
 
 // ========================================= MARK: RAB Detail =========================================
+
+function sortRAB(rabjudul) {
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_4 > b.NO_URUT_4) {
+      return 1;
+    } else if (a.NO_URUT_4 < b.NO_URUT_4) {
+      return -1;
+    }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_3 > b.NO_URUT_3) {
+      return 1;
+    } else if (a.NO_URUT_3 < b.NO_URUT_3) {
+      return -1;
+    }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_2 > b.NO_URUT_2) {
+      return 1;
+    } else if (a.NO_URUT_2 < b.NO_URUT_2) {
+      return -1;
+    }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_1 > b.NO_URUT_1) {
+      return 1;
+    } else if (a.NO_URUT_1 < b.NO_URUT_1) {
+      return -1;
+    }
+    return 0;
+  });
+
+  return rabjudul;
+}

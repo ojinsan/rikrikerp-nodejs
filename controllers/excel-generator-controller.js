@@ -247,8 +247,9 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
     if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
       if (
-        rabjudul["T_RAB_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN] !=
-        null
+        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+          "AHS_PROJECT_UTAMA_" + TAHUN
+        ] != null
       ) {
         AHSPs.push(
           rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][

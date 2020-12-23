@@ -170,9 +170,9 @@ exports.updateRABJudulDetail = (req, res, next) => {
   const NO_URUT_4 = req.body.NO_URUT_4;
   const NO_URUT_5 = req.body.NO_URUT_5;
   const DETAIL = req.body.DETAIL;
-  if (DETAIL == "true") {
+  if (DETAIL == "yes") {
     DETAIL = true;
-  } else if (DETAIL == "false") {
+  } else if (DETAIL == "no") {
     DETAIL = false;
   }
 

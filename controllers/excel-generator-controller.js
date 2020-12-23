@@ -566,11 +566,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   secstart = 0;
 
   titiksum = [[], [], [], [], []];
+  judulandnum = [];
 
   rabjudul.slice(0, rabjudul.length - 1).forEach((satuRab, k) => {
     sectionlevel = sectionLevel(satuRab);
-
-    judulandnum = [];
 
     relatedahsp = {};
     if (satuRab.RAB_DETAILS.length > 0) {

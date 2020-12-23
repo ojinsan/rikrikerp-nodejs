@@ -700,7 +700,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         if (!isalreadysum) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
-          satujudulandnum = judulandnum.pop();
+          //satujudulandnum = judulandnum.pop();
+          satujudulandnum = "TOTAL";
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
@@ -725,7 +726,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           i++;
           titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
-          satujudulandnum = judulandnum.pop();
+          //satujudulandnum = judulandnum.pop();
+          satujudulandnum = "TOTAL";
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =

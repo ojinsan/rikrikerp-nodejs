@@ -161,6 +161,8 @@ exports.deleteRABJudulDetail = (req, res, next) => {
 };
 
 exports.updateRABJudulDetail = (req, res, next) => {
+  console.log("update rab");
+  console.log(req.body);
   const ID_RAB_DETAIL = req.body.ID_RAB_DETAIL;
   const ID_RAB_JUDUL = req.body.ID_RAB_JUDUL;
   const ITEM_PEKERJAAN = req.body.ITEM_PEKERJAAN;

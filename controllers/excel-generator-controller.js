@@ -639,11 +639,21 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     rabsheet.addRow({
       no:
         satuRab.NO_URUT_4 > 0
-          ? satuRab.NO_URUT_4
+          ? satuRab.NO_URUT_1 +
+            "." +
+            satuRab.NO_URUT_2 +
+            "." +
+            satuRab.NO_URUT_3 +
+            "." +
+            satuRab.NO_URUT_4
           : satuRab.NO_URUT_3 > 0
-          ? satuRab.NO_URUT_3
+          ? satuRab.NO_URUT_1 +
+            "." +
+            satuRab.NO_URUT_2 +
+            "." +
+            satuRab.NO_URUT_3
           : satuRab.NO_URUT_2 > 0
-          ? satuRab.NO_URUT_2
+          ? satuRab.NO_URUT_1 + "." + satuRab.NO_URUT_2
           : satuRab.NO_URUT_1,
       name: satuRab.ITEM_PEKERJAAN,
       satuan:
@@ -662,7 +672,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
             ? null
             : { formula: "F" + i + "*D" + i }
           : null, //better add result
-      nilaibahannontdp:
+      nilaijasanontdp:
         satuRab.RAB_DETAILS[0] != null
           ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP
             ? { formula: "F" + i + "*D" + i }

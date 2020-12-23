@@ -170,6 +170,11 @@ exports.updateRABJudulDetail = (req, res, next) => {
   const NO_URUT_4 = req.body.NO_URUT_4;
   const NO_URUT_5 = req.body.NO_URUT_5;
   const DETAIL = req.body.DETAIL;
+  if (DETAIL == "true") {
+    DETAIL = true;
+  } else if (DETAIL == "false") {
+    DETAIL = false;
+  }
 
   //const ID_RAB_JUDUL = req.body.
   const AHS_UTAMA_PROJECT_ID = req.body.AHS_UTAMA_PROJECT_ID;

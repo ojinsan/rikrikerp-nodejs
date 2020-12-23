@@ -854,27 +854,42 @@ function findFromHS(hs, key, value) {
 }
 
 function sortRAB(rabjudul) {
-  for (var i = 0; i < rabjudul.length; i++) {
-    num1 =
-      rabjudul[i].NO_URUT_1 * 1000 +
-      rabjudul[i].NO_URUT_2 * 100 +
-      rabjudul[i].NO_URUT_3 * 10 +
-      rabjudul[i].NO_URUT_4;
-
-    for (var j = i + 1; j < rabjudul.length; j++) {
-      num2 =
-        rabjudul[j].NO_URUT_1 * 1000 +
-        rabjudul[j].NO_URUT_2 * 100 +
-        rabjudul[j].NO_URUT_3 * 10 +
-        rabjudul[j].NO_URUT_4;
-
-      if (num2 < num1) {
-        temp = rabjudul[i];
-        rabjudul[i] = rabjudul[j];
-        rabjudul[j] = temp;
-      }
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_4 > b.NO_URUT_4) {
+      return 1;
+    } else if (a.NO_URUT_4 < b.NO_URUT_4) {
+      return -1;
     }
-  }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_3 > b.NO_URUT_3) {
+      return 1;
+    } else if (a.NO_URUT_3 < b.NO_URUT_3) {
+      return -1;
+    }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_2 > b.NO_URUT_2) {
+      return 1;
+    } else if (a.NO_URUT_2 < b.NO_URUT_2) {
+      return -1;
+    }
+    return 0;
+  });
+
+  rabjudul.sort(function (a, b) {
+    if (a.NO_URUT_1 > b.NO_URUT_1) {
+      return 1;
+    } else if (a.NO_URUT_1 < b.NO_URUT_1) {
+      return -1;
+    }
+    return 0;
+  });
+
   return rabjudul;
 }
 

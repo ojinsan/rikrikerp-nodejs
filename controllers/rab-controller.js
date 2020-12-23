@@ -94,7 +94,8 @@ exports.postNewRABJudulDetail = (req, res, next) => {
         console.log(RABJudul.ID_RAB_JUDUL);
         RABDetail[TAHUN].create({
           ID_RAB_JUDUL: RABJudul.ID_RAB_JUDUL,
-          ID_AHS_PROJECT_UTAMA: ID_AHS_PROJECT_UTAMA,
+          ID_AHS_PROJECT_UTAMA:
+            ID_AHS_PROJECT_UTAMA == null ? null : ID_AHS_PROJECT_UTAMA,
           SATUAN: SATUAN,
           VOLUME: VOLUME,
           UPAH_NON_TDP: UPAH_NON_TDP,

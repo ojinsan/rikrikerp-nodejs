@@ -570,15 +570,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   rabjudul.slice(0, rabjudul.length - 1).forEach((satuRab, k) => {
     sectionlevel = sectionLevel(satuRab);
-
-    relatedahsp = {};
-    if (satuRab.RAB_DETAILS.length > 0) {
-      relatedahsp = findFromAHSP(
-        AHSPs,
-        "ID_AHS_PROJECT_UTAMA",
-        satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
-      );
-    } else {
+    if (sectionlevel < sectionlevel(rabjudul[k + 1])) {
       judulandnum.push({
         judul: satuRab.ITEM_PEKERJAAN,
         num:
@@ -600,6 +592,15 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
             ? satuRab.NO_URUT_1 + "." + satuRab.NO_URUT_2
             : satuRab.NO_URUT_1,
       });
+    }
+
+    relatedahsp = {};
+    if (satuRab.RAB_DETAILS.length > 0) {
+      relatedahsp = findFromAHSP(
+        AHSPs,
+        "ID_AHS_PROJECT_UTAMA",
+        satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
+      );
     }
 
     if (newsec) {

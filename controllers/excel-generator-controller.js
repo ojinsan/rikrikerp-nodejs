@@ -568,6 +568,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   titiksum = [[], [], [], [], []];
 
   rabjudul.slice(0, rabjudul.length - 1).forEach((satuRab, k) => {
+    sectionlevel = sectionLevel(satuRab);
+
+    judulandnum = [];
+
     relatedahsp = {};
     if (satuRab.RAB_DETAILS.length > 0) {
       relatedahsp = findFromAHSP(
@@ -575,29 +579,30 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         "ID_AHS_PROJECT_UTAMA",
         satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
       );
+    } else {
+      judulandnum.push({
+        judul: satuRab.ITEM_PEKERJAAN,
+        num:
+          satuRab.NO_URUT_4 > 0
+            ? satuRab.NO_URUT_1 +
+              "." +
+              satuRab.NO_URUT_2 +
+              "." +
+              satuRab.NO_URUT_3 +
+              "." +
+              satuRab.NO_URUT_4
+            : satuRab.NO_URUT_3 > 0
+            ? satuRab.NO_URUT_1 +
+              "." +
+              satuRab.NO_URUT_2 +
+              "." +
+              satuRab.NO_URUT_3
+            : satuRab.NO_URUT_2 > 0
+            ? satuRab.NO_URUT_1 + "." + satuRab.NO_URUT_2
+            : satuRab.NO_URUT_1,
+      });
     }
 
-    // console.log("satu related");
-    // console.log(relatedahsp);
-    // case new judul
-
-    console.log("satu rab");
-    console.log(satuRab);
-
-    // if (newsec) {
-    //   for (m = newsecnum; m < 4; m++) {
-    //     if (satuRab["NO_URUT_" + m] > 0) {
-    //       i++;
-    //       rabsheet.addRow({
-    //         no: satuRab["NO_URUT_" + m],
-    //         name: "NEW SEC " + m,
-    //       });
-    //     }
-    //   }
-    //   secstart = i + 1;
-    //   newsec = false;
-    // }
-    sectionlevel = sectionLevel(satuRab);
     if (newsec) {
       secstart = i + 1;
       newsec = false;
@@ -695,7 +700,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         if (!isalreadysum) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
-          rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
+          satujudulandnum = judulandnum.pop();
+          rabsheet.getCell("B" + i).value =
+            satujudulandnum.judul + ". " + satujudulandnum.num;
           rabsheet.getCell("H" + i).value = {
             formula: "=SUM(H" + secstart + ":H" + secend + ")",
           }; //better add result
@@ -716,7 +723,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           i++;
           titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
-          rabsheet.getCell("B" + i).value = "sum untuk depth " + m;
+          satujudulandnum = judulandnum.pop();
+          rabsheet.getCell("B" + i).value =
+            satujudulandnum.judul + ". " + satujudulandnum.num;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {

@@ -110,21 +110,9 @@ exports.postNewRABJudulDetail = (req, res, next) => {
           });
         });
       } else {
-        console.log(RABJudul.ID_RAB_JUDUL);
-        RABDetail[TAHUN].create({
-          ID_RAB_JUDUL: "",
-          AHS_UTAMA_PROJECT_ID: AHS_UTAMA_PROJECT_ID,
-          SATUAN: "",
-          VOLUME: 0,
-          UPAH_NON_TDP: false,
-          BAHAN_NON_TDP: false,
-          PM: PM,
-        }).then((RABDetail) => {
-          res.status(201).json({
-            message: "Success pull data RAB Project Bagian",
-            RABJudul: RABJudul,
-            RABDetail: RABDetail,
-          });
+        res.status(201).json({
+          message: "Success pull data RAB Project Bagian",
+          RABJudul: RABJudul,
         });
       }
     })

@@ -629,18 +629,27 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         satuRab.RAB_DETAILS[0] != null ? satuRab.RAB_DETAILS[0].SATUAN : "",
       volume:
         satuRab.RAB_DETAILS[0] != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
-      code: satuRab.RAB_DETAILS[0].PM
-        ? "PM"
-        : {
-            formula: "AHS!$A$" + relatedahsp.rownum,
-            result: relatedahsp.objnum,
-          },
-      hargajasa: satuRab.RAB_DETAILS[0].PM
-        ? 0
-        : { formula: "AHS!$L$" + relatedahsp.totalnum }, //better add result
-      hargabahan: satuRab.RAB_DETAILS[0].PM
-        ? 0
-        : { formula: "AHS!$M$" + relatedahsp.totalnum }, //better add result
+      code:
+        satuRab.RAB_DETAILS.length > 0
+          ? satuRab.RAB_DETAILS[0].PM
+            ? "PM"
+            : {
+                formula: "AHS!$A$" + relatedahsp.rownum,
+                result: relatedahsp.objnum,
+              }
+          : null,
+      hargajasa:
+        satuRab.RAB_DETAILS.length > 0
+          ? satuRab.RAB_DETAILS[0].PM
+            ? 0
+            : { formula: "AHS!$L$" + relatedahsp.totalnum }
+          : null, //better add result
+      hargabahan:
+        satuRab.RAB_DETAILS.length > 0
+          ? satuRab.RAB_DETAILS[0].PM
+            ? 0
+            : { formula: "AHS!$M$" + relatedahsp.totalnum }
+          : null, //better add result
       nilaijasatdp:
         satuRab.RAB_DETAILS[0] != null
           ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP

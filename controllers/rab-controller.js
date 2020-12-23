@@ -171,7 +171,7 @@ exports.updateRABJudulDetail = (req, res, next) => {
   const NO_URUT_3 = parseInt(req.body.NO_URUT_3);
   const NO_URUT_4 = parseInt(req.body.NO_URUT_4);
   const NO_URUT_5 = parseInt(req.body.NO_URUT_5);
-  const DETAIL = req.body.DETAIL;
+  var DETAIL = req.body.DETAIL;
   if (DETAIL == "yes") {
     DETAIL = 1;
   } else if (DETAIL == "no") {
@@ -182,9 +182,9 @@ exports.updateRABJudulDetail = (req, res, next) => {
   //const AHS_UTAMA_PROJECT_ID = req.body.AHS_UTAMA_PROJECT_ID;
   const SATUAN = req.body.SATUAN;
   const VOLUME = parseInt(req.body.VOLUME);
-  const UPAH_NON_TDP = req.body.UPAH_NON_TDP;
-  const BAHAN_NON_TDP = req.body.BAHAN_NON_TDP;
-  const PM = req.body.PM;
+  var UPAH_NON_TDP = req.body.UPAH_NON_TDP;
+  var BAHAN_NON_TDP = req.body.BAHAN_NON_TDP;
+  var PM = req.body.PM;
 
   if (UPAH_NON_TDP == "yes") {
     UPAH_NON_TDP = 1;
@@ -206,7 +206,7 @@ exports.updateRABJudulDetail = (req, res, next) => {
 
   const TAHUN = req.body.TAHUN;
 
-  console.log("update rab");
+  console.log("update rab der");
   console.log(TAHUN);
 
   RABJudul[TAHUN].update(

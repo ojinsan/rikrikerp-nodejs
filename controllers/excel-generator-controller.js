@@ -701,12 +701,12 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
           //satujudulandnum = judulandnum.pop();
-          satujudulandnum.judul = "TOTAL";
-          satujudulandnum.num = "1 ";
+          satujudulandnum = "TOTAL";
+
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
-            satujudulandnum.num + ". " + satujudulandnum.total;
+            satujudulandnum + ". " + satujudulandnum;
           rabsheet.getCell("H" + i).value = {
             formula: "=SUM(H" + secstart + ":H" + secend + ")",
           }; //better add result
@@ -728,12 +728,11 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           titiksum[m].push(i);
           rabsheet.mergeCells("B" + i + ":G" + i);
           //satujudulandnum = judulandnum.pop();
-          satujudulandnum.judul = "TOTAL";
-          satujudulandnum.num = "1 ";
+          satujudulandnum = "TOTAL";
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
-            satujudulandnum.num + ". " + satujudulandnum.judul;
+            satujudulandnum + ". " + satujudulandnum;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {

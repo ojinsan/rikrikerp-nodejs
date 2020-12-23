@@ -141,7 +141,12 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
     console.log("====");
     //console.log(rabjudul);
 
-    if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
+    if (
+      rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0 &&
+      rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+        "AHS_PROJECT_UTAMA_" + TAHUN
+      ] != null
+    ) {
       rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
         "AHS_PROJECT_DETAIL_" + TAHUN + "s"
       ].forEach((ahsd) => {

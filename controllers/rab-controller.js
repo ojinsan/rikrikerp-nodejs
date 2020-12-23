@@ -171,13 +171,13 @@ exports.updateRABJudulDetail = (req, res, next) => {
   const NO_URUT_5 = req.body.NO_URUT_5;
   const DETAIL = req.body.DETAIL;
   if (DETAIL == "yes") {
-    DETAIL = true;
+    DETAIL = 1;
   } else if (DETAIL == "no") {
-    DETAIL = false;
+    DETAIL = 0;
   }
 
   //const ID_RAB_JUDUL = req.body.
-  const AHS_UTAMA_PROJECT_ID = req.body.AHS_UTAMA_PROJECT_ID;
+  //const AHS_UTAMA_PROJECT_ID = req.body.AHS_UTAMA_PROJECT_ID;
   const SATUAN = req.body.SATUAN;
   const VOLUME = req.body.VOLUME;
   const UPAH_NON_TDP = req.body.UPAH_NON_TDP;

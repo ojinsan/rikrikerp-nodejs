@@ -243,57 +243,19 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   console.log("Create AHSP Sheet");
   //console.log(ID_PROJECT);
 
-  // var AHSPs = await AHSProjectUtama[TAHUN].findAll({
-  //   where: { ID_PROJECT: ID_PROJECT },
-  //   include: [
-  //     {
-  //       model: AHSProjectDetail[TAHUN],
-  //       required: false,
-  //       include: [
-  //         {
-  //           model: HS[TAHUN],
-  //           required: false,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       model: AHSSumberUtama,
-  //       required: false,
-  //     },
-  //   ],
-  // }).then((AHSUtama) => {
-  //   var newAHSUtama = [];
-  //   AHSUtama.map((satuAHSUtama) => {
-  //     var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
-  //     var satuAHSUtamaDetailTemp =
-  //       satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
-
-  //     if (satuAHSUtamaDetailTemp.length > 0) {
-  //       var satuAHSUtamaDetailTempTemp = [];
-  //       satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
-  //         const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
-  //         const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
-  //         delete satuAHSDetailTemp["HS_" + TAHUN];
-  //         satuAHSDetailTemp["HS"] = satuHSTemp;
-
-  //         satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
-  //       });
-  //       satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
-  //     }
-
-  //     delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
-  //     satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
-  //     newAHSUtama.push(satuAHSUtamaTemp);
-  //   });
-  //   return newAHSUtama;
-  // });
-
   AHSPs = [];
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
     if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
-      AHSPs.push(
-        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN]
-      );
+      if (
+        rabjudul["T_RAB_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN] !=
+        null
+      ) {
+        AHSPs.push(
+          rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+            "AHS_PROJECT_UTAMA_" + TAHUN
+          ]
+        );
+      }
     }
   });
 

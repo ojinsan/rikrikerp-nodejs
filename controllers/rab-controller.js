@@ -77,7 +77,8 @@ exports.postNewRABJudulDetail = (req, res, next) => {
   const BAHAN_NON_TDP = req.body.BAHAN_NON_TDP;
   const PM = req.body.PM;
 
-  console.log(ID_AHS_PROJECT_UTAMA);
+  console.log(DETAIL);
+  //console.log(ID_AHS_PROJECT_UTAMA);
 
   RABJudul[TAHUN].create({
     ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,

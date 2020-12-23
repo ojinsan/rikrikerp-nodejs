@@ -604,6 +604,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     i++;
+    console.log(satuRab);
     rabsheet.addRow({
       no:
         satuRab.NO_URUT_4 > 0

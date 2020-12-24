@@ -637,8 +637,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       code:
         satuRab.RAB_DETAILS.length > 0
           ? satuRab.RAB_DETAILS[0].PM ||
-            relatedahsp.rownum == null ||
-            relatedahsp.rownum == undefined
+            relatedahsp == null ||
+            relatedahsp == undefined
             ? "PM"
             : {
                 formula: "AHS!$A$" + relatedahsp.rownum,

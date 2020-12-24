@@ -159,7 +159,7 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
       ID_WILAYAH = project.ID_WILAYAH;
       console.log("id Project", idproject);
       console.log("id WILAYAH", ID_WILAYAH);
-      AHSProjects.forEach((AHSProject) => {
+      AHSProjects.forEach(async (AHSProject, z) => {
         var AHS_PROJECT_UTAMA = {
           NAMA_AHS_PROJECT: AHSProject.name != null ? AHSProject.name : " ", // karena editable
           NO_URUT: parseInt(AHSProject.noAHS),
@@ -169,98 +169,120 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
           ID_AHS_SUMBER_UTAMA: AHSProject.id,
         };
 
-        // masukin utama ke DB, kalo berhasil, masukin bulk
-        AHSProjectUtama[TAHUN].create(AHS_PROJECT_UTAMA)
-          .then(async (result) => {
-            // try {
+        // check if the ahs utama is exists
+        alreadyExists = await AHSProjectUtama[TAHUN].findOne({
+          where: { ID_AHS_SUMBER_UTAMA: AHS_PROJECT_UTAMA.ID_AHS_SUMBER_UTAMA },
+        }).then((result) => {
+          console.log("==========================================");
+          console.log(result);
+          if (result != null && result != undefined) {
+            console.log("AHS Already exists");
+            return true;
+          } else {
+            return false;
+          }
+        });
 
-            var AHSProjectDetails = [];
-            var AHS_PROJECT_DETAILs = AHSProject.children.map(
-              async (AHSProjectDetail) => {
-                // search harga satuan
-                console.log("uraian", AHSProjectDetail.name);
+        if (!alreadyExists) {
+          // masukin utama ke DB, kalo berhasil, masukin bulk
+          AHSProjectUtama[TAHUN].create(AHS_PROJECT_UTAMA)
+            .then(async (result) => {
+              // try {
 
-                result2 = await HS[TAHUN].findOne({
-                  where: {
-                    ID_WILAYAH: ID_WILAYAH,
-                    URAIAN: AHSProjectDetail.name,
-                  },
-                });
+              var AHSProjectDetails = [];
+              var AHS_PROJECT_DETAILs = AHSProject.childrens.map(
+                async (AHSProjectDetail) => {
+                  // search harga satuan
+                  console.log("uraian", AHSProjectDetail.name);
 
-                if (result2 == null || result2 == undefined) {
-                  hskosong.push(AHSProjectDetail.name);
-                  ahsgagalid = result.ID_AHS_PROJECT_UTAMA;
-                  somethingwentwrong = true;
-                  return null;
-                }
-
-                if (!somethingwentwrong) {
-                  hasil = {
-                    ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
-                    P_URAIAN: AHSProjectDetail.name,
-                    ID_HS: result2.ID_HS,
-                    ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
-                    P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
-                    P_SATUAN_URAIAN: AHSProjectDetail.satuan,
-                    P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
-                    P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
-                  };
-
-                  console.log(hasil);
-                  //return hasil;
-                  return hasil;
-                } else {
-                  return null;
-                }
-              }
-            );
-
-            if (!somethingwentwrong) {
-              for await (const item of AHS_PROJECT_DETAILs) {
-                console.log(item);
-                AHSProjectDetails.push(item);
-              }
-
-              console.log("All done");
-              console.log("map beres");
-              console.log(AHSProjectDetails);
-              return AHSProjectDetails;
-            }
-
-            return null;
-          })
-          .then((AHS_PROJECT_DETAILs) => {
-            if (!somethingwentwrong) {
-              console.log(AHS_PROJECT_DETAILs);
-              console.log("here");
-              AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
-                .then((result2) => {
-                  console.log("mantep");
-                  res.status(201).json({
-                    message: "Success Post New AHS Detail Detail to Database",
-                    AHSProjectDetail: result2,
+                  result2 = await HS[TAHUN].findOne({
+                    where: {
+                      ID_WILAYAH: ID_WILAYAH,
+                      URAIAN: AHSProjectDetail.name,
+                    },
                   });
-                })
-                .catch((err) => {
-                  console.log(err);
+
+                  if (result2 == null || result2 == undefined) {
+                    hskosong.push(AHSProjectDetail.name);
+                    ahsgagalid = result.ID_AHS_PROJECT_UTAMA;
+                    somethingwentwrong = true;
+                    return null;
+                  }
+
+                  if (!somethingwentwrong) {
+                    hasil = {
+                      ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
+                      P_URAIAN: AHSProjectDetail.name,
+                      ID_HS: result2.ID_HS,
+                      ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
+                      P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
+                      P_SATUAN_URAIAN: AHSProjectDetail.satuan,
+                      P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
+                      P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
+                    };
+
+                    console.log(hasil);
+                    //return hasil;
+                    return hasil;
+                  } else {
+                    return null;
+                  }
+                }
+              );
+
+              if (!somethingwentwrong) {
+                //this is magic, idk why
+                for await (const item of AHS_PROJECT_DETAILs) {
+                  console.log(item);
+                  AHSProjectDetails.push(item);
+                }
+
+                console.log("All done");
+                console.log("map beres");
+                console.log(AHSProjectDetails);
+                return AHSProjectDetails;
+              }
+
+              return null;
+            })
+            .then((AHS_PROJECT_DETAILs) => {
+              if (!somethingwentwrong) {
+                console.log(AHS_PROJECT_DETAILs);
+                console.log("here");
+                AHSProjectDetail[TAHUN].bulkCreate(AHS_PROJECT_DETAILs)
+                  .then((result2) => {
+                    console.log("mantep");
+                    res.status(201).json({
+                      message: "Success Post New AHS Detail Detail to Database",
+                      AHSProjectDetail: result2,
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              } else {
+                AHSProjectUtama[TAHUN].destroy({
+                  where: {
+                    ID_AHS_PROJECT_UTAMA: ahsgagalid,
+                  },
+                }).then(() => {
+                  console.log("back");
+                  res.status(400).json({
+                    message: "HS Belum Lengkap",
+                    HS: hskosong,
+                  });
                 });
-            } else {
-              AHSProjectUtama[TAHUN].destroy({
-                where: {
-                  ID_AHS_PROJECT_UTAMA: ahsgagalid,
-                },
-              }).then(() => {
-                console.log("back");
-                res.status(400).json({
-                  message: "HS Belum Lengkap",
-                  HS: hskosong,
-                });
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (z == AHSProjects.length - 1) {
+          res.status(400).json({
+            message: "Hanya memasukan AHS Unique",
+            HS: ["", ""],
           });
+        }
       });
     })
     .catch((err) => {
@@ -313,7 +335,7 @@ exports.deleteAHSProjectDetail = (req, res, next) => {
 };
 
 // update untuk menambah HS saja ini mah
-exports.updateAHSProject = (req, res, next) => {
+exports.updateAHSProjectSpecific = (req, res, next) => {
   const TAHUN = req.body.TAHUN;
   const ID_AHS_PROJECT_DETAIL = req.body.ID_AHS_PROJECT_DETAIL;
   const ID_HS = req.body.ID_HS;
@@ -346,4 +368,28 @@ exports.updateAHSProject = (req, res, next) => {
       res.status(500).json({ error: err });
       console.log(err);
     });
+};
+
+exports.updateAHSProjectUtama = (req, res, next) => {
+  console.log("update AHS Project");
+  console.log(req.body);
+
+  const TAHUN = req.query.TAHUN;
+  const ID_AHS_PROJECT_UTAMA = req.body.ID_AHS_PROJECT_UTAMA;
+  const NAMA_AHS_PROJECT = req.body.NAMA_AHS;
+
+  AHSProjectUtama[TAHUN].update(
+    {
+      NAMA_AHS_PROJECT: NAMA_AHS_PROJECT,
+    },
+    {
+      where: {
+        ID_AHS_PROJECT_UTAMA: ID_AHS_PROJECT_UTAMA,
+      },
+    }
+  );
+
+  res.status(201).json({
+    message: "Success Edit New RABPB to Database",
+  });
 };

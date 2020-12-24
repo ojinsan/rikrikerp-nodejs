@@ -41,6 +41,11 @@ router.post(
   ahsProjectController.deleteAHSProjectDetail
 );
 
+router.post(
+  "/update-ahs-project-utama",
+  ahsProjectController.updateAHSProjectUtama
+);
+
 // ========================================= MARK: RAB Controller =========================================
 
 router.get("/get-rab-judul-full-data", rabController.getRABJudulFullData);

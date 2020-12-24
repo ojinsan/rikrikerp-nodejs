@@ -230,13 +230,6 @@ exports.updateRABProjectBagian = (req, res, next) => {
   const KETERANGAN_JUDUL_REKAP = req.body.KETERANGAN_JUDUL_REKAP;
   const KETERANGAN_BAG_BAWAH_RAB = req.body.KETERANGAN_BAG_BAWAH_RAB;
 
-  // const ID_TTD = req.body.ID_TTD;
-  // const TOTAL_UPAH_TDP = req.body.TOTAL_UPAH_TDP;
-  // const TOTAL_BAHAN_TDP = req.body.TOTAL_BAHAN_TDP;
-  // const TOTAL_UPAH_NON_TDP = req.body.TOTAL_UPAH_NON_TDP;
-  // const TOTAL_BAHAN_NON_TDP = req.body.TOTAL_BAHAN_NON_TDP;
-  // const JUMLAH_RAB = req.body.JUMLAH_RAB;
-
   const ID_TTD = req.body.ID_TTD;
   const TOTAL_UPAH_TDP = 0;
   const TOTAL_BAHAN_TDP = 0;

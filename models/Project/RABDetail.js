@@ -21,7 +21,7 @@ while (tahun <= TAHUN.toYear) {
         allowNull: false,
       },
       VOLUME: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       UPAH_NON_TDP: {

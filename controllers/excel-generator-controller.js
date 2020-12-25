@@ -636,23 +636,27 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         satuRab.RAB_DETAILS[0] != null ? satuRab.RAB_DETAILS[0].VOLUME : "",
       code:
         satuRab.RAB_DETAILS.length > 0
-          ? satuRab.RAB_DETAILS[0].PM ||
-            relatedahsp == null ||
-            relatedahsp == undefined
+          ? satuRab.RAB_DETAILS[0].PM
             ? "PM"
+            : relatedahsp == null || relatedahsp == undefined
+            ? "AHSP Not Found"
             : {
                 formula: "AHS!$A$" + relatedahsp.rownum,
                 result: relatedahsp.objnum,
               }
           : null,
       hargajasa:
-        satuRab.RAB_DETAILS.length > 0
+        satuRab.RAB_DETAILS.length > 0 ||
+        relatedahsp == null ||
+        relatedahsp == undefined
           ? satuRab.RAB_DETAILS[0].PM
             ? 0
             : { formula: "AHS!$L$" + relatedahsp.totalnum }
           : null, //better add result
       hargabahan:
-        satuRab.RAB_DETAILS.length > 0
+        satuRab.RAB_DETAILS.length > 0 ||
+        relatedahsp == null ||
+        relatedahsp == undefined
           ? satuRab.RAB_DETAILS[0].PM
             ? 0
             : { formula: "AHS!$M$" + relatedahsp.totalnum }

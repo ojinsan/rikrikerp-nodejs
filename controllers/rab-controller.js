@@ -244,6 +244,31 @@ exports.updateRABJudulDetail = (req, res, next) => {
   });
 };
 
+exports.updateAHSFromRABDetail = (req, res, next) => {
+  console.log("update HS from RAB Detail");
+  console.log(req.body);
+  const ID_AHS_PROJECT_UTAMA = req.body.ID_AHS_PROJECT_UTAMA;
+  const ID_RAB_DETAIL = req.body.ID_RAB_DETAIL;
+  const TAHUN = req.query.TAHUN;
+
+  RABDetail[TAHUN].update(
+    {
+      ID_AHS_PROJECT_UTAMA: ID_AHS_PROJECT_UTAMA,
+    },
+    { where: { ID_RAB_DETAIL: ID_RAB_DETAIL } }
+  )
+    .then((RABDetail) => {
+      res.status(201).json({
+        message: "Success Edit RAB to Database",
+        RABDetail: RABDetail,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+      console.log(err);
+    });
+};
+
 // ========================================= MARK: RAB Detail =========================================
 
 function sortRAB(rabjudul) {

@@ -393,3 +393,30 @@ exports.updateAHSProjectUtama = (req, res, next) => {
     message: "Success Edit New RABPB to Database",
   });
 };
+
+exports.getAHSProjectFullLookup = (req, res, next) => {
+  console.log("get AHS Project Lookup");
+  const ID_AHS_PROJECT_UTAMA = req.query.ID_AHS_PROJECT_UTAMA;
+  const TAHUN = req.query.TAHUN;
+
+  AHSProjectUtama[TAHUN].findOne({
+    where: { ID_AHS_PROJECT_UTAMA: ID_AHS_PROJECT_UTAMA },
+    include: [
+      {
+        model: AHSProjectDetail[TAHUN],
+        required: false,
+      },
+    ],
+    //order: [["AHS_PROJECT_DETAILs", "KELOMPOK_URAIAN", "DESC"]],
+  })
+    .then((AHS) => {
+      res.status(201).json({
+        message: "Success Get AHS Project",
+        AHS_PROJECT_UTAMA: AHS,
+      });
+    })
+    .catch((err) => {
+      res.status(500);
+      console.log(err);
+    });
+};

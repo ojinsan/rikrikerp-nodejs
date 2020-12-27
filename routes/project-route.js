@@ -46,6 +46,11 @@ router.post(
   ahsProjectController.updateAHSProjectUtama
 );
 
+router.get(
+  "/get-ahs-project-full-lookup",
+  ahsProjectController.getAHSProjectFullLookup
+);
+
 // ========================================= MARK: RAB Controller =========================================
 
 router.get("/get-rab-judul-full-data", rabController.getRABJudulFullData);
@@ -59,6 +64,11 @@ router.post("/post-new-rab-judul-detail", rabController.postNewRABJudulDetail);
 router.post("/delete-rab-judul-detail", rabController.deleteRABJudulDetail);
 
 router.post("/update-rab-judul-detail", rabController.updateRABJudulDetail);
+
+router.post(
+  "/update-ahs-from-rab-detail",
+  rabController.updateAHSFromRABDetail
+);
 
 // ========================================= MARK: RABP Controller =========================================
 router.get(

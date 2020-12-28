@@ -149,6 +149,7 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
   var somethingwentwrong = false;
   var hskosong = [];
   var ahsgagalid = null;
+  var existingAHSs = [];
 
   Project[TAHUN].findOne({
     where: {
@@ -177,6 +178,7 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
           console.log(result);
           if (result != null && result != undefined) {
             console.log("AHS Already exists");
+            existingAHSs.push(result.NAMA_AHS_PROJECT);
             return true;
           } else {
             return false;
@@ -278,9 +280,11 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
               console.log(err);
             });
         } else if (z == AHSProjects.length - 1) {
+          console.log(existingAHSs);
           res.status(400).json({
             message: "Hanya memasukan AHS Unique",
-            HS: ["", ""],
+            HS: null,
+            AHS: existingAHSs,
           });
         }
       });

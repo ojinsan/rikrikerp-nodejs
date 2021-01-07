@@ -283,7 +283,7 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
           console.log(existingAHSs);
           res.status(400).json({
             message: "Hanya memasukan AHS Unique",
-            HS: null,
+            HS: ["", ""],
             AHS: existingAHSs,
           });
         }
@@ -292,6 +292,10 @@ exports.postNewAHSProjectUtamaDetail = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+exports.postNewAHSProjectUtamaDetailKhusus2a = async (req, res, next) => {
+  console.log("kasus khusus 2a");
 };
 
 exports.deleteAHSProjectUtama = (req, res, next) => {

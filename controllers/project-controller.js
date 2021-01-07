@@ -3,6 +3,10 @@ const RABProjectBagian = require("../models/Project/RABProjectBagian");
 const RABJudul = require("../models/Project/RABJudul");
 const RABDetail = require("../models/Project/RABDetail");
 const Wilayah = require("../models/Wilayah");
+const AHSSumberUtama = require("../models/DataSource/AHSSumberUtama");
+const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
+const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
+const HS = require("../models/DataSource/HS");
 
 exports.getProjectFullData = (req, res, next) => {
   console.log("get project full data");
@@ -119,7 +123,7 @@ exports.updateProject = (req, res, next) => {
 };
 
 // ========================================= MARK: RAB Project Bagian =========================================
-exports.getRABProjectBagianFullData = (req, res, next) => {
+exports.getRABProjectBagianFullData = async (req, res, next) => {
   const ID_PROJECT = req.query.ID_PROJECT;
   const TAHUN = req.query.TAHUN;
 
@@ -138,10 +142,32 @@ exports.getRABProjectBagianFullData = (req, res, next) => {
       },
     ],
   })
-    .then((RABProjectBagian) => {
+    .then(async (RABProjectBagian) => {
+      var newRABPB = [];
+      var rabpbtemp = RABProjectBagian.map(async (rabpb) => {
+        //console.log(rabpb);
+        var [a, b, c, d] = await counterAndChecker(
+          TAHUN,
+          rabpb.ID_RAB_PROJECT_BAGIAN
+        );
+
+        rabpb.TOTAL_BAHAN_TDP = a;
+        rabpb.TOTAL_BAHAN_NON_TDP = b;
+        rabpb.TOTAL_UPAH_TDP = c;
+        rabpb.TOTAL_UPAH_NON_TDP = d;
+
+        return rabpb;
+      });
+
+      for await (const item of rabpbtemp) {
+        newRABPB.push(item);
+      }
+      return newRABPB;
+    })
+    .then((result) => {
       res.status(201).json({
         message: "Success pull data RAB Project Bagian",
-        RABProjectBagian: RABProjectBagian,
+        RABProjectBagian: result,
       });
     })
     .catch((error) => {
@@ -290,3 +316,111 @@ exports.updateRABProjectBagian = (req, res, next) => {
       //res.status(500).json({ error: err });
     });
 };
+
+// counter and checker
+async function counterAndChecker(TAHUN, ID_RAB_PROJECT_BAGIAN) {
+  // GET RABPB
+  var RABPB = await RABProjectBagian[TAHUN].findOne({
+    where: {
+      ID_RAB_PROJECT_BAGIAN: ID_RAB_PROJECT_BAGIAN,
+    },
+    include: [
+      {
+        model: RABJudul[TAHUN],
+        request: false,
+        include: [
+          {
+            model: RABDetail[TAHUN],
+            request: false,
+            include: [
+              {
+                model: AHSProjectUtama[TAHUN],
+                request: false,
+                include: [
+                  {
+                    model: AHSProjectDetail[TAHUN],
+                    request: false,
+                    include: [
+                      {
+                        model: HS[TAHUN],
+                        request: false,
+                      },
+                    ],
+                  },
+                  {
+                    model: AHSSumberUtama,
+                    request: false,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  // Get RAB Judul
+  var rabjudul = RABPB["T_RAB_JUDUL_" + TAHUN + "s"];
+
+  var newRab = [];
+  rabjudul.forEach((satuRab) => {
+    const satuRabTemp = JSON.parse(JSON.stringify(satuRab));
+    const satuRabDetail = satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
+    delete satuRabTemp["T_RAB_DETAIL_" + TAHUN + "s"];
+    satuRabTemp["RAB_DETAILS"] = satuRabDetail;
+    newRab.push(satuRabTemp);
+  });
+  rabjudul = newRab;
+
+  totalBahanTdp = 0;
+  totalBahanNonTdp = 0;
+  totalUpahTdp = 0;
+  totalUpahNonTdp = 0;
+
+  rabjudul.forEach((satuRab) => {
+    console.log(satuRab);
+    categoryBahan = "";
+    categoryUpah = "";
+
+    if (
+      satuRab.RAB_DETAILS[0] != undefined &&
+      satuRab.RAB_DETAILS[0]["AHS_PROJECT_UTAMA_" + TAHUN] != undefined &&
+      satuRab.RAB_DETAILS[0]["AHS_PROJECT_UTAMA_" + TAHUN][
+        "AHS_PROJECT_DETAIL_" + TAHUN + "s"
+      ] != undefined
+    ) {
+      temptotalupah = 0;
+      temptotalbahan = 0;
+      // jumlahin apapun
+      satuRab.RAB_DETAILS[0]["AHS_PROJECT_UTAMA_" + TAHUN][
+        "AHS_PROJECT_DETAIL_" + TAHUN + "s"
+      ].forEach((ahsd) => {
+        if (ahsd.P_KELOMPOK_URAIAN == "Upah") {
+          temptotalupah += ahsd["HS_" + TAHUN].HARGA;
+        } else if (ahsd.P_KELOMPOK_URAIAN == "Bahan") {
+          temptotalbahan += ahsd["HS_" + TAHUN].HARGA;
+        }
+      });
+
+      console.log("temp total bahan ", temptotalbahan);
+      console.log("temp total upah", temptotalupah);
+
+      // jumlahin bahan
+      if (satuRab.RAB_DETAILS[0].BAHAN_NON_TDP) {
+        totalBahanNonTdp += temptotalbahan;
+      } else {
+        totalBahanTdp += temptotalbahan;
+      }
+
+      // jumlahin upah
+      if (satuRab.RAB_DETAILS[0].UPAH_NON_TDP) {
+        totalUpahNonTdp += temptotalupah;
+      } else {
+        totalUpahTdp += temptotalupah;
+      }
+    }
+  });
+  console.log(totalBahanTdp, totalBahanNonTdp, totalUpahTdp, totalUpahNonTdp);
+  return [totalBahanTdp, totalBahanNonTdp, totalUpahTdp, totalUpahNonTdp];
+}

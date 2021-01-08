@@ -108,9 +108,9 @@ exports.generateExcel = async (req, res, next) => {
     RABPB
   );
 
-  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
-
   boqsheet = await createBOQSheet(boqsheet, res, TAHUN, RABPB, AHSPs);
+
+  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
 
   // Download the file ==============================================
   // res is a Stream object
@@ -914,7 +914,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     i++;
-    console.log(satuRab);
     rabsheet.addRow({
       no:
         satuRab.NO_URUT_4 > 0
@@ -1004,6 +1003,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
     });
 
+    // PENJUMLAHAN
     sectionlevel2 = sectionlevel;
     console.log(sectionlevel);
     for (m = sectionlevel; m > 0; m--) {
@@ -1049,13 +1049,13 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         } else {
           i++;
           titiksum[m].push(i);
-          rabsheet.mergeCells("B" + i + ":G" + i);
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
           console.log(satujudulandnum);
           console.log(judulandnum);
+          rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
-            satujudulandnum.num + ". " + satujudulandnum.judul;
+            "TOTAL " + satujudulandnum.num + ". " + satujudulandnum.judul;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
@@ -1088,90 +1088,138 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         }
       }
     }
-
-    // // kondisi abis ini new section
-    // if (
-    //   satuRab.NO_URUT_1 != rabjudul[k + 1].NO_URUT_1 ||
-    //   satuRab.NO_URUT_2 != rabjudul[k + 1].NO_URUT_2 ||
-    //   satuRab.NO_URUT_3 != rabjudul[k + 1].NO_URUT_3
-    // ) {
-    //   i++;
-    //   rabsheet.addRow({});
-    //   secend = i;
-
-    //   isalreadysum = false;
-
-    //   if (satuRab.NO_URUT_3 != rabjudul[k + 1].NO_URUT_3) {
-    //     i++;
-    //     rabsheet.mergeCells("B" + i + ":G" + i);
-    //     rabsheet.getCell("B" + i).value = "sum untuk judul 3";
-    //     rabsheet.getCell("H" + i).value = {
-    //       formula: "=SUM(H" + secstart + ":H" + secend + ")",
-    //     }; //better add result
-    //     rabsheet.getCell("I" + i).value = {
-    //       formula: "=SUM(I" + secstart + ":I" + secend + ")",
-    //     }; //better add result
-    //     rabsheet.getCell("J" + i).value = {
-    //       formula: "=SUM(J" + secstart + ":J" + secend + ")",
-    //     }; //better add result
-    //     rabsheet.getCell("K" + i).value = {
-    //       formula: "=SUM(K" + secstart + ":K" + secend + ")",
-    //     }; //better add result
-
-    //     isalreadysum = true;
-    //     newsecnum = 3;
-    //   }
-    //   if (satuRab.NO_URUT_2 != rabjudul[k + 1].NO_URUT_2) {
-    //     i++;
-    //     rabsheet.mergeCells("B" + i + ":G" + i);
-    //     rabsheet.getCell("B" + i).value = "sum untuk judul 2";
-    //     if (!isalreadysum) {
-    //       rabsheet.getCell("B" + i).value = "sum untuk judul 3";
-    //       rabsheet.getCell("H" + i).value = {
-    //         formula: "=SUM(H" + secstart + ":H" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("I" + i).value = {
-    //         formula: "=SUM(I" + secstart + ":I" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("J" + i).value = {
-    //         formula: "=SUM(J" + secstart + ":J" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("K" + i).value = {
-    //         formula: "=SUM(K" + secstart + ":K" + secend + ")",
-    //       }; //better add result
-    //     }
-
-    //     isalreadysum = true;
-    //     newsecnum = 2;
-    //   }
-    //   if (satuRab.NO_URUT_1 != rabjudul[k + 1].NO_URUT_1) {
-    //     i++;
-    //     rabsheet.mergeCells("B" + i + ":G" + i);
-    //     rabsheet.getCell("B" + i).value = "sum untuk judul 1";
-
-    //     if (!isalreadysum) {
-    //       rabsheet.getCell("B" + i).value = "sum untuk judul 3";
-    //       rabsheet.getCell("H" + i).value = {
-    //         formula: "=SUM(H" + secstart + ":H" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("I" + i).value = {
-    //         formula: "=SUM(I" + secstart + ":I" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("J" + i).value = {
-    //         formula: "=SUM(J" + secstart + ":J" + secend + ")",
-    //       }; //better add result
-    //       rabsheet.getCell("K" + i).value = {
-    //         formula: "=SUM(K" + secstart + ":K" + secend + ")",
-    //       }; //better add result
-    //     }
-
-    //     newsecnum = 1;
-    //   }
-
-    //   // next is new section
-    //   newsec = true;
-    // }
+    console.log("===========");
   });
+  console.log("RABBBBBBBBBBBBBBB DONE");
+  console.log(titiksum);
+
+  //TOTAL ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "JUMLAH";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "H" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "I" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "J" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "K" + titik + " +").join(" ") + "0",
+  }; //better add result
+
+  //TOTAL ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "PPN 10%";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula: "=10% * H" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula: "=10% * I" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula: "=10% * J" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula: "=10% * K" + (i - 1),
+  }; //better add result
+
+  //TOTAL + PPN ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "JUMLAH + PPN 10%";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula: "=H" + (i - 1) + " + H" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula: "=I" + (i - 1) + " + I" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula: "=J" + (i - 1) + " + J" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula: "=K" + (i - 1) + " + K" + (i - 2),
+  }; //better add result
+
+  //TOTAL + PPN ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "TOTAL";
+
+  rabsheet.getCell("K" + i).value = {
+    formula: "=SUM(H" + (i - 1) + ":K" + (i - 1) + ")",
+  }; //better add result
+
+  //TERBILANG
+  i++;
+  rabsheet.getCell("B" + i).value = "TERBILANG";
+  rabsheet.mergeCells("C" + i + ":K" + i);
+
+  rabsheet.getCell("C" + i).value = {
+    formula:
+      `=PROPER(IF(A1=0,"nol",IF(A1<0,"minus ","")&
+    SUBSTITUTE(TRIM(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(
+    IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),1,3)=0,"",MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),1,1)&" ratus "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),2,1)&" puluh "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),3,1)&" trilyun ")&
+    IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),4,3)=0,"",MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),4,1)&" ratus "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),5,1)&" puluh "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),6,1)&" milyar ")&
+    IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),7,3)=0,"",MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),7,1)&" ratus "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),8,1)&" puluh "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),9,1)&" juta ")&
+    IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),10,3)=0,"",IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),10,3)=1,"*",MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),10,1)&" ratus "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),11,1)&" puluh ")&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),12,1)&" ribu ")&
+    IF(--MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),13,3)=0,"",MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),13,1)&" ratus "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),14,1)&" puluh "&MID(TEXT(ABS(K` +
+      (i - 1) +
+      `),"000000000000000"),15,1)),1,"satu"),2,"dua"),3,"tiga"),4,"empat"),5,"lima"),6,"enam"),7,"tujuh"),8,"delapan"),9,"sembilan"),"0 ratus",""),"0 puluh",""),"satu puluh 0","sepuluh"),"satu puluh satu","sebelas"),"satu puluh dua","dua belas"),"satu puluh tiga","tiga belas"),"satu puluh empat","empat belas"),"satu puluh lima","lima belas"),"satu puluh enam","enam belas"),"satu puluh tujuh","tujuh belas"),"satu puluh delapan","delapan belas"),"satu puluh sembilan","sembilan belas"),"satu ratus","seratus"),"*satu ribu","seribu"),0,"")),"  "," "))&" Rupiah")`,
+  }; //better add result
 
   return rabsheet;
 }
@@ -1649,6 +1697,90 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     //   newsec = true;
     // }
   });
+
+  // TOTAL ALL
+  console.log("BOQ DONE");
+  console.log(titiksum);
+
+  //TOTAL ALL
+  //TOTAL ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "JUMLAH";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "H" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "I" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "J" + titik + " +").join(" ") + "0",
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula:
+      "=" + titiksum[1].map((titik) => "K" + titik + " +").join(" ") + "0",
+  }; //better add result
+
+  //TOTAL ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "PPN 10%";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula: "=10% * H" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula: "=10% * I" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula: "=10% * J" + (i - 1),
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula: "=10% * K" + (i - 1),
+  }; //better add result
+
+  //TOTAL + PPN ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "JUMLAH + PPN 10%";
+
+  // cari titik-titik sum selanjutnya
+  rabsheet.getCell("H" + i).value = {
+    formula: "=H" + (i - 1) + " + H" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("I" + i).value = {
+    formula: "=I" + (i - 1) + " + I" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("J" + i).value = {
+    formula: "=J" + (i - 1) + " + J" + (i - 2),
+  }; //better add result
+  rabsheet.getCell("K" + i).value = {
+    formula: "=K" + (i - 1) + " + K" + (i - 2),
+  }; //better add result
+
+  //TOTAL + PPN ALL
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "TOTAL";
+
+  rabsheet.getCell("K" + i).value = {
+    formula: "=SUM(H" + (i - 1) + ":K" + (i - 1) + ")",
+  }; //better add result
+
+  //TERBILANG
+  i++;
+  rabsheet.getCell("B" + i).value = "TERBILANG";
+  rabsheet.mergeCells("C" + i + ":K" + i);
+
+  rabsheet.getCell("C" + i).value = {
+    formula: `=0`,
+  }; //better add result
 
   return rabsheet;
 }

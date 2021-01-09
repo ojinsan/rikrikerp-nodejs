@@ -1015,7 +1015,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaijasatdp:
         satuRab.RAB_DETAILS[0] != null
-          ? !satuRab.RAB_DETAILS[0].UPAH_NON_TDP //TDP
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP == 1 //TDP
             ? null
             : {
                 formula: "F" + i + "*D" + i,
@@ -1023,7 +1023,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaijasanontdp:
         satuRab.RAB_DETAILS[0] != null
-          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP == 1
             ? {
                 formula: "F" + i + "*D" + i,
               }
@@ -1031,7 +1031,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaibahantdp:
         satuRab.RAB_DETAILS[0] != null
-          ? !satuRab.RAB_DETAILS[0].BAHAN_NON_TDP //TDP
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP == 1 //TDP
             ? null
             : {
                 formula: "G" + i + "*D" + i,
@@ -1039,7 +1039,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaibahannontdp:
         satuRab.RAB_DETAILS[0] != null
-          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP == 1
             ? {
                 formula: "G" + i + "*D" + i,
               }
@@ -1541,7 +1541,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaijasatdp:
         satuRab.RAB_DETAILS[0] != null
-          ? !satuRab.RAB_DETAILS[0].UPAH_NON_TDP //TDP
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP == 1 //TDP
             ? null
             : {
                 formula: "F" + i + "*D" + i,
@@ -1549,7 +1549,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaijasanontdp:
         satuRab.RAB_DETAILS[0] != null
-          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP
+          ? satuRab.RAB_DETAILS[0].UPAH_NON_TDP == 1
             ? {
                 formula: "F" + i + "*D" + i,
               }
@@ -1557,7 +1557,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaibahantdp:
         satuRab.RAB_DETAILS[0] != null
-          ? !satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP == 1
             ? null
             : {
                 formula: "G" + i + "*D" + i,
@@ -1565,7 +1565,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
       nilaibahannontdp:
         satuRab.RAB_DETAILS[0] != null
-          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP
+          ? satuRab.RAB_DETAILS[0].BAHAN_NON_TDP == 1
             ? {
                 formula: "G" + i + "*D" + i,
               }

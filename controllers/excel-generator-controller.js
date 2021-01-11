@@ -1170,13 +1170,13 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     formula: "=10% * H" + (i - 1),
   }; //better add result
   rabsheet.getCell("I" + i).value = {
-    formula: "=10% * I" + (i - 1),
+    formula: "=0 * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
     formula: "=10% * J" + (i - 1),
   }; //better add result
   rabsheet.getCell("K" + i).value = {
-    formula: "=10% * K" + (i - 1),
+    formula: "=0 * K" + (i - 1),
   }; //better add result
 
   //TOTAL + PPN ALL
@@ -1780,13 +1780,13 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     formula: "=10% * H" + (i - 1),
   }; //better add result
   rabsheet.getCell("I" + i).value = {
-    formula: "=10% * I" + (i - 1),
+    formula: "=0 * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
     formula: "=10% * J" + (i - 1),
   }; //better add result
   rabsheet.getCell("K" + i).value = {
-    formula: "=10% * K" + (i - 1),
+    formula: "=0 * K" + (i - 1),
   }; //better add result
 
   //TOTAL + PPN ALL

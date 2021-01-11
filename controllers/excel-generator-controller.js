@@ -1059,8 +1059,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     if (newsec) {
-      i++;
-      rabsheet.addRow({});
       secend = i;
       isalreadysum = false;
       for (m = sectionlevel; m >= sectionlevel2; m--) {
@@ -1073,7 +1071,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
-            "TOTAL " + satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
           rabsheet.getCell("H" + i).value = {
             formula: "=SUM(H" + secstart + ":H" + secend + ")",
           }; //better add result
@@ -1099,7 +1097,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(judulandnum);
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
-            "TOTAL " + satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
@@ -1131,6 +1129,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(titiksum);
         }
       }
+      i++;
+      rabsheet.addRow({});
     }
     console.log("===========");
   });
@@ -1167,16 +1167,16 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   // cari titik-titik sum selanjutnya
   rabsheet.getCell("H" + i).value = {
-    formula: "=10% * H" + (i - 1),
+    formula: "=0 * H" + (i - 1),
   }; //better add result
   rabsheet.getCell("I" + i).value = {
-    formula: "=0 * I" + (i - 1),
+    formula: "=10% * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
-    formula: "=10% * J" + (i - 1),
+    formula: "=0 * J" + (i - 1),
   }; //better add result
   rabsheet.getCell("K" + i).value = {
-    formula: "=0 * K" + (i - 1),
+    formula: "=10% * K" + (i - 1),
   }; //better add result
 
   //TOTAL + PPN ALL
@@ -1205,6 +1205,15 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   rabsheet.getCell("K" + i).value = {
     formula: "=SUM(H" + (i - 1) + ":K" + (i - 1) + ")",
+  }; //better add result
+
+  //TOTAL DIBULATKAN
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "TOTAL DIBULATKAN";
+
+  rabsheet.getCell("K" + i).value = {
+    formula: "=ROUNDUP(K" + (i - 1) + "/1000,0)*1000",
   }; //better add result
 
   //TERBILANG
@@ -1584,8 +1593,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     if (newsec) {
-      i++;
-      rabsheet.addRow({});
       secend = i;
       isalreadysum = false;
       for (m = sectionlevel; m >= sectionlevel2; m--) {
@@ -1598,7 +1605,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
-            satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
           rabsheet.getCell("H" + i).value = {
             formula: "=SUM(H" + secstart + ":H" + secend + ")",
           }; //better add result
@@ -1624,7 +1631,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(satujudulandnum);
           console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
-            satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
@@ -1656,6 +1663,8 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           console.log(titiksum);
         }
       }
+      i++;
+      rabsheet.addRow({});
     }
 
     // // kondisi abis ini new section
@@ -1777,16 +1786,16 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   // cari titik-titik sum selanjutnya
   rabsheet.getCell("H" + i).value = {
-    formula: "=10% * H" + (i - 1),
+    formula: "=0 * H" + (i - 1),
   }; //better add result
   rabsheet.getCell("I" + i).value = {
-    formula: "=0 * I" + (i - 1),
+    formula: "=10% * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
-    formula: "=10% * J" + (i - 1),
+    formula: "=0 * J" + (i - 1),
   }; //better add result
   rabsheet.getCell("K" + i).value = {
-    formula: "=0 * K" + (i - 1),
+    formula: "=10% * K" + (i - 1),
   }; //better add result
 
   //TOTAL + PPN ALL
@@ -1815,6 +1824,15 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   rabsheet.getCell("K" + i).value = {
     formula: "=SUM(H" + (i - 1) + ":K" + (i - 1) + ")",
+  }; //better add result
+
+  //TOTAL DIBULATKAN
+  i++;
+  rabsheet.mergeCells("B" + i + ":G" + i);
+  rabsheet.getCell("B" + i).value = "TOTAL DIBULATKAN";
+
+  rabsheet.getCell("K" + i).value = {
+    formula: "=ROUNDUP(K" + (i - 1) + "/1000,0)*1000",
   }; //better add result
 
   //TERBILANG

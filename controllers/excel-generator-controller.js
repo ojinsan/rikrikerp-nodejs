@@ -245,10 +245,11 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
 async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   console.log("Create AHSP Sheet");
   //console.log(ID_PROJECT);
-
+  var rabjudul = sortRAB(RABPB["T_RAB_JUDUL_" + TAHUN + "s"]);
   AHSPs = [];
   tempAHSDiForAHSK4 = [];
-  RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+  //RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+  rabjudul.forEach((rabjudul) => {
     if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
       if (
         rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
@@ -447,6 +448,42 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
               "ID_AHS_PROJECT_UTAMA",
               satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
             );
+            if (true) {
+              worksheet.addRow({
+                koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+                satuan: AHSPD.P_SATUAN_URAIAN,
+                ahspdetailjudul: AHSPD.P_URAIAN,
+                at: "@",
+                harga:
+                  AHSPD.HS != null
+                    ? {
+                        formula: "='Acuan Harga Survey'!E" + hargarownum,
+                        //value: AHSPD.HS.HARGA,
+                        value: "='Acuan Harga Survey'!E" + hargarownum,
+                      }
+                    : 0,
+                equal: "=",
+                totalupah:
+                  AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                    ? {
+                        formula: "=J" + i + "*F" + i,
+                        result:
+                          AHSPD.P_KOEFISIEN_URAIAN *
+                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                      }
+                    : 0,
+                totalbahan:
+                  AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                    ? {
+                        formula: "=J" + i + "*F" + i,
+                        result:
+                          AHSPD.P_KOEFISIEN_URAIAN *
+                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                      }
+                    : 0,
+              });
+            } else {
+            }
           } else {
             // kasus biasa
             var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);

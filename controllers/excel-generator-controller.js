@@ -1176,15 +1176,15 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   rabsheet.getCell("B" + i).value = "PPN 10%";
 
   // cari titik-titik sum selanjutnya
-  rabsheet.getCell("H" + i).value = {
-    formula: "",
-  }; //better add result
+  // rabsheet.getCell("H" + i).value = {
+  //   formula: "",
+  // }; //better add result
   rabsheet.getCell("I" + i).value = {
     formula: "=10% * I" + (i - 1),
   }; //better add result
-  rabsheet.getCell("J" + i).value = {
-    formula: "",
-  }; //better add result
+  // rabsheet.getCell("J" + i).value = {
+  //   formula: "",
+  // }; //better add result
   rabsheet.getCell("K" + i).value = {
     formula: "=10% * K" + (i - 1),
   }; //better add result
@@ -1795,15 +1795,15 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   rabsheet.getCell("B" + i).value = "PPN 10%";
 
   // cari titik-titik sum selanjutnya
-  rabsheet.getCell("H" + i).value = {
-    formula: "",
-  }; //better add result
+  // rabsheet.getCell("H" + i).value = {
+  //   formula: "",
+  // }; //better add result
   rabsheet.getCell("I" + i).value = {
     formula: "=10% * I" + (i - 1),
   }; //better add result
-  rabsheet.getCell("J" + i).value = {
-    formula: "",
-  }; //better add result
+  // rabsheet.getCell("J" + i).value = {
+  //   formula: "",
+  // }; //better add result
   rabsheet.getCell("K" + i).value = {
     formula: "=10% * K" + (i - 1),
   }; //better add result

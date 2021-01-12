@@ -139,7 +139,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
   //var hs = await HS[TAHUN].findAll({ where: { ID_WILAYAH: ID_WILAYAH } });
   var hs = [];
 
-  // Input data to HS
+  // Input data to HS, and remove duplicate
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
     console.log("====");
     //console.log(rabjudul);
@@ -264,7 +264,11 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     }
   });
 
+  // filter AHSPS
+
   var newAHSUtama = [];
+
+  // get AHSPs
   AHSPs.forEach((satuAHSUtama) => {
     var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
     var satuAHSUtamaDetailTemp =
@@ -351,156 +355,162 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   // Fill data each AHS Utama
   var i = 3;
   var j = 0;
+  writtenAHSPs = [];
   AHSPs.forEach((AHSP, index) => {
     // console.log("===========");
     // console.log(AHSP);
-    totalupahsum = 0;
-    totalbahansum = 0;
-    i++;
-    j++;
 
-    AHSPs[index].objnum = j;
-    AHSPs[index].rownum = i;
-    // Every AHS Utama
-    worksheet.addRow({
-      no: j,
-      ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
-    });
-    i++;
-    worksheet.addRow({
-      koefisien: "Satuan:",
-      satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
-    });
+    // check duplicate
 
-    iinit = i;
-    // Now AHS Detail
-    AHSP.AHS_PROJECT_DETAIL &&
-      AHSP.AHS_PROJECT_DETAIL.forEach((AHSPD) => {
-        //console.log(AHSPD);
-        i++;
-        tempAHSDiForAHSK4.push({
-          id: AHSPD.ID_AHS_PROJECT_DETAIL,
-          i: i,
-        });
+    relatedahsp = findFromAHSP(
+      writtenAHSPs,
+      "ID_AHS_PROJECT_UTAMA",
+      AHSP.ID_AHS_PROJECT_UTAMA
+    );
 
-        if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
-          // kasus khusus 4
-          var hargarownum = findHSFromAHSPD(
-            tempAHSDiForAHSK4,
-            AHSPD.P_HS_AHS_P
-          );
-          worksheet.addRow({
-            koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-            satuan: AHSPD.P_SATUAN_URAIAN,
-            ahspdetailjudul: AHSPD.P_URAIAN,
-            at: "@",
-            harga:
-              hargarownum != null
-                ? {
-                    formula: "=L" + hargarownum + " + M" + hargarownum,
-                  }
-                : "-1",
-            equal: "=",
-            totalupah:
-              AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                ? {
-                    formula: "=J" + i + "*F" + i,
-                    result:
-                      AHSPD.P_KOEFISIEN_URAIAN *
-                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                  }
-                : 0,
-            totalbahan:
-              AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                ? {
-                    formula: "=J" + i + "*F" + i,
-                    result:
-                      AHSPD.P_KOEFISIEN_URAIAN *
-                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                  }
-                : 0,
-          });
-        } else if (
-          AHSPD.P_HS_ANAK_AHS != null ||
-          AHSPD.P_HS_ANAK_AHS != undefined
-        ) {
-        } else {
-          // kasus biasa
-          var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
-          worksheet.addRow({
-            koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-            satuan: AHSPD.P_SATUAN_URAIAN,
-            ahspdetailjudul: AHSPD.P_URAIAN,
-            at: "@",
-            harga:
-              AHSPD.HS != null
-                ? {
-                    formula: "='Acuan Harga Survey'!E" + hargarownum,
-                    //value: AHSPD.HS.HARGA,
-                    value: "='Acuan Harga Survey'!E" + hargarownum,
-                  }
-                : 0,
-            equal: "=",
-            totalupah:
-              AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                ? {
-                    formula: "=J" + i + "*F" + i,
-                    result:
-                      AHSPD.P_KOEFISIEN_URAIAN *
-                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                  }
-                : 0,
-            totalbahan:
-              AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                ? {
-                    formula: "=J" + i + "*F" + i,
-                    result:
-                      AHSPD.P_KOEFISIEN_URAIAN *
-                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                  }
-                : 0,
-          });
-        }
+    if (relatedahsp == null) {
+      tempAHSDiForAHSK2 = [];
+      totalupahsum = 0;
+      totalbahansum = 0;
+      i++;
+      j++;
+
+      AHSPs[index].objnum = j;
+      AHSPs[index].rownum = i;
+      // Every AHS Utama
+      worksheet.addRow({
+        no: j,
+        ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
       });
-    i++;
-    worksheet.addRow({
-      harga: "Jumlah",
-      totalupah: {
-        formula: "=sum(L" + iinit + ":L" + (i - 1) + ")",
-        value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
-      },
-      totalbahan: {
-        formula: "=sum(M" + iinit + ":M" + (i - 1) + ")",
-        value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
-      },
-    });
+      i++;
+      worksheet.addRow({
+        koefisien: "Satuan:",
+        satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+      });
 
-    AHSPs[index].totalnum = i;
+      iinit = i;
+      // Now AHS Detail
+      AHSP.AHS_PROJECT_DETAIL &&
+        AHSP.AHS_PROJECT_DETAIL.forEach((AHSPD) => {
+          //console.log(AHSPD);
+          i++;
+          tempAHSDiForAHSK4.push({
+            id: AHSPD.ID_AHS_PROJECT_DETAIL,
+            i: i,
+          });
 
-    i++;
-    worksheet.addRow({
-      ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
-    });
-    i++;
-    worksheet.addRow({});
+          if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
+            // kasus khusus 4
+            var hargarownum = findHSFromAHSPD(
+              tempAHSDiForAHSK4,
+              AHSPD.P_HS_AHS_P
+            );
+            worksheet.addRow({
+              koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+              satuan: AHSPD.P_SATUAN_URAIAN,
+              ahspdetailjudul: AHSPD.P_URAIAN,
+              at: "@",
+              harga:
+                hargarownum != null
+                  ? {
+                      formula: "=L" + hargarownum + " + M" + hargarownum,
+                    }
+                  : "-1",
+              equal: "=",
+              totalupah:
+                AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                  ? {
+                      formula: "=J" + i + "*F" + i,
+                      result:
+                        AHSPD.P_KOEFISIEN_URAIAN *
+                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                    }
+                  : 0,
+              totalbahan:
+                AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                  ? {
+                      formula: "=J" + i + "*F" + i,
+                      result:
+                        AHSPD.P_KOEFISIEN_URAIAN *
+                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                    }
+                  : 0,
+            });
+          } else if (
+            AHSPD.P_HS_ANAK_AHS != null ||
+            AHSPD.P_HS_ANAK_AHS != undefined
+          ) {
+            // kasus khusus 2
+            // save to array temp of ahp yang ingin di-include
+            relatedahsp = findFromAHSP(
+              AHSPs,
+              "ID_AHS_PROJECT_UTAMA",
+              satuRab.RAB_DETAILS[0].ID_AHS_PROJECT_UTAMA
+            );
+          } else {
+            // kasus biasa
+            var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
+            worksheet.addRow({
+              koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+              satuan: AHSPD.P_SATUAN_URAIAN,
+              ahspdetailjudul: AHSPD.P_URAIAN,
+              at: "@",
+              harga:
+                AHSPD.HS != null
+                  ? {
+                      formula: "='Acuan Harga Survey'!E" + hargarownum,
+                      //value: AHSPD.HS.HARGA,
+                      value: "='Acuan Harga Survey'!E" + hargarownum,
+                    }
+                  : 0,
+              equal: "=",
+              totalupah:
+                AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                  ? {
+                      formula: "=J" + i + "*F" + i,
+                      result:
+                        AHSPD.P_KOEFISIEN_URAIAN *
+                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                    }
+                  : 0,
+              totalbahan:
+                AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                  ? {
+                      formula: "=J" + i + "*F" + i,
+                      result:
+                        AHSPD.P_KOEFISIEN_URAIAN *
+                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                    }
+                  : 0,
+            });
+          }
+        });
+      i++;
+      worksheet.addRow({
+        harga: "Jumlah",
+        totalupah: {
+          formula: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+          value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+        },
+        totalbahan: {
+          formula: "=sum(M" + iinit + ":M" + (i - 1) + ")",
+          value: "=sum(L" + iinit + ":L" + (i - 1) + ")",
+        },
+      });
+
+      AHSPs[index].totalnum = i;
+
+      i++;
+      worksheet.addRow({
+        ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
+      });
+      i++;
+      worksheet.addRow({});
+      writtenAHSPs.push(AHSPs[index]);
+    }
   });
 
-  // var rows = hs.map((onehs) => {
-  //   i = i + 1;
-  //   return {
-  //     rownum: i + 4,
-  //     no: i,
-  //     namamaterial: onehs.URAIAN,
-  //     type: onehs.TYPE,
-  //     satuan: onehs.SATUAN,
-  //     harga: onehs.HARGA,
-  //     sumber: onehs.SUMBER,
-  //   };
-  // });
-
-  //worksheet.addRows(rows);
-
-  return [worksheet, AHSPs];
+  return [worksheet, writtenAHSPs];
 }
 
 async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
@@ -1167,13 +1177,13 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   // cari titik-titik sum selanjutnya
   rabsheet.getCell("H" + i).value = {
-    formula: "=0 * H" + (i - 1),
+    formula: "",
   }; //better add result
   rabsheet.getCell("I" + i).value = {
     formula: "=10% * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
-    formula: "=0 * J" + (i - 1),
+    formula: "",
   }; //better add result
   rabsheet.getCell("K" + i).value = {
     formula: "=10% * K" + (i - 1),
@@ -1786,13 +1796,13 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   // cari titik-titik sum selanjutnya
   rabsheet.getCell("H" + i).value = {
-    formula: "=0 * H" + (i - 1),
+    formula: "",
   }; //better add result
   rabsheet.getCell("I" + i).value = {
     formula: "=10% * I" + (i - 1),
   }; //better add result
   rabsheet.getCell("J" + i).value = {
-    formula: "=0 * J" + (i - 1),
+    formula: "",
   }; //better add result
   rabsheet.getCell("K" + i).value = {
     formula: "=10% * K" + (i - 1),
@@ -1905,7 +1915,7 @@ function sortRAB(rabjudul) {
 
 // thequery = parameter to search
 function findFromAHSP(ahsp, thequery, value) {
-  var foundval;
+  var foundval = null;
   //console.log("fungsi", value);
 
   //console.log(ahsp);

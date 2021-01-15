@@ -33,6 +33,10 @@ while (tahun <= TAHUN.toYear) {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      // PAIR: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: true,
+      // },
 
       // This is foreign key
       // ID_PROJECT: {

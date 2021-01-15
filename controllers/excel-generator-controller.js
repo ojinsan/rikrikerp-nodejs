@@ -47,6 +47,22 @@ exports.generateExcel = async (req, res, next) => {
                     model: AHSSumberUtama,
                     request: false,
                   },
+                  {
+                    model: AHSProjectUtama[TAHUN],
+                    request: false,
+                    include: [
+                      {
+                        model: AHSProjectDetail[TAHUN],
+                        request: false,
+                        include: [
+                          {
+                            model: HS[TAHUN],
+                            request: false,
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
             ],
@@ -94,7 +110,7 @@ exports.generateExcel = async (req, res, next) => {
   //   var worksheet = workbook.getWorksheet("My Sheet");
 
   // Create Sheet ==============================================
-  console.log(RABPB);
+  // console.log(RABPB);
 
   [hssheet, rows] = await createHSSheet(hssheet, res, TAHUN, ID_WILAYAH, RABPB);
   //console.log(rows);
@@ -108,9 +124,9 @@ exports.generateExcel = async (req, res, next) => {
     RABPB
   );
 
-  boqsheet = await createBOQSheet(boqsheet, res, TAHUN, RABPB, AHSPs);
+  //boqsheet = await createBOQSheet(boqsheet, res, TAHUN, RABPB, AHSPs);
 
-  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
+  //rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
 
   // Download the file ==============================================
   // res is a Stream object
@@ -141,9 +157,6 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
 
   // Input data to HS, and remove duplicate
   RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
-    console.log("====");
-    //console.log(rabjudul);
-
     if (
       rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0 &&
       rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
@@ -275,7 +288,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     var satuAHSUtamaDetailTemp =
       satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
 
-    // Ubah format doang
+    // Ubah format doang ========
     if (satuAHSUtamaDetailTemp.length > 0) {
       var satuAHSUtamaDetailTempTemp = [];
       satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
@@ -291,9 +304,42 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
 
     delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
     satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
+
+    // Ubah format doang, pair AHS
+    if (satuAHSUtamaTemp.PAIR != null) {
+      satuAHSUtama_PairTemp = JSON.parse(
+        JSON.stringify(satuAHSUtamaTemp["AHS_PROJECT_UTAMA_" + TAHUN])
+      );
+
+      satuAHSUtamaDetail_PairTemp =
+        satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+      if (satuAHSUtamaDetail_PairTemp.length > 0) {
+        var satuAHSUtamaDetail_PairTempTemp = [];
+        satuAHSUtamaDetail_PairTemp.map((satuAHSDetail) => {
+          const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
+          const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+          delete satuAHSDetailTemp["HS_" + TAHUN];
+          satuAHSDetailTemp["HS"] = satuHSTemp;
+
+          satuAHSUtamaDetail_PairTempTemp.push(satuAHSDetailTemp);
+        });
+        satuAHSUtamaDetail_PairTemp = satuAHSUtamaDetail_PairTempTemp;
+      }
+
+      delete satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+      satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetail_PairTemp;
+
+      delete satuAHSUtamaTemp["AHS_PROJECT_UTAMA_" + TAHUN];
+      satuAHSUtamaTemp["AHSP_PAIR"] = satuAHSUtama_PairTemp;
+    } else {
+      satuAHSUtamaTemp["AHSP_PAIR"] = null;
+    }
+
     newAHSUtama.push(satuAHSUtamaTemp);
   });
   AHSPs = newAHSUtama;
+
+  console.log(AHSPs);
 
   worksheet.columns = [
     { header: "No", key: "no", width: 5, outlineLevel: 1 },
@@ -362,7 +408,6 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     // console.log(AHSP);
 
     // check duplicate
-
     existingahsp = findFromAHSP(
       writtenAHSPs,
       "ID_AHS_PROJECT_UTAMA",
@@ -525,6 +570,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
         });
 
       // ============= end detail and AHS yang dipake, belum SUM sih. Di bawah
+
       // mark the end of sum
       iendofsum = i;
 
@@ -707,7 +753,6 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
         });
 
         // copy ke desired ahsp detail
-
         console.log("AHSP itarget " + AHSP.itarget);
         console.log("AHSP A_B " + AHSP.A_B);
         console.log("AHSP jeniskhusus2 " + AHSP.jeniskhusus2);
@@ -738,21 +783,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
         }
       });
 
-      //TOTAL SATU AHS
-      // i++;
-      // worksheet.addRow({
-      //   harga: "Jumlah",
-      //   totalupah: {
-      //     formula: "=sum(L" + iinit + ":L" + iendofsum + ")",
-      //     value: "=sum(L" + iinit + ":L" + iendofsum + ")",
-      //   },
-      //   totalbahan: {
-      //     formula: "=sum(M" + iinit + ":M" + iendofsum + ")",
-      //     value: "=sum(L" + iinit + ":L" + iendofsum + ")",
-      //   },
-      // });
-
-      // AHSPs[index].totalnum = i;
+      // Kasus khusus PAIR HERE
 
       i++;
       worksheet.addRow({
@@ -2119,7 +2150,7 @@ function findFromHS(hs, key, value) {
   var foundval;
   hs.forEach((eachhs) => {
     if (eachhs.namamaterial == value) {
-      console.log("FOUND", eachhs[key]);
+      //console.log("FOUND", eachhs[key]);
       foundval = eachhs[key];
       return eachhs[key];
     }

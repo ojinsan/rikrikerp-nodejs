@@ -46,6 +46,10 @@ const databaseRelation = () => {
     AHSProjectDetail[tahun].belongsTo(HS[tahun], { foreignKey: "ID_HS" }); // Ini untuk cari detail harga P_HS_URAIAN
     // AHSProjectDetail.belongsTo(AHSProjectUtama) //ini untuk P_HS_ANAK_AHS
 
+    AHSProjectUtama[tahun].belongsTo(AHSProjectUtama[tahun], {
+      foreignKey: "PAIR",
+    });
+
     HS[tahun].belongsTo(Wilayah, {
       foreignKey: "ID_WILAYAH",
       //as: "HS",

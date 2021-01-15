@@ -45,7 +45,11 @@ while (tahun <= TAHUN.toYear) {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-
+      A_B: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: false,
+      },
       // This is foreign key
 
       // This is foreign key

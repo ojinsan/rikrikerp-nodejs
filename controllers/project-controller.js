@@ -396,9 +396,15 @@ async function counterAndChecker(TAHUN, ID_RAB_PROJECT_BAGIAN) {
       satuRab.RAB_DETAILS[0]["AHS_PROJECT_UTAMA_" + TAHUN][
         "AHS_PROJECT_DETAIL_" + TAHUN + "s"
       ].forEach((ahsd) => {
-        if (ahsd.P_KELOMPOK_URAIAN == "Upah") {
+        if (
+          ahsd.P_KELOMPOK_URAIAN == "Upah" &&
+          ahsd["HS_" + TAHUN].HARGA != null
+        ) {
           temptotalupah += ahsd["HS_" + TAHUN].HARGA;
-        } else if (ahsd.P_KELOMPOK_URAIAN == "Bahan") {
+        } else if (
+          ahsd.P_KELOMPOK_URAIAN == "Bahan" &&
+          ahsd["HS_" + TAHUN].HARGA != null
+        ) {
           temptotalbahan += ahsd["HS_" + TAHUN].HARGA;
         }
       });

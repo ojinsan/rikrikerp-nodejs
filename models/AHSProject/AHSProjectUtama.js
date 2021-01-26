@@ -33,6 +33,10 @@ while (tahun <= TAHUN.toYear) {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      IS_PAIR: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       // PAIR: {
       //   type: Sequelize.INTEGER,
       //   allowNull: true,

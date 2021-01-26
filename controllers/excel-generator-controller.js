@@ -1,5 +1,6 @@
 const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
 const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
+const AHSProjectRumus = require("../models/AHSProject/AHSProjectRumus");
 const AHSSumberUtama = require("../models/DataSource/AHSSumberUtama");
 const HS = require("../models/DataSource/HS");
 const Wilayah = require("../models/Wilayah");
@@ -34,6 +35,7 @@ exports.generateExcel = async (req, res, next) => {
                 request: false,
                 include: [
                   {
+                    // DETAIL
                     model: AHSProjectDetail[TAHUN],
                     request: false,
                     include: [
@@ -44,10 +46,40 @@ exports.generateExcel = async (req, res, next) => {
                     ],
                   },
                   {
+                    // SUMBER
                     model: AHSSumberUtama,
                     request: false,
                   },
                   {
+                    // RUMUS
+                    model: AHSProjectRumus[TAHUN],
+                    request: false,
+                    include: [
+                      {
+                        model: HS[TAHUN],
+                        //request: false,
+                        foreignKey: "ID_HS_1",
+                        as: "IDHS1a",
+                        //primaryKey: "ID_HS",
+                      },
+                      {
+                        model: HS[TAHUN],
+                        //request: false,
+                        foreignKey: "ID_HS_2",
+                        as: "IDHS2a",
+                        //primaryKey: "ID_HS",
+                      },
+                      {
+                        model: HS[TAHUN],
+                        //request: false,
+                        foreignKey: "ID_HS_3",
+                        as: "IDHS3a",
+                        //primaryKey: "ID_HS",
+                      },
+                    ],
+                  },
+                  {
+                    // PAIR
                     model: AHSProjectUtama[TAHUN],
                     request: false,
                     include: [
@@ -58,6 +90,40 @@ exports.generateExcel = async (req, res, next) => {
                           {
                             model: HS[TAHUN],
                             request: false,
+
+                            //primaryKey: "ID_HS",
+                          },
+                        ],
+                      },
+                      {
+                        model: AHSSumberUtama,
+                        request: false,
+                      },
+                      {
+                        // RUMUS
+                        model: AHSProjectRumus[TAHUN],
+                        request: false,
+                        include: [
+                          {
+                            model: HS[TAHUN],
+                            //request: false,
+                            foreignKey: "ID_HS_1",
+                            as: "IDHS1a",
+                            //primaryKey: "ID_HS",
+                          },
+                          {
+                            model: HS[TAHUN],
+                            //request: false,
+                            foreignKey: "ID_HS_2",
+                            as: "IDHS2a",
+                            //primaryKey: "ID_HS",
+                          },
+                          {
+                            model: HS[TAHUN],
+                            //request: false,
+                            foreignKey: "ID_HS_3",
+                            as: "IDHS3a",
+                            //primaryKey: "ID_HS",
                           },
                         ],
                       },
@@ -94,10 +160,10 @@ exports.generateExcel = async (req, res, next) => {
     {
       x: 0,
       y: 0,
-      width: 10000,
+      width: 20000,
       height: 20000,
       firstSheet: 0,
-      activeTab: 1,
+      activeTab: 2,
       visibility: "visible",
     },
   ];
@@ -166,11 +232,10 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
       rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0]["AHS_PROJECT_UTAMA_" + TAHUN][
         "AHS_PROJECT_DETAIL_" + TAHUN + "s"
       ].forEach((ahsd) => {
-        //console.log("hs");
-        //console.log(ahsd["HS_" + TAHUN]);
-
         if (ahsd["HS_" + TAHUN] != null) {
           var found = false;
+
+          // check duplicate ===
           for (var k = 0; k < hs.length; k++) {
             if (hs[k].ID_HS == ahsd["HS_" + TAHUN].ID_HS) {
               found = true;
@@ -180,8 +245,91 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
           if (!found) {
             hs.push(ahsd["HS_" + TAHUN]);
           }
+          // ===
         }
       });
+
+      // kalo ada pair
+      if (
+        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+          "AHS_PROJECT_UTAMA_" + TAHUN
+        ]["PAIR"] != null
+      ) {
+        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+          "AHS_PROJECT_UTAMA_" + TAHUN
+        ]["AHS_PROJECT_UTAMA_" + TAHUN][
+          "AHS_PROJECT_DETAIL_" + TAHUN + "s"
+        ].forEach((ahsd) => {
+          // check duplicate
+          if (ahsd["HS_" + TAHUN] != null) {
+            var found = false;
+            for (var k = 0; k < hs.length; k++) {
+              if (hs[k].ID_HS == ahsd["HS_" + TAHUN].ID_HS) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              hs.push(ahsd["HS_" + TAHUN]);
+            }
+          }
+          // ===
+        });
+      }
+
+      // kalo ada ahs rumus
+      if (
+        rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+          "AHS_PROJECT_UTAMA_" + TAHUN
+        ]["AHS_PROJECT_RUMUS_" + TAHUN + "s"] != null
+      ) {
+        ahsrumustemp =
+          rabjudul["T_RAB_DETAIL_" + TAHUN + "s"][0][
+            "AHS_PROJECT_UTAMA_" + TAHUN
+          ]["AHS_PROJECT_RUMUS_" + TAHUN + "s"];
+
+        //console.log(hs);
+        for (let rumusi = 0; rumusi < ahsrumustemp.length; rumusi++) {
+          if (ahsrumustemp[rumusi].IDHS1a != null) {
+            var found = false;
+            for (var k = 0; k < hs.length; k++) {
+              if (hs[k].ID_HS == ahsrumustemp[rumusi].ID_HS_1) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              hs.push(ahsrumustemp[rumusi].IDHS1a);
+            }
+          }
+
+          if (ahsrumustemp[rumusi].IDHS2a != null) {
+            var found = false;
+            for (var k = 0; k < hs.length; k++) {
+              if (hs[k].ID_HS == ahsrumustemp[rumusi].ID_HS_2) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              hs.push(ahsrumustemp[rumusi].IDHS2a);
+            }
+          }
+          if (ahsrumustemp[rumusi].IDHS3a != null) {
+            var found = false;
+            for (var k = 0; k < hs.length; k++) {
+              if (hs[k].ID_HS == ahsrumustemp[rumusi].ID_HS_3) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              hs.push(ahsrumustemp[rumusi].IDHS3a);
+            }
+          }
+        }
+      }
+      // ===
     }
   });
 
@@ -206,7 +354,7 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
     }
   }
   hs = hsupah.concat(hsbahan);
-  //console.log(hs);
+  // ===
 
   worksheet.columns = [
     { header: "No", key: "no", width: 8, outlineLevel: 1 },
@@ -257,11 +405,12 @@ async function createHSSheet(worksheet, res, TAHUN, ID_WILAYAH, RABPB) {
 
 async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   console.log("Create AHSP Sheet");
-  //console.log(ID_PROJECT);
+
   var rabjudul = sortRAB(RABPB["T_RAB_JUDUL_" + TAHUN + "s"]);
   AHSPs = [];
   tempAHSDiForAHSK4 = [];
-  //RABPB["T_RAB_JUDUL_" + TAHUN + "s"].forEach((rabjudul) => {
+
+  // Get AHSPs
   rabjudul.forEach((rabjudul) => {
     if (rabjudul["T_RAB_DETAIL_" + TAHUN + "s"].length > 0) {
       if (
@@ -278,17 +427,16 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     }
   });
 
-  // filter AHSPS
-
+  // Formatting
   var newAHSUtama = [];
-
-  // get AHSPs
   AHSPs.forEach((satuAHSUtama) => {
     var satuAHSUtamaTemp = JSON.parse(JSON.stringify(satuAHSUtama));
     var satuAHSUtamaDetailTemp =
       satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+    var satuAHSUtamaRumusTemp =
+      satuAHSUtamaTemp["AHS_PROJECT_RUMUS_" + TAHUN + "s"];
 
-    // Ubah format doang ========
+    // Ubah format detail ========
     if (satuAHSUtamaDetailTemp.length > 0) {
       var satuAHSUtamaDetailTempTemp = [];
       satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
@@ -305,6 +453,23 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     delete satuAHSUtamaTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
     satuAHSUtamaTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetailTemp;
 
+    // Ubah format rumus HS didalamnya
+    // if (satuAHSUtamaDetailTemp.length > 0) {
+    //   var satuAHSUtamaDetailTempTemp = [];
+    //   satuAHSUtamaDetailTemp.map((satuAHSDetail) => {
+    //     const satuAHSDetailTemp = JSON.parse(JSON.stringify(satuAHSDetail));
+    //     const satuHSTemp = satuAHSDetailTemp["HS_" + TAHUN];
+    //     delete satuAHSDetailTemp["HS_" + TAHUN];
+    //     satuAHSDetailTemp["HS"] = satuHSTemp;
+
+    //     satuAHSUtamaDetailTempTemp.push(satuAHSDetailTemp);
+    //   });
+    //   satuAHSUtamaDetailTemp = satuAHSUtamaDetailTempTemp;
+    // }
+
+    delete satuAHSUtamaTemp["AHS_PROJECT_RUMUS_" + TAHUN + "s"];
+    satuAHSUtamaTemp["AHS_PROJECT_RUMUS"] = satuAHSUtamaRumusTemp;
+
     // Ubah format doang, pair AHS
     if (satuAHSUtamaTemp.PAIR != null) {
       satuAHSUtama_PairTemp = JSON.parse(
@@ -313,6 +478,8 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
 
       satuAHSUtamaDetail_PairTemp =
         satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
+      satuAHSUtamaRumus_PairTemp =
+        satuAHSUtama_PairTemp["AHS_PROJECT_RUMUS_" + TAHUN + "s"];
       if (satuAHSUtamaDetail_PairTemp.length > 0) {
         var satuAHSUtamaDetail_PairTempTemp = [];
         satuAHSUtamaDetail_PairTemp.map((satuAHSDetail) => {
@@ -329,6 +496,9 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
       delete satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL_" + TAHUN + "s"];
       satuAHSUtama_PairTemp["AHS_PROJECT_DETAIL"] = satuAHSUtamaDetail_PairTemp;
 
+      delete satuAHSUtama_PairTemp["AHS_PROJECT_RUMUS_" + TAHUN + "s"];
+      satuAHSUtama_PairTemp["AHS_PROJECT_RUMUS"] = satuAHSUtamaRumus_PairTemp;
+
       delete satuAHSUtamaTemp["AHS_PROJECT_UTAMA_" + TAHUN];
       satuAHSUtamaTemp["AHSP_PAIR"] = satuAHSUtama_PairTemp;
     } else {
@@ -338,8 +508,6 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     newAHSUtama.push(satuAHSUtamaTemp);
   });
   AHSPs = newAHSUtama;
-
-  console.log(AHSPs);
 
   worksheet.columns = [
     { header: "No", key: "no", width: 5, outlineLevel: 1 },
@@ -386,16 +554,15 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
     },
   ];
 
+  // TITLE
   worksheet.mergeCells("A1:M2");
   worksheet.getCell("A1").value = "ANALISA HARGA SATUAN";
-
   worksheet.mergeCells("A3:E3");
   worksheet.getCell("A3").value = "No";
   worksheet.mergeCells("F3:H3");
   worksheet.getCell("F3").value = "Uraian";
   worksheet.mergeCells("I3:K3");
   worksheet.getCell("I3").value = "Harga Satuan";
-
   worksheet.getCell("L3").value = "Total Upah";
   worksheet.getCell("M3").value = "Total Bahan";
 
@@ -404,9 +571,6 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
   var j = 0;
   writtenAHSPs = [];
   AHSPs.forEach((AHSP, index) => {
-    // console.log("===========");
-    // console.log(AHSP);
-
     // check duplicate
     existingahsp = findFromAHSP(
       writtenAHSPs,
@@ -414,376 +578,44 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
       AHSP.ID_AHS_PROJECT_UTAMA
     );
 
+    // IF NOT DUPLICATE
     if (existingahsp == null) {
-      tempAHSDiForAHSK2 = [];
-      totalupahsum = 0;
-      totalbahansum = 0;
       i++;
       j++;
 
-      AHSPs[index].objnum = j; // untuk CODE, tapi resultnya
+      //AHSPs[index].objnum = j; // untuk CODE, tapi resultnya
       AHSPs[index].rownum = i; // untuk CODE, formulanya
-      // Every AHS Utama
-      worksheet.addRow({
-        no: j,
-        ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
-      });
-      i++;
-      worksheet.addRow({
-        koefisien: "Satuan:",
-        satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
-      });
 
-      iinit = i;
-      // Now AHS Detail
+      [i, j, totalnum] = singleAHSwritter(worksheet, AHSP, i, j, false);
+      AHSPs[index].totalnum = totalnum;
 
-      AHSP.AHS_PROJECT_DETAIL &&
-        ([ahsds, countbahan, countupah] = ahsdsorter(AHSP.AHS_PROJECT_DETAIL));
-
-      AHSP.AHS_PROJECT_DETAIL &&
-        ahsds.forEach((AHSPD) => {
-          //add i++ because want to write in that row
-          i++;
-          //written ahs detail, and the row place number
-          tempAHSDiForAHSK4.push({
-            id: AHSPD.ID_AHS_PROJECT_DETAIL,
-            i: i,
-          });
-
-          if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
-            // kasus khusus 4
-            // var hargarownum = findHSFromAHSPD(
-            //   tempAHSDiForAHSK4,
-            //   AHSPD.P_HS_AHS_P
-            // ); //ga kepake
-            // console.log("nah " + hargarownum + " " + AHSPD.P_HS_AHS_P);
-            worksheet.addRow({
-              koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-              satuan: AHSPD.P_SATUAN_URAIAN,
-              ahspdetailjudul: AHSPD.P_URAIAN,
-              at: "@",
-              harga:
-                AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                  ? {
-                      formula:
-                        `=SUM(L` +
-                        (iinit + 1) +
-                        `:L` +
-                        (iinit + countupah - 1) +
-                        `)`,
-                    }
-                  : AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                  ? {
-                      formula:
-                        `=SUM(M` +
-                        (iinit + 1 + countupah) +
-                        `:M` +
-                        (iinit + countupah + countbahan - 1) +
-                        `)`,
-                    }
-                  : "-1",
-              // hargarownum != null
-              //   ? {
-              //       formula: "=L" + hargarownum + " + M" + hargarownum,
-              //     }
-              //   : "-1",
-              equal: "=",
-              totalupah:
-                AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                  ? {
-                      formula: "=J" + i + "*F" + i,
-                    }
-                  : 0,
-              totalbahan:
-                AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                  ? {
-                      formula: "=J" + i + "*F" + i,
-                    }
-                  : 0,
-            });
-          } else if (
-            AHSPD.P_HS_ANAK_AHS != null ||
-            AHSPD.P_HS_ANAK_AHS != undefined
-          ) {
-            // kasus khusus 2
-            // save to array temp of ahp yang ingin di-include
-            worksheet.addRow({
-              koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-              satuan: AHSPD.P_SATUAN_URAIAN,
-              ahspdetailjudul: AHSPD.P_URAIAN,
-              at: "@",
-              // harga, totalupah, totalbahan ditulis saat write total Anak AHS (kasus 2)
-              equal: "=",
-            });
-            relatedanakahsp = findFromAHSP(
-              AHSPs,
-              "ID_AHS_PROJECT_UTAMA",
-              AHSPD.P_HS_ANAK_AHS
-            );
-            relatedanakahsp.itarget = i;
-            relatedanakahsp.jeniskhusus2 =
-              AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                ? "Bahan"
-                : AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                ? "Upah"
-                : "";
-            console.log(AHSPD.A_B);
-            relatedanakahsp.A_B = AHSPD.A_B;
-            tempAHSDiForAHSK2.push(relatedanakahsp);
-          } else {
-            // kasus biasa
-            var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
-            worksheet.addRow({
-              koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-              satuan: AHSPD.P_SATUAN_URAIAN,
-              ahspdetailjudul: AHSPD.P_URAIAN,
-              at: "@",
-              harga:
-                AHSPD.HS != null
-                  ? {
-                      formula: "='Acuan Harga Survey'!E" + hargarownum,
-                      //value: AHSPD.HS.HARGA,
-                      value: "='Acuan Harga Survey'!E" + hargarownum,
-                    }
-                  : 0,
-              equal: "=",
-              totalupah:
-                AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                  ? {
-                      formula: "=J" + i + "*F" + i,
-                      result:
-                        AHSPD.P_KOEFISIEN_URAIAN *
-                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                    }
-                  : 0,
-              totalbahan:
-                AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                  ? {
-                      formula: "=J" + i + "*F" + i,
-                      result:
-                        AHSPD.P_KOEFISIEN_URAIAN *
-                        (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                    }
-                  : 0,
-            });
-          }
-        });
-
-      // ============= end detail and AHS yang dipake, belum SUM sih. Di bawah
-
-      // mark the end of sum
-      iendofsum = i;
-
-      //TOTAL SATU AHS
-      i++;
-      worksheet.addRow({
-        harga: "Jumlah",
-        totalupah: {
-          formula: "=sum(L" + iinit + ":L" + iendofsum + ")",
-          value: "=sum(L" + iinit + ":L" + iendofsum + ")",
-        },
-        totalbahan: {
-          formula: "=sum(M" + iinit + ":M" + iendofsum + ")",
-          value: "=sum(L" + iinit + ":L" + iendofsum + ")",
-        },
-      });
-
-      AHSPs[index].totalnum = i;
-
-      // kasus khusus 2 pada 4
-      tempAHSDiForAHSK4_2 = [];
-
-      // write for AHS Project, khusus 4
-      tempAHSDiForAHSK2.forEach((AHSP, index) => {
+      // Kasus khusus PAIR HERE
+      console.log("KASUS PAIR");
+      if (AHSP.AHSP_PAIR != null) {
         i++;
-        worksheet.addRow({});
+        [i, j, totalnum] = singleAHSwritter(
+          worksheet,
+          AHSP.AHSP_PAIR,
+          i,
+          j,
+          true
+        );
 
-        i++;
-        worksheet.addRow({
-          // no: j,
-          ahsputamajudul: "* " + AHSP.NAMA_AHS_PROJECT,
-        });
-        i++;
-        worksheet.addRow({
-          koefisien: "Satuan:",
-          satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
-        });
-
-        iinit_2 = i;
-        AHSP.AHS_PROJECT_DETAIL &&
-          ([ahsds_2, countbahan_2, countupah_2] = ahsdsorter(
-            AHSP.AHS_PROJECT_DETAIL
-          ));
-
-        // write the ahsp details
-        AHSP.AHS_PROJECT_DETAIL &&
-          ahsds_2.forEach((AHSPD) => {
-            i++;
-
-            tempAHSDiForAHSK4_2.push({
-              id: AHSPD.ID_AHS_PROJECT_DETAIL,
-              i: i,
-            });
-
-            if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
-              // kasus khusus 4
-              // var hargarownum = findHSFromAHSPD(
-              //   tempAHSDiForAHSK4_2,
-              //   AHSPD.P_HS_AHS_P
-              // );
-              worksheet.addRow({
-                koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-                satuan: AHSPD.P_SATUAN_URAIAN,
-                ahspdetailjudul: AHSPD.P_URAIAN,
-                at: "@",
-                harga:
-                  AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                    ? {
-                        formula:
-                          `=SUM(L` +
-                          (iinit_2 + 1) +
-                          `:L` +
-                          (iinit_2 + countupah_2 - 1) +
-                          `)`,
-                      }
-                    : AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                    ? {
-                        formula:
-                          `=SUM(M` +
-                          (iinit_2 + 1 + countupah_2) +
-                          `:M` +
-                          (iinit_2 + countupah_2 + countbahan_2 - 1) +
-                          `)`,
-                      }
-                    : "-1",
-                equal: "=",
-                totalupah:
-                  AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                    ? {
-                        formula: "=J" + i + "*F" + i,
-                        result:
-                          AHSPD.P_KOEFISIEN_URAIAN *
-                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                      }
-                    : 0,
-                totalbahan:
-                  AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                    ? {
-                        formula: "=J" + i + "*F" + i,
-                        result:
-                          AHSPD.P_KOEFISIEN_URAIAN *
-                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                      }
-                    : 0,
-              });
-            } else if (
-              AHSPD.P_HS_ANAK_AHS != null ||
-              AHSPD.P_HS_ANAK_AHS != undefined
-            ) {
-              // kasus khusus 2
-              // save to array temp of ahp yang ingin di-include
-              worksheet.addRow({
-                koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-                satuan: AHSPD.P_SATUAN_URAIAN,
-                ahspdetailjudul: AHSPD.P_URAIAN,
-                at: "@",
-
-                equal: "=",
-              });
-              relatedanakahsp = findFromAHSP(
-                AHSPs,
-                "ID_AHS_PROJECT_UTAMA",
-                AHSPD.P_HS_ANAK_AHS
-              );
-              relatedanakahsp.itarget = i;
-              tempAHSDiForAHSK2.push(relatedanakahsp);
-            } else {
-              // kasus biasa
-              var hargarownum = findFromHS(rows, "rownum", AHSPD.P_URAIAN);
-              worksheet.addRow({
-                koefisien: AHSPD.P_KOEFISIEN_URAIAN,
-                satuan: AHSPD.P_SATUAN_URAIAN,
-                ahspdetailjudul: AHSPD.P_URAIAN,
-                at: "@",
-                harga:
-                  AHSPD.HS != null
-                    ? {
-                        formula: "='Acuan Harga Survey'!E" + hargarownum,
-                        //value: AHSPD.HS.HARGA,
-                        value: "='Acuan Harga Survey'!E" + hargarownum,
-                      }
-                    : 0,
-                equal: "=",
-                totalupah:
-                  AHSPD.P_KELOMPOK_URAIAN == "Upah"
-                    ? {
-                        formula: "=J" + i + "*F" + i,
-                        result:
-                          AHSPD.P_KOEFISIEN_URAIAN *
-                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                      }
-                    : 0,
-                totalbahan:
-                  AHSPD.P_KELOMPOK_URAIAN == "Bahan"
-                    ? {
-                        formula: "=J" + i + "*F" + i,
-                        result:
-                          AHSPD.P_KOEFISIEN_URAIAN *
-                          (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
-                      }
-                    : 0,
-              });
-            }
-          });
-
-        iendofsum_2 = i;
-
-        // buat sum buat anak ahs
+        // Sum semuanya, ganti yang lama
         i++;
         worksheet.addRow({
           harga: "Jumlah",
           totalupah: {
-            formula: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
-            value: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
+            formula: "=L" + totalnum + "+L" + AHSPs[index].totalnum,
           },
           totalbahan: {
-            formula: "=sum(M" + iinit_2 + ":M" + iendofsum_2 + ")",
-            value: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
+            formula: "=M" + totalnum + "+M" + AHSPs[index].totalnum,
           },
         });
 
-        // copy ke desired ahsp detail
-        console.log("AHSP itarget " + AHSP.itarget);
-        console.log("AHSP A_B " + AHSP.A_B);
-        console.log("AHSP jeniskhusus2 " + AHSP.jeniskhusus2);
-        if (AHSP.jeniskhusus2 == "Bahan" && AHSP.A_B == "A") {
-          //kasus 2a
-          worksheet.getCell("J" + AHSP.itarget).value = {
-            formula: `L` + i + `+` + `M` + i,
-          };
-          worksheet.getCell("M" + AHSP.itarget).value = {
-            formula: "J" + AHSP.itarget + "*F" + AHSP.itarget,
-          };
-        } else if (AHSP.jeniskhusus2 == "Upah" && AHSP.A_B == "A") {
-          //kasus 2a
-          worksheet.getCell("J" + AHSP.itarget).value = {
-            formula: `L` + i + `+` + `M` + i,
-          };
-          worksheet.getCell("L" + AHSP.itarget).value = {
-            formula: "J" + AHSP.itarget + "*F" + AHSP.itarget,
-          };
-        } else if (AHSP.A_B == "B") {
-          worksheet.getCell("L" + AHSP.itarget).value = {
-            formula: `L` + i + "*F" + AHSP.itarget,
-          };
-          worksheet.getCell("M" + AHSP.itarget).value = {
-            formula: `M` + i + "*F" + AHSP.itarget,
-          };
-          // kasus 2b
-        }
-      });
-
-      // Kasus khusus PAIR HERE
+        // Change indexing (used in RAB)
+        AHSPs[index].totalnum = i;
+      }
 
       i++;
       worksheet.addRow({
@@ -1344,10 +1176,8 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
     // PENJUMLAHAN
     sectionlevel2 = sectionlevel;
-    console.log(sectionlevel);
     for (m = sectionlevel; m > 0; m--) {
       if (satuRab["NO_URUT_" + m] != rabjudul[k + 1]["NO_URUT_" + m]) {
-        console.log("ABIS INI NEW SEC " + m);
         newsec = true;
         sectionlevel2 = m;
       }
@@ -1363,8 +1193,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
 
-          console.log(satujudulandnum);
-          console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
           rabsheet.getCell("H" + i).value = {
@@ -1387,9 +1215,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           i++;
           titiksum[m].push(i);
           satujudulandnum = judulandnum.pop();
-          //satujudulandnum = "TOTAL";
-          console.log(satujudulandnum);
-          console.log(judulandnum);
+
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
@@ -1421,7 +1247,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           }; //better add result
 
           titiksum[m + 1] = [];
-          console.log(titiksum);
         }
       }
       i++;
@@ -1430,7 +1255,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     console.log("===========");
   });
   console.log("RABBBBBBBBBBBBBBB DONE");
-  console.log(titiksum);
 
   //TOTAL ALL
   i++;
@@ -1591,9 +1415,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     newRab.push(satuRabTemp);
   });
   rabjudul = newRab;
-
-  console.log("rabjudul");
-  console.log(rabjudul);
 
   if (rabjudul.length === 0) {
     res.status(500).json({ error: "empty database" });
@@ -1787,7 +1608,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     i++;
-    console.log(satuRab);
+
     rabsheet.addRow({
       no:
         satuRab.NO_URUT_4 > 0
@@ -1881,7 +1702,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     console.log(sectionlevel);
     for (m = sectionlevel; m > 0; m--) {
       if (satuRab["NO_URUT_" + m] != rabjudul[k + 1]["NO_URUT_" + m]) {
-        console.log("ABIS INI NEW SEC " + m);
         newsec = true;
         sectionlevel2 = m;
       }
@@ -1897,8 +1717,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
 
-          console.log(satujudulandnum);
-          console.log(judulandnum);
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
           rabsheet.getCell("H" + i).value = {
@@ -1923,8 +1741,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           rabsheet.mergeCells("B" + i + ":G" + i);
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
-          console.log(satujudulandnum);
-          console.log(judulandnum);
+
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
 
@@ -1955,7 +1772,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           }; //better add result
 
           titiksum[m + 1] = [];
-          console.log(titiksum);
         }
       }
       i++;
@@ -2048,7 +1864,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   // TOTAL ALL
   console.log("BOQ DONE");
-  console.log(titiksum);
 
   //TOTAL ALL
   //TOTAL ALL
@@ -2149,7 +1964,8 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 function findFromHS(hs, key, value) {
   var foundval;
   hs.forEach((eachhs) => {
-    if (eachhs.namamaterial == value) {
+    //if (eachhs.namamaterial == value) {
+    if (eachhs.id == value) {
       //console.log("FOUND", eachhs[key]);
       foundval = eachhs[key];
       return eachhs[key];
@@ -2290,4 +2106,505 @@ function ahsdsorter(ahsds) {
   });
 
   return [ahsds, countbahan, countupah];
+}
+
+function singleAHSwritter(worksheet, AHSP, i, j, ispair) {
+  tempAHSDiForAHSK2 = [];
+  totalupahsum = 0;
+  totalbahansum = 0;
+  // i++;
+  // j++;
+
+  // ======== start write AHS Utama ========
+  worksheet.addRow({
+    no: !ispair ? j : "",
+    ahsputamajudul: AHSP.NAMA_AHS_PROJECT,
+  });
+  i++;
+  worksheet.addRow({
+    koefisien: "Satuan:",
+    satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+  });
+  // ======== end write AHS Utama ====////
+
+  // for positioning start of sum
+  iinit = i;
+
+  // ======== start write AHS Detail ========
+  // sort the ahs detail based on upah and bahan
+  AHSP.AHS_PROJECT_DETAIL &&
+    ([ahsds, countbahan, countupah] = ahsdsorter(AHSP.AHS_PROJECT_DETAIL));
+
+  // start write each
+  AHSP.AHS_PROJECT_DETAIL &&
+    ahsds.forEach((AHSPD) => {
+      //add i++ because want to write in that row
+      i++;
+
+      // kasus khusus 4, kasus khusus 2, kasus biasa
+      if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
+        // === KH4 ===
+        worksheet.addRow({
+          koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+          satuan: AHSPD.P_SATUAN_URAIAN,
+          ahspdetailjudul: AHSPD.P_URAIAN,
+          at: "@",
+          harga:
+            AHSPD.P_KELOMPOK_URAIAN == "Upah"
+              ? {
+                  formula:
+                    `=SUM(L` +
+                    (iinit + 1) +
+                    `:L` +
+                    (iinit + countupah - 1) +
+                    `)`,
+                }
+              : AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+              ? {
+                  formula:
+                    `=SUM(M` +
+                    (iinit + 1 + countupah) +
+                    `:M` +
+                    (iinit + countupah + countbahan - 1) +
+                    `)`,
+                }
+              : "-1",
+          equal: "=",
+          totalupah:
+            AHSPD.P_KELOMPOK_URAIAN == "Upah"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                }
+              : 0,
+          totalbahan:
+            AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                }
+              : 0,
+        });
+      } else if (
+        AHSPD.P_HS_ANAK_AHS != null ||
+        AHSPD.P_HS_ANAK_AHS != undefined
+      ) {
+        // === KH2 ===
+        // save to array temp of ahp yang ingin di-include
+        worksheet.addRow({
+          koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+          satuan: AHSPD.P_SATUAN_URAIAN,
+          ahspdetailjudul: AHSPD.P_URAIAN,
+          at: "@",
+          equal: "=",
+        });
+
+        relatedanakahsp = findFromAHSP(
+          AHSPs,
+          "ID_AHS_PROJECT_UTAMA",
+          AHSPD.P_HS_ANAK_AHS
+        );
+
+        relatedanakahsp.itarget = i;
+        relatedanakahsp.jeniskhusus2 =
+          AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+            ? "Bahan"
+            : AHSPD.P_KELOMPOK_URAIAN == "Upah"
+            ? "Upah"
+            : "";
+
+        relatedanakahsp.A_B = AHSPD.A_B;
+        tempAHSDiForAHSK2.push(relatedanakahsp);
+      } else {
+        // kasus biasa
+        var hargarownum = findFromHS(rows, "rownum", AHSPD.ID_HS);
+        worksheet.addRow({
+          koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+          satuan: AHSPD.P_SATUAN_URAIAN,
+          ahspdetailjudul: AHSPD.P_URAIAN,
+          at: "@",
+          harga:
+            AHSPD.HS != null
+              ? {
+                  formula: "='Acuan Harga Survey'!E" + hargarownum,
+                  //value: AHSPD.HS.HARGA,
+                  value: "='Acuan Harga Survey'!E" + hargarownum,
+                }
+              : 0,
+          equal: "=",
+          totalupah:
+            AHSPD.P_KELOMPOK_URAIAN == "Upah"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                  result:
+                    AHSPD.P_KOEFISIEN_URAIAN *
+                    (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                }
+              : 0,
+          totalbahan:
+            AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+              ? {
+                  formula: "=J" + i + "*F" + i,
+                  result:
+                    AHSPD.P_KOEFISIEN_URAIAN *
+                    (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                }
+              : 0,
+        });
+      }
+    });
+  // ======== end write AHS Detail ====////
+
+  // ======== start write SUM ========
+  // mark the end of sum
+  iendofsum = i;
+  //TOTAL SATU AHS
+  i++;
+  worksheet.addRow({
+    harga: "Jumlah",
+    totalupah: {
+      formula: "=sum(L" + iinit + ":L" + iendofsum + ")",
+      value: "=sum(L" + iinit + ":L" + iendofsum + ")",
+    },
+    totalbahan: {
+      formula: "=sum(M" + iinit + ":M" + iendofsum + ")",
+      value: "=sum(L" + iinit + ":L" + iendofsum + ")",
+    },
+  });
+  // ======== end write SUM ====////
+
+  // ======== start write AHS RUMUS ========
+  console.log(AHSP);
+  if (AHSP.AHS_PROJECT_RUMUS != null) {
+    iofahssum = i;
+    console.log("Writting Rumus");
+    AHSP["AHS_PROJECT_RUMUS"].forEach((rumuspack) => {
+      [i, iofahssum] = writerumusline(rumuspack, i, iofahssum, worksheet);
+    });
+
+    iendofsum = iofahssum - 1;
+  }
+  // ======== end write AHS RUMUS ====////
+
+  // ======== start write AHS Anak ========
+
+  // kasus khusus 2 pada 4
+  tempAHSDiForAHSK4_2 = [];
+
+  // write for AHS Project, khusus 4
+  tempAHSDiForAHSK2.forEach((AHSP, index) => {
+    i++;
+    worksheet.addRow({});
+
+    i++;
+    worksheet.addRow({
+      // no: j,
+      ahsputamajudul: "* " + AHSP.NAMA_AHS_PROJECT,
+    });
+    i++;
+    worksheet.addRow({
+      koefisien: "Satuan:",
+      satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+    });
+
+    iinit_2 = i;
+    AHSP.AHS_PROJECT_DETAIL &&
+      ([ahsds_2, countbahan_2, countupah_2] = ahsdsorter(
+        AHSP.AHS_PROJECT_DETAIL
+      ));
+
+    // write the ahsp details
+    AHSP.AHS_PROJECT_DETAIL &&
+      ahsds_2.forEach((AHSPD) => {
+        i++;
+
+        tempAHSDiForAHSK4_2.push({
+          id: AHSPD.ID_AHS_PROJECT_DETAIL,
+          i: i,
+        });
+
+        if (AHSPD.P_HS_AHS_P != null || AHSPD.P_HS_AHS_P != undefined) {
+          // kasus khusus 4
+          // var hargarownum = findHSFromAHSPD(
+          //   tempAHSDiForAHSK4_2,
+          //   AHSPD.P_HS_AHS_P
+          // );
+          worksheet.addRow({
+            koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+            satuan: AHSPD.P_SATUAN_URAIAN,
+            ahspdetailjudul: AHSPD.P_URAIAN,
+            at: "@",
+            harga:
+              AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                ? {
+                    formula:
+                      `=SUM(L` +
+                      (iinit_2 + 1) +
+                      `:L` +
+                      (iinit_2 + countupah_2 - 1) +
+                      `)`,
+                  }
+                : AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                ? {
+                    formula:
+                      `=SUM(M` +
+                      (iinit_2 + 1 + countupah_2) +
+                      `:M` +
+                      (iinit_2 + countupah_2 + countbahan_2 - 1) +
+                      `)`,
+                  }
+                : "-1",
+            equal: "=",
+            totalupah:
+              AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                ? {
+                    formula: "=J" + i + "*F" + i,
+                    result:
+                      AHSPD.P_KOEFISIEN_URAIAN *
+                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                  }
+                : 0,
+            totalbahan:
+              AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                ? {
+                    formula: "=J" + i + "*F" + i,
+                    result:
+                      AHSPD.P_KOEFISIEN_URAIAN *
+                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                  }
+                : 0,
+          });
+        } else if (
+          AHSPD.P_HS_ANAK_AHS != null ||
+          AHSPD.P_HS_ANAK_AHS != undefined
+        ) {
+          // kasus khusus 2
+          // save to array temp of ahp yang ingin di-include
+          worksheet.addRow({
+            koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+            satuan: AHSPD.P_SATUAN_URAIAN,
+            ahspdetailjudul: AHSPD.P_URAIAN,
+            at: "@",
+
+            equal: "=",
+          });
+          relatedanakahsp = findFromAHSP(
+            AHSPs,
+            "ID_AHS_PROJECT_UTAMA",
+            AHSPD.P_HS_ANAK_AHS
+          );
+          relatedanakahsp.itarget = i;
+          tempAHSDiForAHSK2.push(relatedanakahsp);
+        } else {
+          // kasus biasa
+          var hargarownum = findFromHS(rows, "rownum", AHSPD.ID_HS);
+
+          worksheet.addRow({
+            koefisien: AHSPD.P_KOEFISIEN_URAIAN,
+            satuan: AHSPD.P_SATUAN_URAIAN,
+            ahspdetailjudul: AHSPD.P_URAIAN,
+            at: "@",
+            harga:
+              AHSPD.HS != null
+                ? {
+                    formula: "='Acuan Harga Survey'!E" + hargarownum,
+                    //value: AHSPD.HS.HARGA,
+                    value: "='Acuan Harga Survey'!E" + hargarownum,
+                  }
+                : 0,
+            equal: "=",
+            totalupah:
+              AHSPD.P_KELOMPOK_URAIAN == "Upah"
+                ? {
+                    formula: "=J" + i + "*F" + i,
+                    result:
+                      AHSPD.P_KOEFISIEN_URAIAN *
+                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                  }
+                : 0,
+            totalbahan:
+              AHSPD.P_KELOMPOK_URAIAN == "Bahan"
+                ? {
+                    formula: "=J" + i + "*F" + i,
+                    result:
+                      AHSPD.P_KOEFISIEN_URAIAN *
+                      (AHSPD.HS != null ? AHSPD.HS.HARGA : 0),
+                  }
+                : 0,
+          });
+        }
+      });
+
+    iendofsum_2 = i;
+
+    // buat sum buat anak ahs
+    i++;
+    worksheet.addRow({
+      harga: "Jumlah",
+      totalupah: {
+        formula: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
+        value: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
+      },
+      totalbahan: {
+        formula: "=sum(M" + iinit_2 + ":M" + iendofsum_2 + ")",
+        value: "=sum(L" + iinit_2 + ":L" + iendofsum_2 + ")",
+      },
+    });
+
+    // copy ke desired ahsp detail
+    // console.log("AHSP itarget " + AHSP.itarget);
+    // console.log("AHSP A_B " + AHSP.A_B);
+    // console.log("AHSP jeniskhusus2 " + AHSP.jeniskhusus2);
+    if (AHSP.jeniskhusus2 == "Bahan" && AHSP.A_B == "A") {
+      //kasus 2a
+      worksheet.getCell("J" + AHSP.itarget).value = {
+        formula: `L` + i + `+` + `M` + i,
+      };
+      worksheet.getCell("M" + AHSP.itarget).value = {
+        formula: "J" + AHSP.itarget + "*F" + AHSP.itarget,
+      };
+    } else if (AHSP.jeniskhusus2 == "Upah" && AHSP.A_B == "A") {
+      //kasus 2a
+      worksheet.getCell("J" + AHSP.itarget).value = {
+        formula: `L` + i + `+` + `M` + i,
+      };
+      worksheet.getCell("L" + AHSP.itarget).value = {
+        formula: "J" + AHSP.itarget + "*F" + AHSP.itarget,
+      };
+    } else if (AHSP.A_B == "B") {
+      worksheet.getCell("L" + AHSP.itarget).value = {
+        formula: `L` + i + "*F" + AHSP.itarget,
+      };
+      worksheet.getCell("M" + AHSP.itarget).value = {
+        formula: `M` + i + "*F" + AHSP.itarget,
+      };
+      // kasus 2b
+    }
+  });
+
+  return [i, j, iendofsum + 1];
+}
+
+function writerumusline(rumuspack, i, iofahssum, worksheet) {
+  // write for value reff 1
+
+  i++;
+  worksheet.addRow({
+    ahspdetailjudul: rumuspack.URAIAN,
+  });
+  nvar = 0;
+  for (let ii = 1; ii <= 3; ii++) {
+    if (
+      rumuspack["VALUE_REFF_" + ii] != null &&
+      rumuspack["VALUE_REFF_" + ii] != "AHS"
+    ) {
+      nvar++;
+      i++;
+      if (rumuspack["VALUE_REFF_" + ii] == "VAL") {
+        console.log("write sekali");
+        worksheet.addRow({
+          satuan: rumuspack["SATUAN_" + ii],
+          ahspdetailjudul: rumuspack["NAMA_VAR_" + ii],
+          at: "@",
+          harga:
+            rumuspack["VALUE_" + ii] != null
+              ? {
+                  formula: rumuspack["VALUE_" + ii],
+                }
+              : "",
+        });
+        // ganti format ga pake rupiah
+        worksheet.getCell("J" + i).numFmt =
+          '_(""* #,##0_);_(""* (#,##0);_(""* ""_);_(@_)';
+      } else if (rumuspack["VALUE_REFF_" + ii] == "HS") {
+        // harus ada array data yang lengkap tertulis HS-nya
+        // kalo bisa di-push saat awal-awal nulis HS
+        var hargarownum = findFromHS(rows, "rownum", rumuspack["ID_HS_" + ii]);
+        worksheet.addRow({
+          satuan: rumuspack["SATUAN_" + ii],
+          ahspdetailjudul: rumuspack["NAMA_VAR_" + ii],
+          at: "@",
+          harga:
+            hargarownum != null
+              ? {
+                  formula: "='Acuan Harga Survey'!E" + hargarownum,
+                }
+              : "",
+        });
+      }
+    }
+  }
+
+  i++;
+  worksheet.addRow({
+    harga: "Jumlah:",
+    // harga: {
+    //   formula:
+    //     "=" +
+    //     changeRumusABC(
+    //       rumuspack.RUMUS_DIGUNAKAN,
+    //       i,
+    //       iofahssum,
+    //       nvar,
+    //       rumuspack.UPAH_BAHAN
+    //     ),
+    // },
+    totalupah:
+      rumuspack.UPAH_BAHAN == "Upah" || rumuspack.UPAH_BAHAN == "Both"
+        ? {
+            formula:
+              "=" +
+              changeRumusABC(
+                rumuspack.RUMUS_DIGUNAKAN,
+                i,
+                iofahssum,
+                nvar,
+                "Upah"
+              ),
+          }
+        : { formula: "=L" + iofahssum },
+    totalbahan:
+      rumuspack.UPAH_BAHAN == "Bahan" || rumuspack.UPAH_BAHAN == "Both"
+        ? {
+            formula:
+              "=" +
+              changeRumusABC(
+                rumuspack.RUMUS_DIGUNAKAN,
+                i,
+                iofahssum,
+                nvar,
+                "Bahan"
+              ),
+          }
+        : { formula: "=M" + iofahssum },
+  });
+  inewsum = i;
+
+  i++;
+  worksheet.addRow({});
+
+  return [i, inewsum];
+}
+
+function changeRumusABC(rumus, i, iforahasum, nvar, upah_bahan) {
+  var newrumus = "";
+  for (let index = 0; index < rumus.length; index++) {
+    const element = rumus[index];
+    if (element == "A") {
+      newrumus = newrumus + (" J" + (i - 3 + 3 - nvar) + " ");
+    } else if (element == "B") {
+      newrumus = newrumus + (" J" + (i - 2 + 3 - nvar) + " ");
+    } else if (element == "C") {
+      newrumus = newrumus + (" J" + (i - 1 + 3 - nvar) + " ");
+    } else if (element == "D") {
+      newrumus =
+        upah_bahan == "Upah"
+          ? newrumus + (" L" + iforahasum + " ")
+          : upah_bahan == "Bahan"
+          ? newrumus + (" M" + iforahasum + " ")
+          : "0";
+    } else {
+      newrumus = newrumus + element;
+    }
+  }
+  console.log(newrumus);
+  return newrumus;
 }

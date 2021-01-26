@@ -5,6 +5,7 @@ const RABDetail = require("../models/Project/RABDetail");
 
 const AHSProjectUtama = require("../models/AHSProject/AHSProjectUtama");
 const AHSProjectDetail = require("../models/AHSProject/AHSProjectDetail");
+const AHSProjectRumus = require("../models/AHSProject/AHSProjectRumus");
 
 const AHSSumberUtama = require("../models/DataSource/AHSSumberUtama");
 const AHSSumberDetail = require("../models/DataSource/AHSSumberDetail");
@@ -48,6 +49,64 @@ const databaseRelation = () => {
 
     AHSProjectUtama[tahun].belongsTo(AHSProjectUtama[tahun], {
       foreignKey: "PAIR",
+    });
+
+    // KHUSUS
+    AHSProjectUtama[tahun].hasMany(AHSProjectRumus[tahun], {
+      foreignKey: "ID_AHS_PROJECT_UTAMA",
+      //as: "ID_AHS_PROJECT_UTAMA_1",
+    });
+
+    // // KHUSUS
+    // AHSProjectRumus[tahun].hasOne(AHSProjectUtama[tahun], {
+    //   foreignKey: "ID_AHS_PROJECT_UTAMA_1",
+    //   //as: "ID_AHS_PROJECT_UTAMA_1",
+    // });
+
+    // AHSProjectRumus[tahun].hasOne(AHSProjectUtama[tahun], {
+    //   foreignKey: "ID_AHS_PROJECT_UTAMA_2",
+    //   //as: "ID_AHS_PROJECT_UTAMA_1",
+    // });
+
+    // AHSProjectRumus[tahun].hasOne(AHSProjectUtama[tahun], {
+    //   foreignKey: "ID_AHS_PROJECT_UTAMA_3",
+    //   //as: "ID_AHS_PROJECT_UTAMA_1",
+    // });
+
+    AHSProjectRumus[tahun].belongsTo(HS[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS1a",
+      foreignKey: "ID_HS_1",
+    });
+
+    AHSProjectRumus[tahun].belongsTo(HS[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS2a",
+      foreignKey: "ID_HS_2",
+    });
+
+    AHSProjectRumus[tahun].belongsTo(HS[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS3a",
+      foreignKey: "ID_HS_3",
+    });
+
+    HS[tahun].hasMany(AHSProjectRumus[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS1a",
+      foreignKey: "ID_HS_1",
+    });
+
+    HS[tahun].hasMany(AHSProjectRumus[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS2a",
+      foreignKey: "ID_HS_2",
+    });
+
+    HS[tahun].hasMany(AHSProjectRumus[tahun], {
+      //foreignKey: "ID_HS",
+      as: "IDHS3a",
+      foreignKey: "ID_HS_3",
     });
 
     HS[tahun].belongsTo(Wilayah, {

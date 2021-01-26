@@ -27,8 +27,8 @@ router.post(
 );
 
 router.post(
-  "/post-new-ahs-project-detail-khusus-2a",
-  ahsProjectController.postNewAHSProjectUtamaDetailKhusus2a
+  "/post-new-ahs-project-detail-khusus",
+  ahsProjectController.postNewAHSProjectUtamaDetailKhusus
 );
 
 router.post(

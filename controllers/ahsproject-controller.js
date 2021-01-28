@@ -478,7 +478,12 @@ exports.postNewAHSProjectUtamaDetailKhusus = async (req, res, next) => {
                   },
                 });
 
-                if (result2 == null || result2 == undefined) {
+                if (
+                  AHSProjectDetail.khusus4 != null ||
+                  AHSProjectDetail.khusus2 != null
+                ) {
+                  somethingwentwrong = false;
+                } else if (result2 == null || result2 == undefined) {
                   hskosong.push(AHSProjectDetail.name);
                   ahsgagalid = result.ID_AHS_PROJECT_UTAMA;
                   somethingwentwrong = true;
@@ -490,12 +495,19 @@ exports.postNewAHSProjectUtamaDetailKhusus = async (req, res, next) => {
                   hasil = {
                     ID_AHS_PROJECT_UTAMA: result.ID_AHS_PROJECT_UTAMA,
                     P_URAIAN: AHSProjectDetail.name,
-                    ID_HS: result2.ID_HS,
+                    ID_HS:
+                      AHSProjectDetail.khusus4 != null ||
+                      AHSProjectDetail.khusus2 != null
+                        ? null
+                        : result2.ID_HS,
                     ID_AHS_SUMBER_UTAMA: AHSProjectDetail.noAHS,
                     P_KELOMPOK_URAIAN: AHSProjectDetail.kelompok,
                     P_SATUAN_URAIAN: AHSProjectDetail.satuan,
                     P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
                     P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
+                    P_HS_AHS_P: AHSProjectDetail.khusus4 ? 1 : null,
+                    P_HS_ANAK_AHS: AHSProjectDetail.khusus2,
+                    A_B: AHSProjectDetail.a_b,
                   };
                   return hasil;
                 } else {

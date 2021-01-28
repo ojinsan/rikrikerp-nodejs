@@ -190,9 +190,9 @@ exports.generateExcel = async (req, res, next) => {
     RABPB
   );
 
-  //boqsheet = await createBOQSheet(boqsheet, res, TAHUN, RABPB, AHSPs);
+  boqsheet = await createBOQSheet(boqsheet, res, TAHUN, RABPB, AHSPs);
 
-  //rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
+  rabsheet = await createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs);
 
   // Download the file ==============================================
   // res is a Stream object

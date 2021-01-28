@@ -369,6 +369,9 @@ exports.postNewAHSProjectUtamaDetailKhusus = async (req, res, next) => {
                 P_SATUAN_URAIAN: AHSProjectDetail.satuan,
                 P_KOEFISIEN_URAIAN: AHSProjectDetail.koefisien,
                 P_KETERANGAN_URAIAN: AHSProjectDetail.keterangan,
+                P_HS_AHS_P: AHSProjectDetail.khusus4 ? 1 : null,
+                P_HS_ANAK_AHS: AHSProjectDetail.khusus2,
+                A_B: AHSProjectDetail.a_b,
               };
               return hasil;
             } else {

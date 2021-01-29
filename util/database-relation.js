@@ -49,6 +49,8 @@ const databaseRelation = () => {
 
     AHSProjectUtama[tahun].belongsTo(AHSProjectUtama[tahun], {
       foreignKey: "PAIR",
+      //foreignKeyConstraint: true,
+      onDelete: "CASCADE",
     });
 
     // KHUSUS

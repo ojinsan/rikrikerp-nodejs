@@ -16,6 +16,10 @@ exports.generateExcel = async (req, res, next) => {
   console.log(TAHUN);
   console.log(ID_RAB_PROJECT_BAGIAN);
 
+  var namaproject = "[PROJECT NAME]";
+  var namabagian = "[BAGIAN NAME]";
+  var namasubbagian = "";
+
   // GET RABPB
   var RABPB = await RABProjectBagian[TAHUN].findOne({
     where: {
@@ -145,7 +149,13 @@ exports.generateExcel = async (req, res, next) => {
     where: {
       ID_PROJECT: ID_PROJECT,
     },
-  }).then((project) => project.ID_WILAYAH);
+  }).then((project) => {
+    namaproject = project.NAMA_PROJECT;
+    return project.ID_WILAYAH;
+  });
+
+  namabagian = RABPB.BAGIAN;
+  namasubbagian = RABPB.SUB_BAGIAN;
 
   // INIT EXCEL ==============================================
   var Excel = require("exceljs");
@@ -196,13 +206,30 @@ exports.generateExcel = async (req, res, next) => {
 
   // Download the file ==============================================
   // res is a Stream object
+
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, "0");
+  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + "/" + dd + "/" + yyyy;
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   );
   res.setHeader(
     "Content-Disposition",
-    "attachment; filename=" + "RAB" + TAHUN + ".xlsx"
+    "attachment; filename=" +
+      "RAB-" +
+      namabagian +
+      "-" +
+      namasubbagian +
+      "-" +
+      TAHUN +
+      "-" +
+      today +
+      ".xlsx"
   );
 
   console.log("sending back");

@@ -4403,9 +4403,10 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bottom: { style: "medium" },
     right: { style: "medium" },
   };
-  rabsheet.getCell("B" + i).value = "TERBILANG";
+
   rabsheet.mergeCells("C" + i + ":K" + i);
   rabsheet.mergeCells("A" + i + ":B" + i);
+  rabsheet.getCell("A" + i).value = "TERBILANG";
 
   rabsheet.getCell("C" + i).value = {
     formula: `=0`,

@@ -686,24 +686,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     return;
   }
 
-  // WRITE THE DOCUMENTS
-  // WRITE nama berkas
-  rabsheet.mergeCells("A1:K1");
-  rabsheet.getCell("A2").value =
-    rabpbInfo.JENIS == "BOQ"
-      ? "Bill of Quantity"
-      : rabpbInfo.JENIS == "RAB"
-      ? "Rancangan Anggaran Biaya"
-      : rabpbInfo.JENIS;
-
-  // WRITE Sub Bagian
-  rabsheet.mergeCells("A2:K2");
-  rabsheet.getCell("A2").value = rabpbInfo.BAGIAN;
-
-  // WRITE Sub Bagian
-  rabsheet.mergeCells("A3:K3");
-  rabsheet.getCell("A3").value = rabpbInfo.SUB_BAGIAN;
-
   // Column Init
   rabsheet.columns = [
     {
@@ -772,6 +754,46 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     },
   ];
 
+  // WRITE THE DOCUMENTS
+  // WRITE nama berkas
+  rabsheet.mergeCells("A1:K1");
+  rabsheet.getCell("A1").value =
+    rabpbInfo.JENIS == "BOQ"
+      ? "Bill of Quantity"
+      : rabpbInfo.JENIS == "RAB"
+      ? "Rancangan Anggaran Biaya"
+      : rabpbInfo.JENIS;
+
+  rabsheet.getCell("A1").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+
+  // WRITE Sub Bagian
+  rabsheet.mergeCells("A2:K2");
+  rabsheet.getCell("A2").value = rabpbInfo.BAGIAN;
+  rabsheet.getCell("A2").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+
+  // WRITE Sub Bagian
+  rabsheet.mergeCells("A3:K3");
+  rabsheet.getCell("A3").value = rabpbInfo.SUB_BAGIAN;
+  rabsheet.getCell("A3").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+  rabsheet.getCell("A1").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A2").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A3").font = {
+    bold: true,
+  };
+
   // Variable for Column
   var rab_rab_no = rabsheet.getColumn("no");
   var rab_name = rabsheet.getColumn("name");
@@ -786,6 +808,72 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   var rab_nilaibahannontdp = rabsheet.getColumn("nilaibahannontdp");
 
   // WRITE HEADER
+  rabsheet.getCell("A5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("B5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("C5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("D5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("E5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("F5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("G5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("H5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("I5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("J5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("K5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("B6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("C6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("D6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("E6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("F6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("G6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("H6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("I6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("J6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("K6").font = {
+    bold: true,
+  };
   rabsheet.mergeCells("A5:A7");
   rabsheet.getCell("A5").border = {
     top: { style: "medium" },
@@ -802,6 +890,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("A5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("A5").value = "No";
   rabsheet.mergeCells("B5:B7");
@@ -821,6 +913,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("B5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("B5").value = "Uraian";
   rabsheet.mergeCells("C5:C7");
   rabsheet.getCell("C5").border = {
@@ -838,6 +934,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("C5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("C5").value = "Satuan";
   rabsheet.mergeCells("D5:D7");
@@ -857,6 +957,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("D5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("D5").value = "Volume";
   rabsheet.mergeCells("E5:E7");
   rabsheet.getCell("E5").border = {
@@ -874,6 +978,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("E5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("E5").value = "CODE";
   rabsheet.mergeCells("F5:G5");
@@ -893,6 +1001,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("F5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("F5").value = "Harga Satuan (Rp)";
   rabsheet.mergeCells("F6:F7");
   rabsheet.getCell("F6").border = {
@@ -910,6 +1022,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("F6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("F6").value = "Jasa / Upah";
   rabsheet.mergeCells("G6:G7");
@@ -929,6 +1045,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("G6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("G6").value = "Bahan / Alat";
   rabsheet.mergeCells("H5:K5");
   rabsheet.getCell("H5").border = {
@@ -946,6 +1066,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("H5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("H5").value = "Nilai Pekerjaan (Rp.)";
   rabsheet.mergeCells("H6:I6");
@@ -965,6 +1089,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("H6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("H6").value = "Jasa / Upah";
   rabsheet.mergeCells("J6:K6");
   rabsheet.getCell("J6").border = {
@@ -983,6 +1111,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("J6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("J6").value = "Bahan / Alat";
   rabsheet.getCell("H7").border = {
     top: { style: "medium" },
@@ -999,6 +1131,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("H7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("H7").value = "PPN TDP";
   rabsheet.getCell("I7").border = {
@@ -1017,6 +1153,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("I7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("I7").value = "PPN Non TDP";
   rabsheet.getCell("J7").border = {
     top: { style: "medium" },
@@ -1034,6 +1174,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       argb: "F4B084",
     },
   };
+  rabsheet.getCell("J7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("J7").value = "PPN TDP";
   rabsheet.getCell("K7").border = {
     top: { style: "medium" },
@@ -1050,6 +1194,10 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     bgColor: {
       argb: "F4B084",
     },
+  };
+  rabsheet.getCell("K7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
   };
   rabsheet.getCell("K7").value = "PPN Non TDP";
 
@@ -1201,6 +1349,366 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
     });
 
+    if (sectionlevel == 0) {
+      rabsheet.getCell("A" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("B" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("C" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("D" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("E" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("F" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("G" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("H" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("I" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("J" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("K" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("A" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("B" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("C" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("D" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("E" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("F" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("G" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("H" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("I" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("J" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("K" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+    } else if (sectionlevel == 1) {
+      rabsheet.getCell("A" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("B" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("C" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("D" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("E" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("F" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("G" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("H" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("I" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("J" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("K" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("A" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("B" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("C" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("D" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("E" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("F" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("G" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("H" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("I" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("J" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("K" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+    }
+
+    //format border main content
+    if (true) {
+      rabsheet.getCell("A" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("B" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("C" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("D" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("E" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("F" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("G" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("H" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("I" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("J" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("K" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    }
+
     // PENJUMLAHAN
     sectionlevel2 = sectionlevel;
     for (m = sectionlevel; m > 0; m--) {
@@ -1237,6 +1745,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           isalreadysum = true;
           titiksum[m].push(i);
+
           //newsecnum = 3;
         } else {
           i++;
@@ -1275,9 +1784,113 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           titiksum[m + 1] = [];
         }
+        if (true) {
+          rabsheet.getCell("A" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("B" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+
+          rabsheet.getCell("H" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("I" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("J" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("K" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("A" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("B" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("H" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("I" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("J" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("K" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+
+          rabsheet.getCell("B" + i).alignment = {
+            vertical: "middle",
+            horizontal: "right",
+          };
+        }
       }
-      i++;
-      rabsheet.addRow({});
+      // i++;
+      // rabsheet.addRow({});
     }
     console.log("===========");
   });
@@ -1285,6 +1898,145 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+
+  rabsheet.getCell("A" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("B" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("H" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("I" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("J" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("K" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "JUMLAH";
 
@@ -1308,6 +2060,84 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "PPN 10%";
 
@@ -1327,6 +2157,84 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL + PPN ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "JUMLAH + PPN 10%";
 
@@ -1346,6 +2254,84 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL + PPN ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "TOTAL";
 
@@ -1355,6 +2341,84 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL DIBULATKAN
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "TOTAL DIBULATKAN";
 
@@ -1364,8 +2428,38 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TERBILANG
   i++;
-  rabsheet.getCell("B" + i).value = "TERBILANG";
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("C" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("C" + i).font = {
+    bold: true,
+  };
+
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+
+  rabsheet.getCell("C" + i).border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("A" + i).value = "TERBILANG";
   rabsheet.mergeCells("C" + i + ":K" + i);
+  rabsheet.mergeCells("A" + i + ":B" + i);
 
   rabsheet.getCell("C" + i).value = {
     formula:
@@ -1449,24 +2543,6 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     return;
   }
 
-  // WRITE THE DOCUMENTS
-  // WRITE nama berkas
-  rabsheet.mergeCells("A1:K1");
-  rabsheet.getCell("A2").value =
-    rabpbInfo.JENIS == "BOQ"
-      ? "Bill of Quantity"
-      : rabpbInfo.JENIS == "RAB"
-      ? "Rancangan Anggaran Biaya"
-      : rabpbInfo.JENIS;
-
-  // WRITE Sub Bagian
-  rabsheet.mergeCells("A2:K2");
-  rabsheet.getCell("A2").value = rabpbInfo.BAGIAN;
-
-  // WRITE Sub Bagian
-  rabsheet.mergeCells("A3:K3");
-  rabsheet.getCell("A3").value = rabpbInfo.SUB_BAGIAN;
-
   // Column Init
   rabsheet.columns = [
     {
@@ -1535,6 +2611,46 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     },
   ];
 
+  // WRITE THE DOCUMENTS
+  // WRITE nama berkas
+  rabsheet.mergeCells("A1:K1");
+  rabsheet.getCell("A1").value =
+    rabpbInfo.JENIS == "BOQ"
+      ? "Bill of Quantity"
+      : rabpbInfo.JENIS == "RAB"
+      ? "Bill of Quantity"
+      : rabpbInfo.JENIS;
+
+  rabsheet.getCell("A1").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+
+  // WRITE Sub Bagian
+  rabsheet.mergeCells("A2:K2");
+  rabsheet.getCell("A2").value = rabpbInfo.BAGIAN;
+  rabsheet.getCell("A2").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+
+  // WRITE Sub Bagian
+  rabsheet.mergeCells("A3:K3");
+  rabsheet.getCell("A3").value = rabpbInfo.SUB_BAGIAN;
+  rabsheet.getCell("A3").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+  rabsheet.getCell("A1").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A2").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A3").font = {
+    bold: true,
+  };
+
   // Variable for Column
   var rab_rab_no = rabsheet.getColumn("no");
   var rab_name = rabsheet.getColumn("name");
@@ -1549,31 +2665,397 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   var rab_nilaibahannontdp = rabsheet.getColumn("nilaibahannontdp");
 
   // WRITE HEADER
+  rabsheet.getCell("A5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("B5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("C5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("D5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("E5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("F5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("G5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("H5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("I5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("J5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("K5").font = {
+    bold: true,
+  };
+  rabsheet.getCell("A6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("B6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("C6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("D6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("E6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("F6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("G6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("H6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("I6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("J6").font = {
+    bold: true,
+  };
+  rabsheet.getCell("K6").font = {
+    bold: true,
+  };
   rabsheet.mergeCells("A5:A7");
+  rabsheet.getCell("A5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("A5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("A5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("A5").value = "No";
   rabsheet.mergeCells("B5:B7");
+  rabsheet.getCell("B5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("B5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("B5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("B5").value = "Uraian";
   rabsheet.mergeCells("C5:C7");
+  rabsheet.getCell("C5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("C5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("C5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("C5").value = "Satuan";
   rabsheet.mergeCells("D5:D7");
+  rabsheet.getCell("D5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("D5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("D5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("D5").value = "Volume";
   rabsheet.mergeCells("E5:E7");
+  rabsheet.getCell("E5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("E5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("E5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("E5").value = "CODE";
   rabsheet.mergeCells("F5:G5");
+  rabsheet.getCell("F5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("F5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("F5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("F5").value = "Harga Satuan (Rp)";
   rabsheet.mergeCells("F6:F7");
+  rabsheet.getCell("F6").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("F6").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("F6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("F6").value = "Jasa / Upah";
   rabsheet.mergeCells("G6:G7");
+  rabsheet.getCell("G6").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("G6").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("G6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("G6").value = "Bahan / Alat";
   rabsheet.mergeCells("H5:K5");
+  rabsheet.getCell("H5").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("H5").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("H5").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("H5").value = "Nilai Pekerjaan (Rp.)";
   rabsheet.mergeCells("H6:I6");
+  rabsheet.getCell("H6").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("H6").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("H6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("H6").value = "Jasa / Upah";
   rabsheet.mergeCells("J6:K6");
+  rabsheet.getCell("J6").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("J6").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("J6").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("J6").value = "Bahan / Alat";
+  rabsheet.getCell("H7").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("H7").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("H7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("H7").value = "PPN TDP";
+  rabsheet.getCell("I7").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("I7").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("I7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("I7").value = "PPN Non TDP";
+  rabsheet.getCell("J7").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("J7").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("J7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("J7").value = "PPN TDP";
+  rabsheet.getCell("K7").border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+  rabsheet.getCell("K7").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "F4B084",
+    },
+    bgColor: {
+      argb: "F4B084",
+    },
+  };
+  rabsheet.getCell("K7").alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
   rabsheet.getCell("K7").value = "PPN Non TDP";
 
   //Masukan RAB disini
@@ -1725,6 +3207,366 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           : null, //better add result
     });
 
+    if (sectionlevel == 0) {
+      rabsheet.getCell("A" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("B" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("C" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("D" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("E" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("F" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("G" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("H" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("I" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("J" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("K" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("A" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("B" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("C" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("D" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("E" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("F" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("G" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("H" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("I" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("J" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+      rabsheet.getCell("K" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "70CD7F",
+        },
+        bgColor: {
+          argb: "70CD7F",
+        },
+      };
+    } else if (sectionlevel == 1) {
+      rabsheet.getCell("A" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("B" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("C" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("D" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("E" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("F" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("G" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("H" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("I" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("J" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("K" + i).font = {
+        bold: true,
+      };
+      rabsheet.getCell("A" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("B" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("C" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("D" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("E" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("F" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("G" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("H" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("I" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("J" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+      rabsheet.getCell("K" + i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: {
+          argb: "F8DA7B",
+        },
+        bgColor: {
+          argb: "F8DA7B",
+        },
+      };
+    }
+
+    //format border main content
+    if (true) {
+      rabsheet.getCell("A" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("B" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("C" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("D" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("E" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("F" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("G" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("H" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("I" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("J" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      rabsheet.getCell("K" + i).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    }
+
     sectionlevel2 = sectionlevel;
     console.log(sectionlevel);
     for (m = sectionlevel; m > 0; m--) {
@@ -1761,6 +3603,7 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           isalreadysum = true;
           titiksum[m].push(i);
+
           //newsecnum = 3;
         } else {
           i++;
@@ -1800,9 +3643,115 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           titiksum[m + 1] = [];
         }
+
+        if (true) {
+          rabsheet.getCell("A" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("B" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+
+          rabsheet.getCell("H" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("I" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("J" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("K" + i).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          rabsheet.getCell("A" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("B" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("H" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("I" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("J" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+          rabsheet.getCell("K" + i).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: "C6E0B4",
+            },
+            bgColor: {
+              argb: "C6E0B4",
+            },
+          };
+
+          rabsheet.getCell("B" + i).alignment = {
+            vertical: "middle",
+            horizontal: "right",
+          };
+        }
       }
-      i++;
-      rabsheet.addRow({});
+
+      // i++;
+      // rabsheet.addRow({});
     }
 
     // // kondisi abis ini new section
@@ -1895,6 +3844,145 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
   //TOTAL ALL
   //TOTAL ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+
+  rabsheet.getCell("A" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("B" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("H" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("I" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("J" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
+  rabsheet.getCell("K" + i).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "A3C1E3",
+    },
+    bgColor: {
+      argb: "A3C1E3",
+    },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "JUMLAH";
 
@@ -1918,6 +4006,84 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "PPN 10%";
 
@@ -1937,6 +4103,84 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL + PPN ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "JUMLAH + PPN 10%";
 
@@ -1956,6 +4200,84 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL + PPN ALL
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "TOTAL";
 
@@ -1965,6 +4287,84 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TOTAL DIBULATKAN
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("B" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("H" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("I" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("J" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("K" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("B" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("H" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("I" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("J" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("K" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("B" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("H" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("I" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("J" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+  rabsheet.getCell("K" + i).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
   rabsheet.mergeCells("B" + i + ":G" + i);
   rabsheet.getCell("B" + i).value = "TOTAL DIBULATKAN";
 
@@ -1974,8 +4374,38 @@ async function createBOQSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
   //TERBILANG
   i++;
+  rabsheet.getCell("A" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+  rabsheet.getCell("C" + i).alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+
+  rabsheet.getCell("A" + i).font = {
+    bold: true,
+  };
+  rabsheet.getCell("C" + i).font = {
+    bold: true,
+  };
+
+  rabsheet.getCell("A" + i).border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
+
+  rabsheet.getCell("C" + i).border = {
+    top: { style: "medium" },
+    left: { style: "medium" },
+    bottom: { style: "medium" },
+    right: { style: "medium" },
+  };
   rabsheet.getCell("B" + i).value = "TERBILANG";
   rabsheet.mergeCells("C" + i + ":K" + i);
+  rabsheet.mergeCells("A" + i + ":B" + i);
 
   rabsheet.getCell("C" + i).value = {
     formula: `=0`,

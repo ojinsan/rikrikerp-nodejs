@@ -646,7 +646,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
 
       i++;
       worksheet.addRow({
-        ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
+        ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA?.SUMBER_AHS,
       });
       i++;
       worksheet.addRow({});
@@ -4580,7 +4580,7 @@ function singleAHSwritter(worksheet, AHSP, i, j, ispair) {
   i++;
   worksheet.addRow({
     koefisien: "Satuan:",
-    satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+    satuan: AHSP.AHS_SUMBER_UTAMA?.SATUAN_AHS,
   });
   // ======== end write AHS Utama ====////
 
@@ -4759,7 +4759,7 @@ function singleAHSwritter(worksheet, AHSP, i, j, ispair) {
     i++;
     worksheet.addRow({
       koefisien: "Satuan:",
-      satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+      satuan: AHSP.AHS_SUMBER_UTAMA?.SATUAN_AHS,
     });
 
     iinit_2 = i;

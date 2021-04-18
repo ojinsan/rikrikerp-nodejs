@@ -1722,6 +1722,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       secend = i;
       isalreadysum = false;
       for (m = sectionlevel; m >= sectionlevel2; m--) {
+        console.log(sectionlevel + " " + sectionlevel2);
         if (!isalreadysum) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
@@ -1745,8 +1746,6 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           isalreadysum = true;
           titiksum[m].push(i);
-
-          //newsecnum = 3;
         } else {
           i++;
           titiksum[m].push(i);

@@ -1729,9 +1729,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
 
-          console.log(
-            titiksum[m + 1].map((titik) => "I" + titik + " +").slice(0, -2)
-          );
+          console.log(titiksum[m + 1].map((titik) => "I" + titik + " +"));
 
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;

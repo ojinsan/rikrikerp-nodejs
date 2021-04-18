@@ -1729,17 +1729,16 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
 
-          console.log(
-            titiksum[m + 1]
-              .map((titik) => "I" + titik + " +")
-              .join(" ")
-              .slice(0, -2)
-          );
-
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
           rabsheet.getCell("H" + i).value = {
-            formula: "=SUM(H" + secstart + ":H" + secend + ")",
+            formula:
+              "=SUM(H" +
+              secstart +
+              ":H" +
+              secend +
+              ")" +
+              titiksum[m + 1].map((titik) => " + " + "H" + titik),
           }; //better add result
           rabsheet.getCell("I" + i).value = {
             formula:
@@ -1748,15 +1747,27 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
               ":I" +
               secend +
               ")" +
-              titiksum[m + 1].map((titik) => " +" + "I" + titik),
+              titiksum[m + 1].map((titik) => " + " + "I" + titik),
             // .join(" ")
             // .slice(0, -2),
           }; //better add result
           rabsheet.getCell("J" + i).value = {
-            formula: "=SUM(J" + secstart + ":J" + secend + ")",
+            formula:
+              "=SUM(J" +
+              secstart +
+              ":J" +
+              secend +
+              ")" +
+              titiksum[m + 1].map((titik) => " + " + "J" + titik),
           }; //better add result
           rabsheet.getCell("K" + i).value = {
-            formula: "=SUM(K" + secstart + ":K" + secend + ")",
+            formula:
+              "=SUM(K" +
+              secstart +
+              ":K" +
+              secend +
+              ")" +
+              titiksum[m + 1].map((titik) => " + " + "K" + titik),
           }; //better add result
 
           isalreadysum = true;
@@ -1774,26 +1785,34 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           rabsheet.getCell("H" + i).value = {
             formula:
               "=" +
-              titiksum[m + 1].map((titik) => "H" + titik + " +").join(" ") +
-              "0",
+              titiksum[m + 1]
+                .map((titik) => "H" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("I" + i).value = {
             formula:
               "=" +
-              titiksum[m + 1].map((titik) => "I" + titik + " +").join(" ") +
-              "0",
+              titiksum[m + 1]
+                .map((titik) => "I" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("J" + i).value = {
             formula:
               "=" +
-              titiksum[m + 1].map((titik) => "J" + titik + " +").join(" ") +
-              "0",
+              titiksum[m + 1]
+                .map((titik) => "J" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("K" + i).value = {
             formula:
               "=" +
-              titiksum[m + 1].map((titik) => "K" + titik + " +").join(" ") +
-              "0",
+              titiksum[m + 1]
+                .map((titik) => "K" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
 
           titiksum[m + 1] = [];

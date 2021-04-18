@@ -1742,7 +1742,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
               secend +
               ") + " +
               titiksum[m + 1].map((titik) => "I" + titik + " +").join(" ") +
-              "0",
+              "\b",
           }; //better add result
           rabsheet.getCell("J" + i).value = {
             formula: "=SUM(J" + secstart + ":J" + secend + ")",

@@ -1739,7 +1739,12 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum?.num + ". " + satujudulandnum?.judul;
-
+          console.log(
+            titiksum[m + 1]
+              .map((titik) => "H" + titik + " +")
+              .join(" ")
+              .slice(0, -2)
+          );
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
             formula:

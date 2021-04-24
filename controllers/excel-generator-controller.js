@@ -646,7 +646,7 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
 
       i++;
       worksheet.addRow({
-        ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA.SUMBER_AHS,
+        ahsputamajudul: "Sumber: " + AHSP.AHS_SUMBER_UTAMA?.SUMBER_AHS,
       });
       i++;
       worksheet.addRow({});

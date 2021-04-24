@@ -1739,6 +1739,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
             "Jumlah " + satujudulandnum?.num + ". " + satujudulandnum?.judul;
+
+          console.log("HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA");
+
           console.log(
             titiksum[m + 1]
               .map((titik) => "H" + titik + " +")

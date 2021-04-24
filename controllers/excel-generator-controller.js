@@ -1720,6 +1720,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       }
     }
 
+    //baru
+    newsec = true;
+
     if (newsec) {
       secend = i;
       isalreadysum = false;
@@ -4680,7 +4683,7 @@ function singleAHSwritter(worksheet, AHSP, i, j, ispair) {
   i++;
   worksheet.addRow({
     koefisien: "Satuan:",
-    satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
+    satuan: AHSP.AHS_SUMBER_UTAMA?.SATUAN_AHS,
   });
   // ======== end write AHS Utama ====////
 

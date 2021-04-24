@@ -1735,7 +1735,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
           //satujudulandnum = "TOTAL";
 
           rabsheet.getCell("B" + i).value =
-            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum?.num + ". " + satujudulandnum?.judul;
           rabsheet.getCell("H" + i).value = {
             formula:
               "=SUM(H" +

@@ -1930,6 +1930,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       // i++;
       // rabsheet.addRow({});
     } else {
+      titiksum[sectionlevel].push(i);
       for (m = sectionlevel; m >= sectionlevel2; m--) {
         console.log(sectionlevel + " " + sectionlevel2);
         if (!isalreadysum) {

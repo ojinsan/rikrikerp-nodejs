@@ -1721,7 +1721,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
     }
 
     //baru
-    newsec = true;
+    //newsec = true;
 
     if (newsec) {
       secend = i;
@@ -1929,6 +1929,15 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       }
       // i++;
       // rabsheet.addRow({});
+    } else {
+      for (m = sectionlevel; m >= sectionlevel2; m--) {
+        console.log(sectionlevel + " " + sectionlevel2);
+        if (!isalreadysum) {
+          titiksum[m].push(i);
+        } else {
+          titiksum[m + 1] = [];
+        }
+      }
     }
     console.log("===========");
   });

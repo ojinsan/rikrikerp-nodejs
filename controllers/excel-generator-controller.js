@@ -1728,7 +1728,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       isalreadysum = false;
       for (m = sectionlevel; m >= sectionlevel2; m--) {
         console.log(sectionlevel + " " + sectionlevel2);
-        if (!isalreadysum) {
+        if (!isalreadysum && false) {
           i++;
           rabsheet.mergeCells("B" + i + ":G" + i);
           satujudulandnum = judulandnum.pop();

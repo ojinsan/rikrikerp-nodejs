@@ -40,20 +40,19 @@ exports.postNewWilayah = (req, res, next) => {
     KECAMATAN: " ",
     KABUPATEN_KOTAMADYA: KABUPATEN_KOTAMADYA,
     PROVINSI: PROVINSI,
-  }).then((Wilayah) => {
-    res
-      .status(201)
-      .json({
+  })
+    .then((Wilayah) => {
+      res.status(201).json({
         message: "Create wilayah Success",
         Wilayah: Wilayah,
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Create wilayah Error",
-          error: err,
-        });
       });
-  });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Create wilayah Error",
+        error: err,
+      });
+    });
 };
 
 exports.updateWilayah = (req, res, next) => {

@@ -10,7 +10,7 @@
 // MARK: Sequelize version
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("rikrik_schema", "root", "rikrikjs", {
+const sequelize = new Sequelize("rikrik_schema", "root", "akuinginmunculditv", {
   dialect: "mysql",
 });
 

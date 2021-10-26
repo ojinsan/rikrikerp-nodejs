@@ -652,6 +652,8 @@ async function createAHSPSheet(worksheet, res, TAHUN, ID_PROJECT, rows, RABPB) {
       worksheet.addRow({});
       writtenAHSPs.push(AHSPs[index]);
     }
+
+    //for (iteratei = 0; iteratei <i, iteratei++)
   });
 
   return [worksheet, writtenAHSPs];
@@ -1718,6 +1720,9 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       }
     }
 
+    //baru
+    //newsec = true;
+
     if (newsec) {
       secend = i;
       isalreadysum = false;
@@ -1725,53 +1730,59 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
         console.log(sectionlevel + " " + sectionlevel2);
         if (!isalreadysum) {
           i++;
-          rabsheet.mergeCells("B" + i + ":G" + i);
+
           satujudulandnum = judulandnum.pop();
           //satujudulandnum = "TOTAL";
 
+          titiksum[m].push(i);
+
+          rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
-            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum?.num + ". " + satujudulandnum?.judul;
+
+          console.log("HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA");
+
+          console.log(
+            titiksum[m + 1]
+              .map((titik) => "H" + titik + " +")
+              .join(" ")
+              .slice(0, -2)
+          );
+          // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
             formula:
-              "=SUM(H" +
-              secstart +
-              ":H" +
-              secend +
-              ")" +
-              titiksum[m + 1].map((titik) => " + " + "H" + titik),
+              "=" +
+              titiksum[m + 1]
+                .map((titik) => "H" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("I" + i).value = {
             formula:
-              "=SUM(I" +
-              secstart +
-              ":I" +
-              secend +
-              ")" +
-              titiksum[m + 1].map((titik) => " + " + "I" + titik),
-            // .join(" ")
-            // .slice(0, -2),
+              "=" +
+              titiksum[m + 1]
+                .map((titik) => "I" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("J" + i).value = {
             formula:
-              "=SUM(J" +
-              secstart +
-              ":J" +
-              secend +
-              ")" +
-              titiksum[m + 1].map((titik) => " + " + "J" + titik),
+              "=" +
+              titiksum[m + 1]
+                .map((titik) => "J" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
           rabsheet.getCell("K" + i).value = {
             formula:
-              "=SUM(K" +
-              secstart +
-              ":K" +
-              secend +
-              ")" +
-              titiksum[m + 1].map((titik) => " + " + "K" + titik),
+              "=" +
+              titiksum[m + 1]
+                .map((titik) => "K" + titik + " +")
+                .join(" ")
+                .slice(0, -2),
           }; //better add result
 
           isalreadysum = true;
-          titiksum[m].push(i);
         } else {
           i++;
           titiksum[m].push(i);
@@ -1779,7 +1790,7 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
 
           rabsheet.mergeCells("B" + i + ":G" + i);
           rabsheet.getCell("B" + i).value =
-            "Jumlah " + satujudulandnum.num + ". " + satujudulandnum.judul;
+            "Jumlah " + satujudulandnum?.num + ". " + satujudulandnum?.judul;
 
           // cari titik-titik sum selanjutnya
           rabsheet.getCell("H" + i).value = {
@@ -1924,6 +1935,16 @@ async function createRABSheet(rabsheet, res, TAHUN, RABPB, AHSPs) {
       }
       // i++;
       // rabsheet.addRow({});
+    } else {
+      titiksum[sectionlevel].push(i);
+      for (m = sectionlevel; m >= sectionlevel2; m--) {
+        console.log(sectionlevel + " " + sectionlevel2);
+        if (!isalreadysum) {
+          titiksum[m].push(i);
+        } else {
+          titiksum[m + 1] = [];
+        }
+      }
     }
     console.log("===========");
   });
@@ -4857,7 +4878,7 @@ function singleAHSwritter(worksheet, AHSP, i, j, ispair) {
     i++;
     worksheet.addRow({
       koefisien: "Satuan:",
-      satuan: AHSP.AHS_SUMBER_UTAMA?.SATUAN_AHS,
+      satuan: AHSP.AHS_SUMBER_UTAMA.SATUAN_AHS,
     });
 
     iinit_2 = i;

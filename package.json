@@ -1,21 +1,33 @@
 {
     "name": "rikrikerp",
-    "version": "1.0.0",
-    "description": "rikrik erp prototype",
+    "version": "2.0.0",
+    "description": "RikrikERP - Construction Financial Management System",
     "main": "app.js",
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
         "exceljs": "^4.2.0",
         "express": "^4.17.1",
+        "express-rate-limit": "^6.7.0",
+        "express-validator": "^6.14.3",
+        "helmet": "^7.0.0",
+        "jsonwebtoken": "^9.0.0",
+        "morgan": "^1.10.0",
         "mysql2": "^2.1.0",
-        "sequelize": "^6.3.5"
+        "redis": "^4.6.5",
+        "sequelize": "^6.3.5",
+        "winston": "^3.8.2"
     },
     "devDependencies": {
         "nodemon": "^2.0.4"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon app.js"
+        "dev": "nodemon app.js",
+        "start": "node app.js",
+        "init-db": "node scripts/init-db.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Fauzan Ramadhan",
     "license": "ISC"

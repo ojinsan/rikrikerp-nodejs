@@ -1,27 +1,33 @@
-// const mysql = require("mysql2");
-// const pool = mysql.createPool({
-//     host: "localhost",
-//     user: "root",
-//     database: "fauzan_test_schema",
-//     password: "akuinginmunculditv",
-// });
-// module.exports = pool.promise();
-
-// MARK: Sequelize version
 const Sequelize = require("sequelize");
+const config = require("../config/config");
+const logger = require("../utils/logger");
 
-const sequelize = new Sequelize("rikrik_schema", "root", "akuinginmunculditv", {
-  dialect: "mysql",
-});
+// Initialize Sequelize with configuration from config file
+const sequelize = new Sequelize(
+  config.database.name,
+  config.database.username,
+  config.database.password,
+  {
+    host: config.database.host,
+    port: config.database.port,
+    dialect: config.database.dialect,
+    logging: config.database.logging,
+    pool: config.database.pool,
+    define: {
+      timestamps: true,
+      freezeTableName: true
+    }
+  }
+);
 
-// var i = 2020;
-// while (i < 2025) {
-//     sequelize.query(
-//         "CREATE TABLE IF NOT EXISTS `" +
-//             i +
-//             "` (`idBukuRef` VARCHAR(255), `namaBukuRef` VARCHAR(255) NOT NULL, `idMaterial` INTEGER NOT NULL auto_increment , `namaMaterial` VARCHAR(255) NOT NULL, `satuan` VARCHAR(255), `koefisien` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, PRIMARY KEY (`idMaterial`)) ENGINE=InnoDB"
-//     );
-//     i++;
-// }
+// Test database connection
+sequelize
+  .authenticate()
+  .then(() => {
+    logger.info('Database connection has been established successfully.');
+  })
+  .catch(err => {
+    logger.error('Unable to connect to the database:', err);
+  });
 
 module.exports = sequelize;
